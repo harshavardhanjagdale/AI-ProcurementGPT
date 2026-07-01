@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; }
+        .header { background: #059669; color: white; padding: 20px 30px; border-radius: 8px 8px 0 0; }
+        .header h1 { margin: 0; font-size: 22px; }
+        .content { padding: 30px; border: 1px solid #e5e7eb; border-top: none; }
+        .po-badge { background: #ecfdf5; border: 1px solid #a7f3d0; padding: 8px 16px; border-radius: 4px; display: inline-block; font-weight: 600; color: #059669; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th { background: #f8fafc; text-align: left; padding: 12px; border: 1px solid #e5e7eb; font-weight: 600; }
+        td { padding: 12px; border: 1px solid #e5e7eb; }
+        .total-row { background: #ecfdf5; font-weight: 700; }
+        .details-box { background: #f8fafc; border-radius: 6px; padding: 16px; margin: 16px 0; }
+        .footer { padding: 20px 30px; background: #f8fafc; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px; font-size: 13px; color: #6b7280; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Purchase Order</h1>
+    </div>
+    <div class="content">
+        <div class="po-badge">{{ po_number }}</div>
+
+        <p>Dear {{ supplier_name }},</p>
+
+        <p>We are pleased to confirm the following purchase order based on your accepted quotation:</p>
+
+        <div class="details-box">
+            <p><strong>PO Number:</strong> {{ po_number }}</p>
+            <p><strong>RFQ Reference:</strong> {{ rfq_number }}</p>
+            <p><strong>Order Date:</strong> {{ order_date }}</p>
+            <p><strong>Required Delivery Date:</strong> {{ delivery_date }}</p>
+        </div>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Unit Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item.product_name }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ currency }} {{ item.unit_price }}</td>
+                    <td>{{ currency }} {{ item.total_price }}</td>
+                </tr>
+                {% endfor %}
+                <tr class="total-row">
+                    <td colspan="3">Total Amount</td>
+                    <td>{{ currency }} {{ total_amount }}</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="details-box">
+            <p><strong>Payment Terms:</strong> {{ payment_terms }}</p>
+            {% if shipping_address %}
+            <p><strong>Delivery Address:</strong> {{ shipping_address }}</p>
+            {% endif %}
+        </div>
+
+        <p>Please acknowledge receipt of this purchase order and confirm the delivery schedule.</p>
+
+        <p>A PDF copy of this purchase order is attached for your records.</p>
+
+        <p>Best regards,<br>
+        <strong>{{ sender_name }}</strong><br>
+        Procurement Department</p>
+    </div>
+    <div class="footer">
+        <p>This is an official purchase order from {{ company_name }}.</p>
+        <p>Reference: {{ po_number }} | {{ generated_date }}</p>
+    </div>
+</body>
+</html>

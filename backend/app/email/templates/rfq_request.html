@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; }
+        .header { background: #1a56db; color: white; padding: 20px 30px; border-radius: 8px 8px 0 0; }
+        .header h1 { margin: 0; font-size: 22px; }
+        .content { padding: 30px; border: 1px solid #e5e7eb; border-top: none; }
+        .rfq-badge { background: #f0f9ff; border: 1px solid #bae6fd; padding: 8px 16px; border-radius: 4px; display: inline-block; font-weight: 600; color: #0369a1; margin-bottom: 20px; }
+        table { width: 100%; border-collapse: collapse; margin: 20px 0; }
+        th { background: #f8fafc; text-align: left; padding: 12px; border: 1px solid #e5e7eb; font-weight: 600; }
+        td { padding: 12px; border: 1px solid #e5e7eb; }
+        .details-box { background: #f8fafc; border-radius: 6px; padding: 16px; margin: 16px 0; }
+        .details-box p { margin: 6px 0; }
+        .cta { background: #1a56db; color: white; padding: 12px 24px; border-radius: 6px; text-decoration: none; display: inline-block; margin-top: 16px; font-weight: 600; }
+        .footer { padding: 20px 30px; background: #f8fafc; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px; font-size: 13px; color: #6b7280; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Request for Quotation</h1>
+    </div>
+    <div class="content">
+        <div class="rfq-badge">{{ rfq_number }}</div>
+
+        <p>Dear {{ supplier_name }},</p>
+
+        <p>We are pleased to invite you to submit a quotation for the following requirements:</p>
+
+        <h3>{{ rfq_title }}</h3>
+
+        {% if rfq_description %}
+        <p>{{ rfq_description }}</p>
+        {% endif %}
+
+        <table>
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Specifications</th>
+                    <th>Quantity</th>
+                    <th>Unit</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                <tr>
+                    <td>{{ item.product_name }}</td>
+                    <td>{{ item.specifications or 'N/A' }}</td>
+                    <td>{{ item.quantity }}</td>
+                    <td>{{ item.unit }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <div class="details-box">
+            {% if budget_max %}
+            <p><strong>Budget Range:</strong> {{ currency }} {{ budget_min or '0' }} - {{ budget_max }}</p>
+            {% endif %}
+            {% if delivery_deadline %}
+            <p><strong>Required Delivery Date:</strong> {{ delivery_deadline }}</p>
+            {% endif %}
+            <p><strong>Quotation Deadline:</strong> Please respond within 7 business days</p>
+        </div>
+
+        <h4>Please include in your quotation:</h4>
+        <ul>
+            <li>Unit price and total price for each item</li>
+            <li>Delivery timeline</li>
+            <li>Warranty terms</li>
+            <li>Payment terms</li>
+            <li>Validity period of the quotation</li>
+        </ul>
+
+        <p><strong>Important:</strong> Please include <code>{{ rfq_number }}</code> in your reply subject line for proper tracking.</p>
+
+        <p>We look forward to receiving your competitive quotation.</p>
+
+        <p>Best regards,<br>
+        <strong>{{ sender_name }}</strong><br>
+        Procurement Department</p>
+    </div>
+    <div class="footer">
+        <p>This is an automated message from ProcureGPT. Please reply directly to this email with your quotation.</p>
+        <p>Reference: {{ rfq_number }} | Generated on {{ generated_date }}</p>
+    </div>
+</body>
+</html>
