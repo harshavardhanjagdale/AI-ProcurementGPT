@@ -7,6 +7,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.dependencies import get_current_user
 from app.database.session import get_db
+from app.database.connection import AsyncSessionLocal
 from app.models.chat_history import ChatHistory
 from app.schemas.rfq import RFQFromChatRequest
 from app.services.rfq_service import RFQService
@@ -27,6 +28,10 @@ class WorkflowDecisionRequest(BaseModel):
     negotiation_targets: list[dict] | None = None
 
 
+class CheckEmailsRequest(BaseModel):
+    workflow_id: str | None = None  # Optional: check emails for specific workflow
+
+
 @router.post("")
 async def chat_with_ai(
     data: ChatRequest,
@@ -37,10 +42,13 @@ async def chat_with_ai(
     Send a message to the AI procurement assistant.
     If no workflow exists, starts a new one. Otherwise continues conversation.
     """
+    # Convert empty strings to None for foreign key constraint
+    rfq_id = data.rfq_id if data.rfq_id else None
+    
     # Save user message to chat history
     user_msg = ChatHistory(
         user_id=current_user.id,
-        rfq_id=data.rfq_id,
+        rfq_id=rfq_id,
         role="user",
         content=data.message,
     )
@@ -55,14 +63,15 @@ async def chat_with_ai(
         result = await workflow_service.start_workflow(
             user_input=data.message,
             user_id=current_user.id,
-            rfq_id=data.rfq_id,
+            rfq_id=rfq_id,
         )
         ai_response = _format_workflow_result(result)
 
     # Save AI response to chat history
+    final_rfq_id = rfq_id or result.get("state", {}).get("rfq_id") or None
     ai_msg = ChatHistory(
         user_id=current_user.id,
-        rfq_id=data.rfq_id or result.get("state", {}).get("rfq_id"),
+        rfq_id=final_rfq_id,
         role="assistant",
         content=ai_response["message"],
         metadata_json={"workflow_id": result.get("workflow_id")},
@@ -76,6 +85,7 @@ async def chat_with_ai(
         "parsed_data": result.get("parsed_intent"),
         "suggested_suppliers": result.get("selected_suppliers", []),
         "requires_decision": result.get("current_step") == "user_decision_gate",
+        "workflow_url": f"/dashboard/workflows?workflow_id={result.get('workflow_id')}",
     }
 
 
@@ -156,6 +166,118 @@ async def get_workflow_status(
     return await workflow_service.get_workflow_status(workflow_id)
 
 
+@router.post("/check-emails")
+async def check_supplier_emails(
+    data: CheckEmailsRequest,
+    db: AsyncSession = Depends(get_db),
+    current_user=Depends(get_current_user),
+):
+    """
+    Manually trigger email check for supplier replies.
+    If workflow_id provided, also resumes it if emails were found.
+    
+    This is useful when you want to manually check instead of waiting for background worker.
+    """
+    from app.email.background_worker import email_worker
+    
+    # Manually poll emails
+    results = await email_worker.poll_once()
+    
+    message = f"Checked inbox. Found {len(results)} new supplier replies."
+    workflow_status = None
+    
+    if data.workflow_id and results:
+        # Check if workflow is at await_supplier_replies and has emails
+        workflow_status = await workflow_service.get_workflow_status(data.workflow_id)
+        
+        if workflow_status.get("current_step") == "await_supplier_replies":
+            message += f"\n✅ Workflow {data.workflow_id} has received replies. Auto-resuming..."
+            
+            # Resume the workflow to process attachments
+            resume_result = await workflow_service.resume_workflow(data.workflow_id)
+            workflow_status = {
+                "workflow_id": data.workflow_id,
+                "current_step": resume_result.get("current_step"),
+                "status": "resumed",
+                "message": "Workflow resumed to process quotations.",
+            }
+    
+    return {
+        "message": message,
+        "emails_found": len(results),
+        "details": results,
+        "workflow_status": workflow_status,
+    }
+
+
+@router.get("/workflow/{workflow_id}/quotations")
+async def get_workflow_quotations(
+    workflow_id: str,
+    _current_user=Depends(get_current_user),
+):
+    """
+    Get all quotations received for a workflow's RFQ.
+    Shows detailed status of each quote including AI analysis.
+    """
+    from sqlalchemy import select
+    from app.models.quotation import Quotation
+    from app.models.rfq import RFQ
+    from app.models.supplier import Supplier
+    
+    async with AsyncSessionLocal() as session:
+        # Get RFQ for this workflow
+        result = await session.execute(
+            select(RFQ).where(RFQ.ai_workflow_id == workflow_id)
+        )
+        rfq = result.scalar_one_or_none()
+        
+        if not rfq:
+            return {
+                "workflow_id": workflow_id,
+                "error": "RFQ not found for this workflow",
+                "quotations": [],
+            }
+        
+        # Get all quotations for this RFQ
+        result = await session.execute(
+            select(Quotation).where(Quotation.rfq_id == rfq.id)
+        )
+        quotations = list(result.scalars().all())
+        
+        # Format with supplier info
+        quotation_details = []
+        for q in quotations:
+            supplier_result = await session.execute(
+                select(Supplier).where(Supplier.id == q.supplier_id)
+            )
+            supplier = supplier_result.scalar_one_or_none()
+            
+            quotation_details.append({
+                "quotation_id": q.id,
+                "supplier_name": supplier.name if supplier else "Unknown",
+                "supplier_email": supplier.email if supplier else None,
+                "total_amount": float(q.total_amount),
+                "currency": q.currency,
+                "delivery_days": q.delivery_days,
+                "warranty_terms": q.warranty_terms,
+                "payment_terms": q.payment_terms,
+                "ai_score": float(q.ai_score) if q.ai_score else None,
+                "ai_ranking": q.ai_ranking,
+                "status": q.status,
+                "created_at": q.created_at.isoformat() if q.created_at else None,
+            })
+        
+        return {
+            "workflow_id": workflow_id,
+            "rfq_id": rfq.id,
+            "rfq_number": rfq.rfq_number,
+            "quotations_count": len(quotations),
+            "quotations": sorted(quotation_details, key=lambda x: x["ai_ranking"] or 999),
+        }
+
+
+
+
 def _format_workflow_result(result: dict) -> dict:
     """Format workflow result into user-friendly message."""
     if result.get("error"):
@@ -168,6 +290,19 @@ def _format_workflow_result(result: dict) -> dict:
     if not parsed.get("is_complete"):
         clarification = parsed.get("clarification_needed", "Could you provide more details?")
         return {"message": clarification}
+
+    direct_supplier = parsed.get("direct_supplier")
+
+    if suppliers and direct_supplier:
+        supplier = suppliers[0]
+        return {
+            "message": (
+                f"I've understood your request: **{parsed.get('title')}**\n\n"
+                f"Direct purchase from: **{supplier['name']}**\n\n"
+                f"RFQ email is being generated and sent directly to this supplier. "
+                f"I'll notify you when their response arrives."
+            )
+        }
 
     if suppliers:
         supplier_list = "\n".join(

@@ -35,6 +35,7 @@ class PDFConverter:
             return []
 
         try:
+            import traceback
             images = convert_from_path(
                 str(path),
                 dpi=self.dpi,
@@ -43,7 +44,9 @@ class PDFConverter:
             logger.info(f"Converted PDF to {len(images)} images: {pdf_path}")
             return images
         except Exception as e:
-            logger.error(f"PDF conversion failed for {pdf_path}: {e}")
+            logger.error(f"PDF conversion failed for {pdf_path}: {type(e).__name__}: {e}")
+            logger.error(f"Traceback: {traceback.format_exc()}")
+            logger.error(f"Install poppler-utils: choco install poppler or apt install poppler-utils")
             return []
 
     def pdf_to_image_files(self, pdf_path: str, output_dir: str | None = None) -> list[str]:

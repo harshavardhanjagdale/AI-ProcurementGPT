@@ -9,7 +9,7 @@ export default function Home() {
 
   useEffect(() => {
     if (authService.isAuthenticated()) {
-      router.push("/dashboard");
+      router.push("/workspace");
     } else {
       router.push("/login");
     }

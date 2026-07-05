@@ -14,6 +14,36 @@ logger = logging.getLogger(__name__)
 
 async def select_vendors(state: ProcurementState) -> dict:
     """Select top suppliers based on RFQ requirements using embedding search."""
+    # If suppliers are already selected (e.g., direct supplier flow), skip selection
+    existing_suppliers = state.get("selected_suppliers", [])
+    if existing_suppliers:
+        logger.info(f"Suppliers already selected (direct path): {[s['name'] for s in existing_suppliers]}")
+        # Still link them to the RFQ in DB
+        rfq_id = state.get("rfq_id")
+        if rfq_id:
+            from app.models.rfq_supplier import RFQSupplier
+            from app.models.base import generate_uuid
+            async with AsyncSessionLocal() as session:
+                for s in existing_suppliers:
+                    rfq_supplier = RFQSupplier(
+                        id=generate_uuid(),
+                        rfq_id=rfq_id,
+                        supplier_id=s["id"],
+                        status="selected",
+                    )
+                    session.add(rfq_supplier)
+                from sqlalchemy import update
+                from app.models.rfq import RFQ
+                await session.execute(
+                    update(RFQ).where(RFQ.id == rfq_id).values(status="vendors_selected")
+                )
+                await session.commit()
+        return {
+            "selected_suppliers": existing_suppliers,
+            "supplier_scores": state.get("supplier_scores", []),
+            "current_step": "select_vendors",
+        }
+
     parsed = state["parsed_intent"]
     categories = parsed.get("categories", [])
     title = parsed.get("title", "")

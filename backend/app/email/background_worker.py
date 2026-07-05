@@ -50,7 +50,22 @@ class EmailPollingWorker:
             await asyncio.sleep(POLL_INTERVAL_SECONDS)
 
     async def _check_emails(self):
-        """Single polling cycle: check inbox and process replies."""
+        """Single polling cycle: check inbox, process replies, and resume any waiting workflows."""
+        await self._poll_and_resume()
+
+    async def poll_once(self) -> list[dict]:
+        """Run a single poll cycle (useful for manual triggers)."""
+        return await self._poll_and_resume()
+
+    async def _poll_and_resume(self) -> list[dict]:
+        """
+        Check the inbox for supplier replies, persist them, then resume the LangGraph
+        checkpoint for any WorkflowSession that was waiting on one of those RFQs so
+        OCR/analysis actually runs instead of just flipping a DB status flag.
+        """
+        to_resume: list[tuple[str, str]] = []
+        results: list[dict] = []
+
         async with AsyncSessionLocal() as session:
             try:
                 service = EmailService(session)
@@ -64,23 +79,102 @@ class EmailPollingWorker:
                             f"({result['attachments_count']} attachments)"
                         )
 
+                    # Mark waiting WorkflowSessions as active (instant UI feedback)
+                    # and collect their LangGraph thread IDs to resume below.
+                    to_resume = await self._update_waiting_sessions(session, results)
+
                 await session.commit()
             except Exception as e:
                 await session.rollback()
                 logger.error(f"Error processing emails: {e}", exc_info=True)
-
-    async def poll_once(self) -> list[dict]:
-        """Run a single poll cycle (useful for manual triggers)."""
-        async with AsyncSessionLocal() as session:
-            try:
-                service = EmailService(session)
-                results = await service.check_inbox_for_replies()
-                await session.commit()
-                return results
-            except Exception as e:
-                await session.rollback()
-                logger.error(f"Error in manual poll: {e}", exc_info=True)
                 return []
+
+        # Resume graphs only after the email/attachment rows above are committed,
+        # so the process_attachments node can actually see them.
+        if to_resume:
+            from app.workflows.session_workflow import session_workflow_service
+
+            for session_id, thread_id in to_resume:
+                await session_workflow_service.resume_after_reply(session_id, thread_id)
+
+        return results
+
+    async def _update_waiting_sessions(self, session, results: list[dict]) -> list[tuple[str, str]]:
+        """Mark WorkflowSessions as active when a supplier reply arrives for their RFQ.
+
+        Returns [(session_id, langgraph_thread_id), ...] for sessions that should
+        have their LangGraph checkpoint resumed once this transaction is committed.
+        """
+        from sqlalchemy import select, update
+        from app.models.workflow_session import WorkflowSession
+        from app.models.workflow_step import WorkflowStep
+        from app.models.workflow_event import WorkflowEvent
+        from app.models.conversation_message import ConversationMessage
+        from app.models.base import generate_uuid, ist_now
+
+        rfq_ids = {r["rfq_id"] for r in results if r.get("rfq_id")}
+        if not rfq_ids:
+            return []
+
+        # Find waiting sessions for these RFQs
+        result = await session.execute(
+            select(WorkflowSession).where(
+                WorkflowSession.rfq_id.in_(rfq_ids),
+                WorkflowSession.status == "waiting",
+            )
+        )
+        waiting_sessions = list(result.scalars().all())
+
+        to_resume = []
+        for ws in waiting_sessions:
+            if not ws.langgraph_thread_id:
+                logger.warning(f"[WORKFLOW] Session {ws.id} has no langgraph_thread_id, cannot resume")
+                continue
+
+            ws.current_step = "process_attachments"
+            ws.current_agent = "OCR Agent"
+            ws.status = "active"
+            ws.progress_percentage = 57.0
+
+            # Update step statuses
+            await session.execute(
+                update(WorkflowStep).where(
+                    WorkflowStep.session_id == ws.id,
+                    WorkflowStep.name == "await_supplier_replies",
+                ).values(status="completed", completed_at=ist_now())
+            )
+            await session.execute(
+                update(WorkflowStep).where(
+                    WorkflowStep.session_id == ws.id,
+                    WorkflowStep.name == "process_attachments",
+                ).values(status="running", started_at=ist_now())
+            )
+
+            # Add event
+            event = WorkflowEvent(
+                id=generate_uuid(),
+                session_id=ws.id,
+                event_type="step_completed",
+                title="Supplier Quotation Received",
+                description="A supplier has responded with a quotation.",
+                agent="Inbox Agent",
+            )
+            session.add(event)
+
+            # Chat notification
+            msg = ConversationMessage(
+                id=generate_uuid(),
+                session_id=ws.id,
+                role="assistant",
+                content="A supplier has responded with a quotation! I'm now processing the attachment to extract pricing details...",
+                message_type="event",
+            )
+            session.add(msg)
+
+            logger.info(f"[WORKFLOW] Updated session {ws.id} - supplier replied for RFQ {ws.rfq_id}")
+            to_resume.append((ws.id, ws.langgraph_thread_id))
+
+        return to_resume
 
 
 email_worker = EmailPollingWorker()

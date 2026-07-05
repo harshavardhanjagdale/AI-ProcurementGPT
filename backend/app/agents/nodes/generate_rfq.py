@@ -70,7 +70,6 @@ async def generate_rfq_emails(state: ProcurementState) -> dict:
         email_body = await llm_client.generate(
             system_prompt="You are a procurement specialist writing professional emails.",
             user_prompt=prompt,
-            temperature=0.6,
             max_tokens=1000,
         )
 

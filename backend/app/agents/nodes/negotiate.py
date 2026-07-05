@@ -66,7 +66,6 @@ async def negotiate_with_suppliers(state: ProcurementState) -> dict:
         negotiation_message = await llm_client.generate(
             system_prompt="You are an expert procurement negotiator.",
             user_prompt=prompt,
-            temperature=0.7,
             max_tokens=800,
         )
 

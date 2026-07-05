@@ -1,6 +1,10 @@
 import logging
 import traceback
 
+from dotenv import load_dotenv
+
+load_dotenv()
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
@@ -62,11 +66,23 @@ async def startup_event():
     os.makedirs(settings.UPLOAD_DIR, exist_ok=True)
     os.makedirs(f"{settings.UPLOAD_DIR}/email_attachments", exist_ok=True)
 
-    # Start email background worker if IMAP is configured
-    if settings.IMAP_USER and settings.IMAP_PASSWORD and settings.IMAP_USER != "your-email@gmail.com":
+    # Compile the LangGraph orchestrator with its persistent checkpointer
+    # before anything (email worker, requests) can try to use it.
+    from app.agents.orchestrator import init_procurement_graph
+    await init_procurement_graph()
+
+    # Start email background worker if configured
+    mode = settings.EMAIL_PROCESSING_MODE.lower()
+    should_poll = mode in ("polling", "both")
+    
+    if should_poll and settings.IMAP_USER and settings.IMAP_PASSWORD and settings.IMAP_USER != "your-email@gmail.com":
         from app.email.background_worker import email_worker
         await email_worker.start()
-        logging.info("Email polling worker started")
+        logging.info(f"✓ Email worker started (mode: {mode})")
+    elif mode == "webhook":
+        logging.info("✓ Webhook mode enabled (no polling)")
+    else:
+        logging.warning("Email processing disabled")
 
 
 @app.on_event("shutdown")
@@ -76,6 +92,9 @@ async def shutdown_event():
     # Stop email worker
     from app.email.background_worker import email_worker
     await email_worker.stop()
+
+    from app.agents.orchestrator import close_procurement_graph
+    await close_procurement_graph()
 
     from app.database.connection import engine
     await engine.dispose()

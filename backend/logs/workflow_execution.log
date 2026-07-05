@@ -1,0 +1,157 @@
+2026-07-04 15:42:30 | INFO     | run_workflow:72 | 
+[RUN-WORKFLOW-START] Session: 4bf61d07-3992-4b2a-9f7c-64a7c32d9a2e
+2026-07-04 15:42:30 | INFO     | run_workflow:73 | [USER-INPUT] i need 34 laptops...
+2026-07-04 15:42:30 | INFO     | run_workflow:87 | [SESSION-MODE] NEW
+2026-07-04 15:42:30 | INFO     | run_workflow:97 | [LANGGRAPH-START] Thread: 7191caee-81c1-4c6c-b544-9fa6353812d0
+2026-07-04 15:42:30 | INFO     | run_workflow:101 | [INITIALIZING-STATE] for new session
+2026-07-04 15:42:47 | INFO     | run_workflow:131 | [LANGGRAPH-INVOKED-NEW] Result step: await_supplier_replies
+2026-07-04 15:42:47 | INFO     | run_workflow:151 | [LANGGRAPH-COMPLETE] Elapsed: 16685.74ms
+2026-07-04 15:42:47 | INFO     | run_workflow:158 | [RESULT] Step: await_supplier_replies | RFQ: ba87098c-8b6f-44a5-834f-afc0ac5f3479 | Suppliers: 1
+2026-07-04 15:42:47 | INFO     | run_workflow:161 | [UPDATING-STEPS] for session
+2026-07-04 15:42:47 | INFO     | run_workflow:165 | [EMITTING-EVENT] for step: await_supplier_replies
+2026-07-04 15:42:47 | INFO     | run_workflow:180 | [SESSION-STATUS] waiting
+2026-07-04 15:42:47 | INFO     | run_workflow:187 | [RUN-WORKFLOW-END] Success | Step: await_supplier_replies | Total time: 16685.74ms
+2026-07-04 17:00:12 | INFO     | run_workflow:72 | 
+[RUN-WORKFLOW-START] Session: 4b4ed87e-caa4-49f8-af76-7f1d578ce703
+2026-07-04 17:00:12 | INFO     | run_workflow:73 | [USER-INPUT] i need 26 laptops...
+2026-07-04 17:00:12 | INFO     | run_workflow:87 | [SESSION-MODE] NEW
+2026-07-04 17:00:12 | INFO     | run_workflow:97 | [LANGGRAPH-START] Thread: d0339f76-f449-4b7c-af84-3285d98aeea8
+2026-07-04 17:00:12 | INFO     | run_workflow:101 | [INITIALIZING-STATE] for new session
+2026-07-04 17:00:29 | INFO     | run_workflow:131 | [LANGGRAPH-INVOKED-NEW] Result step: await_supplier_replies
+2026-07-04 17:00:29 | INFO     | run_workflow:151 | [LANGGRAPH-COMPLETE] Elapsed: 16436.65ms
+2026-07-04 17:00:29 | INFO     | run_workflow:158 | [RESULT] Step: await_supplier_replies | RFQ: b4a01c07-9a3e-42b2-b691-433af329d476 | Suppliers: 1
+2026-07-04 17:00:29 | INFO     | run_workflow:161 | [UPDATING-STEPS] for session
+2026-07-04 17:00:29 | INFO     | run_workflow:165 | [EMITTING-EVENT] for step: await_supplier_replies
+2026-07-04 17:00:29 | INFO     | run_workflow:180 | [SESSION-STATUS] waiting
+2026-07-04 17:00:29 | INFO     | run_workflow:187 | [RUN-WORKFLOW-END] Success | Step: await_supplier_replies | Total time: 16436.65ms
+2026-07-04 20:59:26 | INFO     | run_workflow:72 | 
+[RUN-WORKFLOW-START] Session: 5854091e-20e1-464b-b75d-d9b22f5cfa8e
+2026-07-04 20:59:26 | INFO     | run_workflow:73 | [USER-INPUT] buy 90 laptops...
+2026-07-04 20:59:26 | INFO     | run_workflow:87 | [SESSION-MODE] NEW
+2026-07-04 20:59:26 | INFO     | run_workflow:97 | [LANGGRAPH-START] Thread: 0bace2e4-f802-41b9-ad39-ffc79fe6057e
+2026-07-04 20:59:26 | INFO     | run_workflow:101 | [INITIALIZING-STATE] for new session
+2026-07-04 20:59:46 | INFO     | run_workflow:131 | [LANGGRAPH-INVOKED-NEW] Result step: await_supplier_replies
+2026-07-04 20:59:46 | INFO     | run_workflow:151 | [LANGGRAPH-COMPLETE] Elapsed: 20122.18ms
+2026-07-04 20:59:46 | INFO     | run_workflow:158 | [RESULT] Step: await_supplier_replies | RFQ: 4525142a-73fe-4c3a-ade9-82a77d92029c | Suppliers: 1
+2026-07-04 20:59:46 | INFO     | run_workflow:161 | [UPDATING-STEPS] for session
+2026-07-04 20:59:46 | INFO     | run_workflow:165 | [EMITTING-EVENT] for step: await_supplier_replies
+2026-07-04 20:59:46 | INFO     | run_workflow:180 | [SESSION-STATUS] waiting
+2026-07-04 20:59:46 | INFO     | run_workflow:187 | [RUN-WORKFLOW-END] Success | Step: await_supplier_replies | Total time: 20122.18ms
+2026-07-04 21:15:59 | INFO     | run_workflow:72 | 
+[RUN-WORKFLOW-START] Session: 6adb0921-e84b-4112-8b0f-cfa60420e011
+2026-07-04 21:15:59 | INFO     | run_workflow:73 | [USER-INPUT] i want 56 laptops...
+2026-07-04 21:15:59 | INFO     | run_workflow:87 | [SESSION-MODE] NEW
+2026-07-04 21:15:59 | INFO     | run_workflow:97 | [LANGGRAPH-START] Thread: 91c7cccb-74f2-4c48-8771-b15ae46cf48c
+2026-07-04 21:15:59 | INFO     | run_workflow:101 | [INITIALIZING-STATE] for new session
+2026-07-04 21:16:12 | INFO     | run_workflow:131 | [LANGGRAPH-INVOKED-NEW] Result step: await_supplier_replies
+2026-07-04 21:16:12 | INFO     | run_workflow:151 | [LANGGRAPH-COMPLETE] Elapsed: 12827.61ms
+2026-07-04 21:16:12 | INFO     | run_workflow:158 | [RESULT] Step: await_supplier_replies | RFQ: f3af60a2-198e-40f0-9710-1664790197e9 | Suppliers: 1
+2026-07-04 21:16:12 | INFO     | run_workflow:161 | [UPDATING-STEPS] for session
+2026-07-04 21:16:12 | INFO     | run_workflow:165 | [EMITTING-EVENT] for step: await_supplier_replies
+2026-07-04 21:16:12 | INFO     | run_workflow:180 | [SESSION-STATUS] waiting
+2026-07-04 21:16:12 | INFO     | run_workflow:187 | [RUN-WORKFLOW-END] Success | Step: await_supplier_replies | Total time: 12827.61ms
+2026-07-04 21:18:25 | INFO     | run_workflow:72 | 
+[RUN-WORKFLOW-START] Session: 4e5ece7d-892f-45e8-99f5-c052d12bb3a5
+2026-07-04 21:18:25 | INFO     | run_workflow:73 | [USER-INPUT] purchase 34 laptops...
+2026-07-04 21:18:25 | INFO     | run_workflow:87 | [SESSION-MODE] NEW
+2026-07-04 21:18:25 | INFO     | run_workflow:97 | [LANGGRAPH-START] Thread: bbb0abf5-3331-491d-abfd-bad308ee8843
+2026-07-04 21:18:25 | INFO     | run_workflow:101 | [INITIALIZING-STATE] for new session
+2026-07-04 21:18:46 | INFO     | run_workflow:131 | [LANGGRAPH-INVOKED-NEW] Result step: await_supplier_replies
+2026-07-04 21:18:46 | INFO     | run_workflow:151 | [LANGGRAPH-COMPLETE] Elapsed: 20617.73ms
+2026-07-04 21:18:46 | INFO     | run_workflow:158 | [RESULT] Step: await_supplier_replies | RFQ: f92a8e98-602d-4845-bac1-e8d27f6b9ffe | Suppliers: 1
+2026-07-04 21:18:46 | INFO     | run_workflow:161 | [UPDATING-STEPS] for session
+2026-07-04 21:18:46 | INFO     | run_workflow:165 | [EMITTING-EVENT] for step: await_supplier_replies
+2026-07-04 21:18:46 | INFO     | run_workflow:180 | [SESSION-STATUS] waiting
+2026-07-04 21:18:46 | INFO     | run_workflow:187 | [RUN-WORKFLOW-END] Success | Step: await_supplier_replies | Total time: 20617.73ms
+2026-07-04 21:30:43 | INFO     | run_workflow:72 | 
+[RUN-WORKFLOW-START] Session: 8bc27175-c821-44ee-9bb2-07b05c618b31
+2026-07-04 21:30:43 | INFO     | run_workflow:73 | [USER-INPUT] buy 9 laptops...
+2026-07-04 21:30:43 | INFO     | run_workflow:87 | [SESSION-MODE] NEW
+2026-07-04 21:30:43 | INFO     | run_workflow:97 | [LANGGRAPH-START] Thread: eb6ba60a-7d03-4d90-95a9-66e1460024b3
+2026-07-04 21:30:43 | INFO     | run_workflow:101 | [INITIALIZING-STATE] for new session
+2026-07-04 21:31:05 | INFO     | run_workflow:131 | [LANGGRAPH-INVOKED-NEW] Result step: await_supplier_replies
+2026-07-04 21:31:05 | INFO     | run_workflow:151 | [LANGGRAPH-COMPLETE] Elapsed: 21731.93ms
+2026-07-04 21:31:05 | INFO     | run_workflow:158 | [RESULT] Step: await_supplier_replies | RFQ: f68027c6-799d-4a25-be2e-de71214e3f51 | Suppliers: 1
+2026-07-04 21:31:05 | INFO     | run_workflow:161 | [UPDATING-STEPS] for session
+2026-07-04 21:31:05 | INFO     | run_workflow:165 | [EMITTING-EVENT] for step: await_supplier_replies
+2026-07-04 21:31:05 | INFO     | run_workflow:180 | [SESSION-STATUS] waiting
+2026-07-04 21:31:05 | INFO     | run_workflow:187 | [RUN-WORKFLOW-END] Success | Step: await_supplier_replies | Total time: 21731.93ms
+2026-07-05 12:39:56 | INFO     | run_workflow:72 | 
+[RUN-WORKFLOW-START] Session: 2db3ade5-9184-4964-bfbb-25737624f0cd
+2026-07-05 12:39:56 | INFO     | run_workflow:73 | [USER-INPUT] i want 67 laptops...
+2026-07-05 12:39:56 | INFO     | run_workflow:87 | [SESSION-MODE] NEW
+2026-07-05 12:39:56 | INFO     | run_workflow:98 | [LANGGRAPH-START] Thread: c981608f-3113-48d1-a161-9a405b34eb5a
+2026-07-05 12:39:56 | INFO     | run_workflow:102 | [INITIALIZING-STATE] for new session
+2026-07-05 12:40:23 | INFO     | run_workflow:132 | [LANGGRAPH-INVOKED-NEW] Result step: await_supplier_replies
+2026-07-05 12:40:23 | INFO     | run_workflow:159 | [LANGGRAPH-COMPLETE] Elapsed: 27148.02ms
+2026-07-05 12:40:23 | INFO     | run_workflow:166 | [RESULT] Step: await_supplier_replies | RFQ: 40663f3f-b84b-4c8b-9861-7c7ac0e3d4d6 | Suppliers: 1
+2026-07-05 12:40:23 | INFO     | run_workflow:169 | [UPDATING-STEPS] for session
+2026-07-05 12:40:23 | INFO     | run_workflow:173 | [EMITTING-EVENT] for step: await_supplier_replies
+2026-07-05 12:40:23 | INFO     | run_workflow:188 | [SESSION-STATUS] waiting
+2026-07-05 12:40:23 | INFO     | run_workflow:195 | [RUN-WORKFLOW-END] Success | Step: await_supplier_replies | Total time: 27148.02ms
+2026-07-05 13:40:10 | INFO     | run_workflow:72 | 
+[RUN-WORKFLOW-START] Session: fc9f22ec-42ce-4a8d-9788-a400fd744246
+2026-07-05 13:40:10 | INFO     | run_workflow:73 | [USER-INPUT] purchase 9  laptops...
+2026-07-05 13:40:10 | INFO     | run_workflow:87 | [SESSION-MODE] NEW
+2026-07-05 13:40:10 | INFO     | run_workflow:98 | [LANGGRAPH-START] Thread: 44c9b672-e055-4fac-8cf9-d9436dc97973
+2026-07-05 13:40:10 | INFO     | run_workflow:102 | [INITIALIZING-STATE] for new session
+2026-07-05 13:40:33 | INFO     | run_workflow:132 | [LANGGRAPH-INVOKED-NEW] Result step: await_supplier_replies
+2026-07-05 13:40:33 | INFO     | run_workflow:159 | [LANGGRAPH-COMPLETE] Elapsed: 23570.08ms
+2026-07-05 13:40:33 | INFO     | run_workflow:166 | [RESULT] Step: await_supplier_replies | RFQ: bf5ec4ca-02f1-4d0e-88af-e20419238925 | Suppliers: 1
+2026-07-05 13:40:33 | INFO     | run_workflow:169 | [UPDATING-STEPS] for session
+2026-07-05 13:40:33 | INFO     | run_workflow:173 | [EMITTING-EVENT] for step: await_supplier_replies
+2026-07-05 13:40:33 | INFO     | run_workflow:188 | [SESSION-STATUS] waiting
+2026-07-05 13:40:33 | INFO     | run_workflow:195 | [RUN-WORKFLOW-END] Success | Step: await_supplier_replies | Total time: 23570.08ms
+2026-07-05 19:06:14 | INFO     | run_workflow:72 | 
+[RUN-WORKFLOW-START] Session: fc9f22ec-42ce-4a8d-9788-a400fd744246
+2026-07-05 19:06:14 | INFO     | run_workflow:73 | [USER-INPUT] anything...
+2026-07-05 19:06:14 | INFO     | run_workflow:87 | [SESSION-MODE] RESUME
+2026-07-05 19:06:14 | INFO     | run_workflow:98 | [LANGGRAPH-START] Thread: 44c9b672-e055-4fac-8cf9-d9436dc97973
+2026-07-05 19:06:14 | INFO     | run_workflow:135 | [RESUMING-WORKFLOW] with input: anything...
+2026-07-05 19:06:14 | INFO     | run_workflow:140 | [CURRENT-STATE-STEP] send_po_email
+2026-07-05 19:06:15 | INFO     | run_workflow:156 | [LANGGRAPH-INVOKED-RESUME] Result step: send_po_email
+2026-07-05 19:06:15 | INFO     | run_workflow:159 | [LANGGRAPH-COMPLETE] Elapsed: 600.40ms
+2026-07-05 19:06:15 | INFO     | run_workflow:166 | [RESULT] Step: send_po_email | RFQ: bf5ec4ca-02f1-4d0e-88af-e20419238925 | Suppliers: 1
+2026-07-05 19:06:15 | INFO     | run_workflow:169 | [UPDATING-STEPS] for session
+2026-07-05 19:06:15 | INFO     | run_workflow:173 | [EMITTING-EVENT] for step: send_po_email
+2026-07-05 19:06:15 | INFO     | run_workflow:188 | [SESSION-STATUS] completed
+2026-07-05 19:06:15 | INFO     | run_workflow:195 | [RUN-WORKFLOW-END] Success | Step: send_po_email | Total time: 600.40ms
+2026-07-05 19:06:28 | INFO     | run_workflow:72 | 
+[RUN-WORKFLOW-START] Session: fc9f22ec-42ce-4a8d-9788-a400fd744246
+2026-07-05 19:06:28 | INFO     | run_workflow:73 | [USER-INPUT] buy laptop again...
+2026-07-05 19:06:28 | INFO     | run_workflow:87 | [SESSION-MODE] RESUME
+2026-07-05 19:06:28 | INFO     | run_workflow:98 | [LANGGRAPH-START] Thread: 44c9b672-e055-4fac-8cf9-d9436dc97973
+2026-07-05 19:06:28 | INFO     | run_workflow:135 | [RESUMING-WORKFLOW] with input: buy laptop again...
+2026-07-05 19:06:28 | INFO     | run_workflow:140 | [CURRENT-STATE-STEP] send_po_email
+2026-07-05 19:06:28 | INFO     | run_workflow:156 | [LANGGRAPH-INVOKED-RESUME] Result step: send_po_email
+2026-07-05 19:06:28 | INFO     | run_workflow:159 | [LANGGRAPH-COMPLETE] Elapsed: 53.43ms
+2026-07-05 19:06:28 | INFO     | run_workflow:166 | [RESULT] Step: send_po_email | RFQ: bf5ec4ca-02f1-4d0e-88af-e20419238925 | Suppliers: 1
+2026-07-05 19:06:28 | INFO     | run_workflow:169 | [UPDATING-STEPS] for session
+2026-07-05 19:06:28 | INFO     | run_workflow:173 | [EMITTING-EVENT] for step: send_po_email
+2026-07-05 19:06:28 | INFO     | run_workflow:188 | [SESSION-STATUS] completed
+2026-07-05 19:06:28 | INFO     | run_workflow:195 | [RUN-WORKFLOW-END] Success | Step: send_po_email | Total time: 53.43ms
+2026-07-05 19:08:01 | INFO     | run_workflow:72 | 
+[RUN-WORKFLOW-START] Session: fc9f22ec-42ce-4a8d-9788-a400fd744246
+2026-07-05 19:08:01 | INFO     | run_workflow:73 | [USER-INPUT] ok...
+2026-07-05 19:08:01 | INFO     | run_workflow:87 | [SESSION-MODE] RESUME
+2026-07-05 19:08:01 | INFO     | run_workflow:98 | [LANGGRAPH-START] Thread: 44c9b672-e055-4fac-8cf9-d9436dc97973
+2026-07-05 19:08:01 | INFO     | run_workflow:135 | [RESUMING-WORKFLOW] with input: ok...
+2026-07-05 19:08:01 | INFO     | run_workflow:140 | [CURRENT-STATE-STEP] send_po_email
+2026-07-05 19:08:01 | INFO     | run_workflow:156 | [LANGGRAPH-INVOKED-RESUME] Result step: send_po_email
+2026-07-05 19:08:01 | INFO     | run_workflow:159 | [LANGGRAPH-COMPLETE] Elapsed: 47.35ms
+2026-07-05 19:08:01 | INFO     | run_workflow:166 | [RESULT] Step: send_po_email | RFQ: bf5ec4ca-02f1-4d0e-88af-e20419238925 | Suppliers: 1
+2026-07-05 19:08:01 | INFO     | run_workflow:169 | [UPDATING-STEPS] for session
+2026-07-05 19:08:01 | INFO     | run_workflow:173 | [EMITTING-EVENT] for step: send_po_email
+2026-07-05 19:08:01 | INFO     | run_workflow:188 | [SESSION-STATUS] completed
+2026-07-05 19:08:01 | INFO     | run_workflow:195 | [RUN-WORKFLOW-END] Success | Step: send_po_email | Total time: 47.35ms
+2026-07-05 19:22:29 | INFO     | run_workflow:124 | 
+[RUN-WORKFLOW-START] Session: 268d3c1f-e833-4163-bfeb-edb55b3b22b9
+2026-07-05 19:22:29 | INFO     | run_workflow:125 | [USER-INPUT] buy 5 laptops...
+2026-07-05 19:22:29 | INFO     | run_workflow:143 | [SESSION-MODE] NEW | Thread: cf825acf-81c8-49b6-9eae-1b05ea71522f
+2026-07-05 19:22:32 | INFO     | _run_graph_streaming:238 | [NODE-DONE] 268d3c1f-e833-4163-bfeb-edb55b3b22b9 -> parse_user_request
+2026-07-05 19:22:33 | INFO     | _run_graph_streaming:238 | [NODE-DONE] 268d3c1f-e833-4163-bfeb-edb55b3b22b9 -> validate_rfq_data
+2026-07-05 19:22:33 | INFO     | _run_graph_streaming:238 | [NODE-DONE] 268d3c1f-e833-4163-bfeb-edb55b3b22b9 -> create_rfq_record
+2026-07-05 19:22:38 | INFO     | _run_graph_streaming:238 | [NODE-DONE] 268d3c1f-e833-4163-bfeb-edb55b3b22b9 -> select_vendors
+2026-07-05 19:22:44 | INFO     | _run_graph_streaming:238 | [NODE-DONE] 268d3c1f-e833-4163-bfeb-edb55b3b22b9 -> generate_rfq_emails
+2026-07-05 19:22:50 | INFO     | _run_graph_streaming:238 | [NODE-DONE] 268d3c1f-e833-4163-bfeb-edb55b3b22b9 -> send_rfq_emails
+2026-07-05 19:22:50 | INFO     | _run_graph_streaming:238 | [NODE-DONE] 268d3c1f-e833-4163-bfeb-edb55b3b22b9 -> await_supplier_replies

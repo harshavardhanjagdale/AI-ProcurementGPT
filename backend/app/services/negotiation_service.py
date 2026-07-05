@@ -160,7 +160,6 @@ class NegotiationService:
             return await llm_client.generate(
                 system_prompt="You are a procurement negotiation strategist. Be concise.",
                 user_prompt=prompt,
-                temperature=0.5,
                 max_tokens=300,
             )
         except Exception:
@@ -188,7 +187,6 @@ class NegotiationService:
             return await llm_client.generate(
                 system_prompt="You are a skilled procurement negotiator writing an email.",
                 user_prompt=prompt,
-                temperature=0.7,
                 max_tokens=500,
             )
         except Exception:

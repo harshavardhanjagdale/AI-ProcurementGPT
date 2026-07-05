@@ -1,0 +1,30 @@
+INFO:     Started server process [25036]
+INFO:     Waiting for application startup.
+2026-07-04 13:31:45,972 - root - INFO - ProcureGPT starting up...
+2026-07-04 13:31:45,980 - app.email.background_worker - INFO - Email polling worker started (interval: 60s)
+2026-07-04 13:31:45,980 - root - INFO - \u2713 Email worker started (mode: polling)
+2026-07-04 13:31:48,857 - app.services.email_service - INFO - Processed 0 supplier replies from inbox
+INFO:     Application startup complete.
+INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
+2026-07-04 13:31:56,153 - app.core.middleware - INFO - OPTIONS /api/v1/workflow/sessions status=200 duration=0.000s
+INFO:     127.0.0.1:57336 - "OPTIONS /api/v1/workflow/sessions?limit=50 HTTP/1.1" 200 OK
+2026-07-04 13:31:56,153 - app.core.middleware - INFO - OPTIONS /api/v1/workflow/250cc863-27a0-4aad-aedd-af1c03adcb75 status=200 duration=0.000s
+INFO:     127.0.0.1:55412 - "OPTIONS /api/v1/workflow/250cc863-27a0-4aad-aedd-af1c03adcb75 HTTP/1.1" 200 OK
+2026-07-04 13:31:56,153 - app.core.middleware - INFO - OPTIONS /api/v1/workflow/250cc863-27a0-4aad-aedd-af1c03adcb75/events status=200 duration=0.000s
+INFO:     127.0.0.1:50170 - "OPTIONS /api/v1/workflow/250cc863-27a0-4aad-aedd-af1c03adcb75/events?limit=50 HTTP/1.1" 200 OK
+2026-07-04 13:31:56,166 - app.core.middleware - INFO - GET /api/v1/workflow/sessions status=401 duration=0.013s
+INFO:     127.0.0.1:50170 - "GET /api/v1/workflow/sessions?limit=50 HTTP/1.1" 401 Unauthorized
+2026-07-04 13:31:56,166 - app.core.middleware - INFO - GET /api/v1/workflow/250cc863-27a0-4aad-aedd-af1c03adcb75/events status=401 duration=0.001s
+INFO:     127.0.0.1:55412 - "GET /api/v1/workflow/250cc863-27a0-4aad-aedd-af1c03adcb75/events?limit=50 HTTP/1.1" 401 Unauthorized
+2026-07-04 13:31:56,166 - app.core.middleware - INFO - GET /api/v1/workflow/250cc863-27a0-4aad-aedd-af1c03adcb75 status=401 duration=0.001s
+INFO:     127.0.0.1:57336 - "GET /api/v1/workflow/250cc863-27a0-4aad-aedd-af1c03adcb75 HTTP/1.1" 401 Unauthorized
+2026-07-04 13:33:33,063 - app.services.email_service - INFO - Processed 0 supplier replies from inbox
+2026-07-04 13:34:36,491 - app.services.email_service - INFO - Processed 0 supplier replies from inbox
+2026-07-04 13:35:39,413 - app.services.email_service - INFO - Processed 0 supplier replies from inbox
+2026-07-04 13:36:42,411 - app.services.email_service - INFO - Processed 0 supplier replies from inbox
+2026-07-04 13:37:45,248 - app.services.email_service - INFO - Processed 0 supplier replies from inbox
+2026-07-04 13:38:48,121 - app.services.email_service - INFO - Processed 0 supplier replies from inbox
+2026-07-04 13:39:51,184 - app.services.email_service - INFO - Processed 0 supplier replies from inbox
+2026-07-04 13:40:54,235 - app.services.email_service - INFO - Processed 0 supplier replies from inbox
+2026-07-04 13:41:57,234 - app.services.email_service - INFO - Processed 0 supplier replies from inbox
+2026-07-04 13:43:00,980 - app.services.email_service - INFO - Processed 0 supplier replies from inbox

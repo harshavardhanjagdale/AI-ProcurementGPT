@@ -14,6 +14,10 @@ from app.models.purchase_order_item import PurchaseOrderItem
 from app.models.negotiation import Negotiation
 from app.models.audit_log import AuditLog
 from app.models.chat_history import ChatHistory
+from app.models.workflow_session import WorkflowSession
+from app.models.workflow_step import WorkflowStep
+from app.models.workflow_event import WorkflowEvent
+from app.models.conversation_message import ConversationMessage
 from app.database.session_store import SessionCache
 
 __all__ = [
@@ -33,5 +37,9 @@ __all__ = [
     "Negotiation",
     "AuditLog",
     "ChatHistory",
+    "WorkflowSession",
+    "WorkflowStep",
+    "WorkflowEvent",
+    "ConversationMessage",
     "SessionCache",
 ]

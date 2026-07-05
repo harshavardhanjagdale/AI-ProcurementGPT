@@ -93,7 +93,6 @@ async def analyze_quotations(state: ProcurementState) -> dict:
         analysis = await llm_client.generate_json(
             system_prompt=ANALYSIS_SYSTEM_PROMPT,
             user_prompt=analysis_prompt,
-            temperature=0.2,
             max_tokens=3000,
         )
 

@@ -22,9 +22,9 @@ class QuotationRepository(BaseRepository[Quotation]):
     async def get_by_rfq(self, rfq_id: str) -> list[Quotation]:
         result = await self.db.execute(
             select(Quotation)
-            .options(selectinload(Quotation.items))
+            .options(selectinload(Quotation.items), selectinload(Quotation.supplier))
             .where(Quotation.rfq_id == rfq_id)
-            .order_by(Quotation.ai_score.desc().nulls_last())
+            .order_by(Quotation.ai_score.desc())  # MySQL doesn't support NULLS LAST
         )
         return list(result.scalars().unique().all())
 

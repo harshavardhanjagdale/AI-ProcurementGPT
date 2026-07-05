@@ -2,14 +2,13 @@
 LLM-based structured data extraction from OCR text.
 Converts raw OCR output into structured quotation JSON.
 """
-import json
 import logging
 
-from openai import AsyncOpenAI
-
-from app.core.config import settings
+from app.ai.llm_client import llm_client
 
 logger = logging.getLogger(__name__)
+
+EXTRACTION_SYSTEM_PROMPT = "You are a precise document parser. Return only valid JSON."
 
 EXTRACTION_PROMPT = """You are a procurement document parser. Extract structured quotation data from the following OCR text of a supplier quotation PDF.
 
@@ -52,10 +51,6 @@ Return ONLY the JSON object, no markdown, no explanation."""
 
 
 class StructuredExtractor:
-    def __init__(self):
-        self.client = AsyncOpenAI(api_key=settings.OPENAI_API_KEY)
-        self.model = settings.OPENAI_MODEL
-
     async def extract_quotation_data(self, ocr_text: str) -> dict | None:
         """
         Use LLM to extract structured quotation data from raw OCR text.
@@ -72,37 +67,22 @@ class StructuredExtractor:
 
         prompt = EXTRACTION_PROMPT.format(ocr_text=ocr_text[:8000])
 
-        try:
-            response = await self.client.chat.completions.create(
-                model=self.model,
-                messages=[
-                    {"role": "system", "content": "You are a precise document parser. Return only valid JSON."},
-                    {"role": "user", "content": prompt},
-                ],
-                temperature=0.1,
-                max_tokens=2000,
-                response_format={"type": "json_object"},
-            )
+        extracted = await llm_client.generate_json(
+            system_prompt=EXTRACTION_SYSTEM_PROMPT,
+            user_prompt=prompt,
+            max_tokens=2000,
+        )
 
-            content = response.choices[0].message.content
-            if not content:
-                logger.error("LLM returned empty response for extraction")
-                return None
-
-            extracted = json.loads(content)
-            logger.info(
-                f"Extracted quotation: {extracted.get('supplier_name')} "
-                f"total={extracted.get('total_amount')} "
-                f"items={len(extracted.get('items', []))}"
-            )
-            return extracted
-
-        except json.JSONDecodeError as e:
-            logger.error(f"Failed to parse LLM JSON response: {e}")
+        if extracted is None:
+            logger.error("LLM extraction failed or returned unparsable JSON")
             return None
-        except Exception as e:
-            logger.error(f"LLM extraction failed: {e}")
-            return None
+
+        logger.info(
+            f"Extracted quotation: {extracted.get('supplier_name')} "
+            f"total={extracted.get('total_amount')} "
+            f"items={len(extracted.get('items', []))}"
+        )
+        return extracted
 
     async def extract_from_email_body(self, email_body: str) -> dict | None:
         """

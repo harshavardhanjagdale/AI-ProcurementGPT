@@ -1,6 +1,7 @@
 """
 Purchase Order Generation Node - Creates PO record, generates PDF, and sends email.
 """
+import asyncio
 import logging
 from datetime import date, timedelta
 
@@ -10,7 +11,9 @@ from app.models.purchase_order import PurchaseOrder
 from app.models.purchase_order_item import PurchaseOrderItem
 from app.repositories.quotation_repository import QuotationRepository
 from app.repositories.rfq_repository import RFQRepository
+from app.repositories.supplier_repository import SupplierRepository
 from app.services.email_service import EmailService
+from app.utils.pdf_generator import pdf_generator
 
 logger = logging.getLogger(__name__)
 
@@ -99,9 +102,46 @@ async def generate_purchase_order(state: ProcurementState) -> dict:
 
             logger.info(f"Generated PO {po_number} for RFQ {rfq.rfq_number}")
 
+            # Generate the PDF document for this PO
+            supplier_repo = SupplierRepository(session)
+            supplier = await supplier_repo.get_by_id(quotation.supplier_id)
+
+            pdf_items = [
+                {
+                    "product_name": item.product_name,
+                    "quantity": item.quantity,
+                    "unit_price": float(item.unit_price),
+                    "total_price": float(item.total_price),
+                }
+                for item in quotation.items
+            ]
+
+            pdf_path = await asyncio.to_thread(
+                pdf_generator.generate,
+                po_number=po_number,
+                rfq_number=rfq.rfq_number,
+                supplier_name=supplier.name if supplier else "Unknown Supplier",
+                supplier_email=supplier.email if supplier else "",
+                supplier_address=supplier.address if supplier else None,
+                items=pdf_items,
+                total_amount=float(quotation.total_amount),
+                currency=quotation.currency,
+                delivery_date=str(delivery_date),
+                payment_terms=quotation.payment_terms or "Net 30",
+                shipping_address=po.shipping_address,
+            )
+
+            from sqlalchemy import update
+            await session.execute(
+                update(PurchaseOrder).where(PurchaseOrder.id == po.id).values(pdf_path=pdf_path)
+            )
+            await session.commit()
+
+            logger.info(f"Generated PO PDF at {pdf_path}")
+
             return {
                 "po_generated": True,
-                "po_pdf_path": None,
+                "po_pdf_path": pdf_path,
                 "current_step": "generate_purchase_order",
             }
         except Exception as e:

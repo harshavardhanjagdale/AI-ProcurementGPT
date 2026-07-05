@@ -1,0 +1,120 @@
+2026-07-04 15:34:41 | INFO | log_ocr_start | ================================================================================
+2026-07-04 15:34:41 | INFO | log_ocr_start | OCR PROCESSING STARTED for RFQ: d4c1ceca-6870-4a70-9b38-43f2b21c533f
+2026-07-04 15:34:41 | INFO | log_ocr_start | Attachments to process: 0
+2026-07-04 15:34:41 | INFO | log_ocr_start | ================================================================================
+2026-07-04 15:34:41 | INFO | process_rfq_attachments | [RFQ] Processing started for d4c1ceca-6870-4a70-9b38-43f2b21c533f
+2026-07-04 15:34:51 | INFO | process_rfq_attachments | [RESULTS] Success: 1, Failed: 0
+2026-07-04 15:34:51 | INFO | log_ocr_complete | 
+================================================================================
+2026-07-04 15:34:51 | INFO | log_ocr_complete | OCR PROCESSING COMPLETED for RFQ: d4c1ceca-6870-4a70-9b38-43f2b21c533f
+2026-07-04 15:34:51 | INFO | log_ocr_complete | Results: 1 successful, 0 failed
+2026-07-04 15:34:51 | INFO | log_ocr_complete | Total processing time: 10.25 seconds
+2026-07-04 15:34:51 | INFO | log_ocr_complete | ================================================================================
+2026-07-04 15:34:51 | INFO | generate_ocr_report | 
+
+================================================================================
+OCR PROCESSING REVIEW REPORT
+================================================================================
+
+RFQ ID: d4c1ceca-6870-4a70-9b38-43f2b21c533f
+Processing Date: 2026-07-04 15:34:51.824757 IST
+Total Processing Time: 10.25 seconds
+
+SUMMARY:
+--------
+Total Attachments: 1
+Successful: 1
+Failed: 0
+Success Rate: 100.0% if len(results) > 0 else "N/A"
+
+SUCCESSFUL ATTACHMENTS:
+-----------------------
+
+1. Unknown
+   - Extracted text length: 0 chars
+   - Quotation ID: da64acb4-37e7-4dc9-a4c8-02d90491af98
+
+================================================================================
+END OF REPORT
+================================================================================
+
+2026-07-05 12:44:01 | INFO | log_ocr_start | ================================================================================
+2026-07-05 12:44:01 | INFO | log_ocr_start | OCR PROCESSING STARTED for RFQ: 40663f3f-b84b-4c8b-9861-7c7ac0e3d4d6
+2026-07-05 12:44:01 | INFO | log_ocr_start | Attachments to process: 0
+2026-07-05 12:44:01 | INFO | log_ocr_start | ================================================================================
+2026-07-05 12:44:01 | INFO | process_rfq_attachments | [RFQ] Processing started for 40663f3f-b84b-4c8b-9861-7c7ac0e3d4d6
+2026-07-05 12:44:22 | INFO | process_rfq_attachments | [RESULTS] Success: 1, Failed: 0
+2026-07-05 12:44:22 | INFO | log_ocr_complete | 
+================================================================================
+2026-07-05 12:44:22 | INFO | log_ocr_complete | OCR PROCESSING COMPLETED for RFQ: 40663f3f-b84b-4c8b-9861-7c7ac0e3d4d6
+2026-07-05 12:44:22 | INFO | log_ocr_complete | Results: 1 successful, 0 failed
+2026-07-05 12:44:22 | INFO | log_ocr_complete | Total processing time: 21.33 seconds
+2026-07-05 12:44:22 | INFO | log_ocr_complete | ================================================================================
+2026-07-05 12:44:22 | INFO | generate_ocr_report | 
+
+================================================================================
+OCR PROCESSING REVIEW REPORT
+================================================================================
+
+RFQ ID: 40663f3f-b84b-4c8b-9861-7c7ac0e3d4d6
+Processing Date: 2026-07-05 12:44:22.444377 IST
+Total Processing Time: 21.33 seconds
+
+SUMMARY:
+--------
+Total Attachments: 1
+Successful: 1
+Failed: 0
+Success Rate: 100.0% if len(results) > 0 else "N/A"
+
+SUCCESSFUL ATTACHMENTS:
+-----------------------
+
+1. Unknown
+   - Extracted text length: 0 chars
+   - Quotation ID: 3347d721-f52f-4f0d-ad79-a9025d05be4c
+
+================================================================================
+END OF REPORT
+================================================================================
+
+2026-07-05 13:42:47 | INFO | log_ocr_start | ================================================================================
+2026-07-05 13:42:47 | INFO | log_ocr_start | OCR PROCESSING STARTED for RFQ: bf5ec4ca-02f1-4d0e-88af-e20419238925
+2026-07-05 13:42:47 | INFO | log_ocr_start | Attachments to process: 0
+2026-07-05 13:42:47 | INFO | log_ocr_start | ================================================================================
+2026-07-05 13:42:47 | INFO | process_rfq_attachments | [RFQ] Processing started for bf5ec4ca-02f1-4d0e-88af-e20419238925
+2026-07-05 13:42:59 | INFO | process_rfq_attachments | [RESULTS] Success: 1, Failed: 0
+2026-07-05 13:42:59 | INFO | log_ocr_complete | 
+================================================================================
+2026-07-05 13:42:59 | INFO | log_ocr_complete | OCR PROCESSING COMPLETED for RFQ: bf5ec4ca-02f1-4d0e-88af-e20419238925
+2026-07-05 13:42:59 | INFO | log_ocr_complete | Results: 1 successful, 0 failed
+2026-07-05 13:42:59 | INFO | log_ocr_complete | Total processing time: 11.59 seconds
+2026-07-05 13:42:59 | INFO | log_ocr_complete | ================================================================================
+2026-07-05 13:42:59 | INFO | generate_ocr_report | 
+
+================================================================================
+OCR PROCESSING REVIEW REPORT
+================================================================================
+
+RFQ ID: bf5ec4ca-02f1-4d0e-88af-e20419238925
+Processing Date: 2026-07-05 13:42:59.029145 IST
+Total Processing Time: 11.59 seconds
+
+SUMMARY:
+--------
+Total Attachments: 1
+Successful: 1
+Failed: 0
+Success Rate: 100.0% if len(results) > 0 else "N/A"
+
+SUCCESSFUL ATTACHMENTS:
+-----------------------
+
+1. Unknown
+   - Extracted text length: 0 chars
+   - Quotation ID: 25bb2ce6-585b-4d8a-a2b8-d3b875ea0379
+
+================================================================================
+END OF REPORT
+================================================================================
+

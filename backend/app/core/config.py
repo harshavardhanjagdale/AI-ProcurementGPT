@@ -17,9 +17,8 @@ class Settings(BaseSettings):
     MYSQL_PASSWORD: str = "admin"
     MYSQL_DATABASE: str = "procuregpt"
 
-    OPENAI_API_KEY: str = ""
-    OPENAI_MODEL: str = "gpt-4o"
-
+    ANTHROPIC_API_KEY: str = ""
+    ANTHROPIC_MODEL: str = "claude-opus-4-8"
     SMTP_HOST: str = "smtp.gmail.com"
     SMTP_PORT: int = 587
     SMTP_USER: str = ""
@@ -35,6 +34,16 @@ class Settings(BaseSettings):
 
     UPLOAD_DIR: str = "./uploads"
     MAX_FILE_SIZE_MB: int = 25
+
+    WEBHOOK_TOKEN: str = "procuregpt-webhook-secret-2026"
+
+    # Email processing mode: "polling" (every 60s), "webhook" (real-time), or "both"
+    EMAIL_PROCESSING_MODE: str = "polling"
+
+    LANGSMITH_TRACING: bool = False
+    LANGSMITH_ENDPOINT: str = "https://api.smith.langchain.com"
+    LANGSMITH_API_KEY: str = ""
+    LANGSMITH_PROJECT: str = ""
 
     class Config:
         env_file = ".env"

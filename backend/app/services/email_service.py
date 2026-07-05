@@ -4,6 +4,7 @@ Email Service - Orchestrates email sending/receiving and links to RFQ records.
 import logging
 from datetime import datetime, timezone
 
+from sqlalchemy import update
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.email.email_parser import parse_supplier_reply, is_quotation_reply

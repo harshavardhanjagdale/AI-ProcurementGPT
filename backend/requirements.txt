@@ -1,5 +1,6 @@
 # FastAPI & Server
 fastapi==0.115.6
+starlette==0.41.3
 uvicorn[standard]==0.34.0
 python-multipart==0.0.20
 
@@ -21,8 +22,9 @@ email-validator==2.2.0
 # AI & LLM
 langchain==0.3.14
 langgraph==0.2.60
+langgraph-checkpoint-sqlite==3.1.0
 langchain-openai==0.3.0
-openai==1.58.1
+anthropic>=0.40.0
 sentence-transformers==3.3.1
 
 # Email
