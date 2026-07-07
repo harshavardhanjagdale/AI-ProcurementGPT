@@ -61,7 +61,6 @@ export interface Quotation {
   delivery_days?: number;
   warranty_terms?: string;
   payment_terms?: string;
-  ai_score?: number;
   ai_ranking?: number;
   status: string;
   items: QuotationItem[];

@@ -21,7 +21,6 @@ import {
   X,
   ChevronDown,
   ChevronRight,
-  Star,
 } from "lucide-react";
 import type { RFQ, Quotation } from "@/types";
 
@@ -34,7 +33,7 @@ export default function QuotationsPage() {
   const [analytics, setAnalytics] = useState<QuotationAnalytics | null>(null);
   const [expandedRow, setExpandedRow] = useState<string | null>(null);
   const [statusFilter, setStatusFilter] = useState<string>("all");
-  const [sortField, setSortField] = useState<"total_amount" | "ai_score" | "delivery_days">("ai_score");
+  const [sortField, setSortField] = useState<"total_amount" | "delivery_days">("total_amount");
   const [sortDir, setSortDir] = useState<"asc" | "desc">("desc");
 
   useEffect(() => {
@@ -117,11 +116,11 @@ export default function QuotationsPage() {
             color="green"
           />
           <KPICard
-            title="Avg AI Score"
-            value={`${analytics.avg_ai_score}/100`}
-            subtitle="Quality benchmark"
-            icon={<Star className="w-5 h-5 text-white" />}
-            color="purple"
+            title="Rejected"
+            value={analytics.rejected}
+            subtitle="Not suitable"
+            icon={<XCircle className="w-5 h-5 text-white" />}
+            color="red"
           />
         </div>
       )}
@@ -195,12 +194,10 @@ export default function QuotationsPage() {
                       setSortDir(dir as any);
                     }}
                   >
-                    <option value="ai_score-desc">AI Score (High→Low)</option>
-                    <option value="ai_score-asc">AI Score (Low→High)</option>
-                    <option value="total_amount-asc">Price (Low→High)</option>
-                    <option value="total_amount-desc">Price (High→Low)</option>
-                    <option value="delivery_days-asc">Delivery (Fast)</option>
-                    <option value="delivery_days-desc">Delivery (Slow)</option>
+                  <option value="total_amount-asc">Price (Low→High)</option>
+                  <option value="total_amount-desc">Price (High→Low)</option>
+                  <option value="delivery_days-asc">Delivery (Fast)</option>
+                  <option value="delivery_days-desc">Delivery (Slow)</option>
                   </select>
                 </div>
               </>
@@ -244,8 +241,7 @@ export default function QuotationsPage() {
                   <th className="text-left p-3 font-medium text-gray-600">Tax</th>
                   <th className="text-left p-3 font-medium text-gray-600">Grand Total</th>
                   <th className="text-left p-3 font-medium text-gray-600">Delivery</th>
-                  <th className="text-left p-3 font-medium text-gray-600">AI Score</th>
-                  <th className="text-left p-3 font-medium text-gray-600">Status</th>
+                  <th className="text-left p-3 font-medium text-gray-600">Delivery</th>
                   <th className="text-left p-3 font-medium text-gray-600">Actions</th>
                 </tr>
               </thead>
@@ -281,19 +277,6 @@ export default function QuotationsPage() {
                         {q.grand_total ? formatCurrency(q.grand_total, q.currency) : "—"}
                       </td>
                       <td className="p-3 text-gray-600">{q.delivery_days ? `${q.delivery_days} days` : "N/A"}</td>
-                      <td className="p-3">
-                        {q.ai_score != null ? (
-                          <div className="flex items-center gap-2">
-                            <div className="w-16 h-1.5 bg-gray-200 rounded-full overflow-hidden">
-                              <div
-                                className="h-full bg-indigo-500 rounded-full"
-                                style={{ width: `${q.ai_score}%` }}
-                              />
-                            </div>
-                            <span className="text-xs font-medium text-gray-700">{q.ai_score}</span>
-                          </div>
-                        ) : "—"}
-                      </td>
                       <td className="p-3">
                         <Badge className={getStatusColor(q.status)}>{q.status}</Badge>
                       </td>

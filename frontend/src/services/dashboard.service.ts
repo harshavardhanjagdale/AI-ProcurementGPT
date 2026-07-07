@@ -7,7 +7,6 @@ export interface QuotationAnalytics {
   accepted: number;
   rejected: number;
   accepted_value: number;
-  avg_ai_score: number;
   by_status: Record<string, number>;
   monthly_trend: { month: string; count: number; value: number }[];
   top_suppliers: { name: string; count: number; avg_score: number }[];

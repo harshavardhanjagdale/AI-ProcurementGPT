@@ -718,7 +718,6 @@ def _quotation_data(q) -> dict:
         "warranty_terms": q.warranty_terms,
         "payment_terms": q.payment_terms,
         "validity_days": q.validity_days,
-        "ai_score": float(q.ai_score) if q.ai_score is not None else None,
         "ai_ranking": q.ai_ranking,
         "is_recommended": q.ai_ranking == 1,
         "negotiation_round": q.negotiation_round or 0,

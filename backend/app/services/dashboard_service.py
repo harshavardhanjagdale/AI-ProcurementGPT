@@ -142,12 +142,6 @@ class DashboardService:
         )
         accepted_value = float(accepted_value_result.scalar_one() or 0)
 
-        # Average AI score
-        avg_score_result = await self.db.execute(
-            select(func.avg(Quotation.ai_score)).where(Quotation.ai_score.is_not(None))
-        )
-        avg_ai_score = round(float(avg_score_result.scalar_one() or 0), 1)
-
         # Monthly trend (last 6 months)
         six_months_ago = date.today() - timedelta(days=180)
         monthly_result = await self.db.execute(
@@ -170,7 +164,6 @@ class DashboardService:
             select(
                 Supplier.name,
                 func.count(Quotation.id).label("quote_count"),
-                func.avg(Quotation.ai_score).label("avg_score"),
             )
             .join(Supplier, Supplier.id == Quotation.supplier_id)
             .group_by(Supplier.id, Supplier.name)
@@ -178,7 +171,7 @@ class DashboardService:
             .limit(5)
         )
         top_suppliers = [
-            {"name": row[0], "count": row[1], "avg_score": round(float(row[2] or 0), 1)}
+            {"name": row[0], "count": row[1], "avg_score": 0}
             for row in top_suppliers_result.all()
         ]
 
@@ -188,7 +181,6 @@ class DashboardService:
             "accepted": accepted,
             "rejected": rejected,
             "accepted_value": accepted_value,
-            "avg_ai_score": avg_ai_score,
             "by_status": by_status,
             "monthly_trend": monthly_trend,
             "top_suppliers": top_suppliers,

@@ -261,7 +261,6 @@ async def get_workflow_quotations(
                 "delivery_days": q.delivery_days,
                 "warranty_terms": q.warranty_terms,
                 "payment_terms": q.payment_terms,
-                "ai_score": float(q.ai_score) if q.ai_score else None,
                 "ai_ranking": q.ai_ranking,
                 "status": q.status,
                 "created_at": q.created_at.isoformat() if q.created_at else None,

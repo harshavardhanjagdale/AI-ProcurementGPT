@@ -228,7 +228,6 @@ class QuotationService:
                 "delivery_days": q.delivery_days,
                 "warranty_terms": q.warranty_terms,
                 "payment_terms": q.payment_terms,
-                "ai_score": float(q.ai_score) if q.ai_score else None,
                 "ai_ranking": q.ai_ranking,
                 "status": q.status,
                 "items": [
@@ -242,9 +241,9 @@ class QuotationService:
                 ],
             })
 
-        # Sort by AI score (descending) or by price (ascending) if no scores
-        if any(d["ai_score"] for d in comparison_data):
-            comparison_data.sort(key=lambda x: x["ai_score"] or 0, reverse=True)
+        # Sort by AI ranking (ascending) or by price (ascending) if no rankings
+        if any(d["ai_ranking"] for d in comparison_data):
+            comparison_data.sort(key=lambda x: x["ai_ranking"] or float('inf'))
         else:
             comparison_data.sort(key=lambda x: x["total_amount"])
 

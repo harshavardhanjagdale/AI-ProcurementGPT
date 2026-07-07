@@ -16,7 +16,6 @@ interface Quotation {
   delivery_days: number;
   warranty_terms: string;
   payment_terms: string;
-  ai_score: number | null;
   ai_ranking: number | null;
   status: string;
   created_at: string;
@@ -247,11 +246,6 @@ export default function QuotationsPage() {
                           <div className="text-3xl font-bold text-blue-600">
                             #{q.ai_ranking}
                           </div>
-                          {q.ai_score && (
-                            <div className="text-sm text-gray-600">
-                              Score: {q.ai_score.toFixed(1)}/100
-                            </div>
-                          )}
                         </div>
                       )}
                     </div>

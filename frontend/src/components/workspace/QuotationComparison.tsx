@@ -138,18 +138,6 @@ export function QuotationComparison({ sessionId, currentStep }: QuotationCompari
                   <td className="px-3 py-2 text-right whitespace-nowrap text-slate-600 dark:text-slate-300">
                     {q.delivery_days != null ? `${q.delivery_days}d` : '—'}
                   </td>
-                  <td className="px-3 py-2 text-right whitespace-nowrap">
-                    {q.ai_score != null ? (
-                      <span className={cn(
-                        'font-semibold px-1.5 py-0.5 rounded',
-                        q.is_recommended ? 'text-emerald-700 bg-emerald-100 dark:bg-emerald-900/40 dark:text-emerald-300' : 'text-slate-700 dark:text-slate-200'
-                      )}>
-                        {q.ai_score.toFixed(1)}
-                      </span>
-                    ) : (
-                      '—'
-                    )}
-                  </td>
                   <td className="px-3 py-2 text-slate-600 dark:text-slate-300">
                     <div className="max-w-[220px] truncate" title={`${q.payment_terms || ''} · ${q.warranty_terms || ''}`}>
                       {q.payment_terms || '—'}

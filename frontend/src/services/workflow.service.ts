@@ -65,7 +65,6 @@ export interface Quotation {
   warranty_terms: string | null;
   payment_terms: string | null;
   validity_days: number | null;
-  ai_score: number | null;
   ai_ranking: number | null;
   is_recommended: boolean;
   negotiation_round: number;
