@@ -11,24 +11,22 @@ from app.services.email_service import EmailService
 
 logger = logging.getLogger(__name__)
 
-NEGOTIATION_PROMPT = """You are a skilled procurement negotiator. Write a professional negotiation email to a supplier requesting a better price.
+NEGOTIATION_PROMPT = """You are a skilled procurement negotiator. Write a concise negotiation message to a supplier requesting a revised price.
 
 Context:
 - Supplier: {supplier_name}
-- Their quoted price: {currency} {original_price:,.2f}
-- Our target price: {currency} {target_price:,.2f}
-- Negotiation round: {round_number}
 - Product: {product_description}
+- Quantity: {quantity} units
+- Their rate: {currency} {original_per_piece:,.2f}/unit (Total: {currency} {original_price:,.2f})
+- Our target: {currency} {target_per_piece:,.2f}/unit (Total: {currency} {target_price:,.2f})
+- Round: {round_number}
 
-Guidelines:
-- Be professional and respectful
-- Mention competitive market conditions
-- Reference that you have other quotes (without naming competitors)
-- If round > 1, acknowledge their previous response
-- Suggest the relationship value for future orders
-- Be firm but leave room for compromise
-
-Return ONLY the negotiation message body (2-3 paragraphs, no salutation/sign-off)."""
+Rules:
+- Write 2 short paragraphs ONLY. No salutation, no sign-off, no bullet points.
+- Be direct: state the gap, mention competitive alternatives (no names), and propose the target.
+- If round > 1, briefly acknowledge the previous offer.
+- Emphasise long-term partnership value.
+- Do NOT repeat the exact price numbers excessively — the email template already shows them in a table."""
 
 
 async def negotiate_with_suppliers(state: ProcurementState) -> dict:
@@ -46,19 +44,26 @@ async def negotiate_with_suppliers(state: ProcurementState) -> dict:
         }
 
     product_desc = parsed.get("title", "procurement items")
-    currency = parsed.get("currency", "USD")
+    default_currency = parsed.get("currency", "USD")
 
     results = []
     for target in targets:
         supplier_name = target.get("supplier_name", "Supplier")
         original_price = target.get("original_price", 0)
         target_price = target.get("target_price", 0)
+        quantity = target.get("quantity") or 1
+        # Prefer the quotation's own currency (set when the counter-offer is built) so the
+        # email shows the right symbol rather than the parsed-intent default.
+        currency = target.get("currency") or default_currency
 
         prompt = NEGOTIATION_PROMPT.format(
             supplier_name=supplier_name,
             currency=currency,
+            quantity=quantity,
             original_price=original_price,
             target_price=target_price,
+            original_per_piece=(original_price / quantity) if quantity else original_price,
+            target_per_piece=(target_price / quantity) if quantity else target_price,
             round_number=current_round,
             product_description=product_desc,
         )
@@ -81,6 +86,8 @@ async def negotiate_with_suppliers(state: ProcurementState) -> dict:
                     target_price=target_price,
                     negotiation_message=negotiation_message,
                     sender_name="Procurement Team",
+                    quantity=quantity,
+                    gst_percent=target.get("gst_percent"),
                 )
                 await session.commit()
 

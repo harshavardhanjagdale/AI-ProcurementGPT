@@ -17,6 +17,9 @@ class Quotation(Base, UUIDPrimaryKeyMixin, TimestampMixin):
         String(36), ForeignKey("emails.id", ondelete="SET NULL"), nullable=True
     )
     total_amount: Mapped[float] = mapped_column(Numeric(15, 2), nullable=False)
+    tax_percent: Mapped[float | None] = mapped_column(Numeric(5, 2), nullable=True)
+    tax_amount: Mapped[float | None] = mapped_column(Numeric(15, 2), nullable=True)
+    grand_total: Mapped[float | None] = mapped_column(Numeric(15, 2), nullable=True)
     currency: Mapped[str] = mapped_column(String(3), default="USD", nullable=False)
     delivery_days: Mapped[int | None] = mapped_column(Integer, nullable=True)
     warranty_terms: Mapped[str | None] = mapped_column(Text, nullable=True)
@@ -27,6 +30,8 @@ class Quotation(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     ai_analysis_json: Mapped[dict | None] = mapped_column(JSON, nullable=True)
     status: Mapped[str] = mapped_column(String(20), default="received", nullable=False, index=True)
     raw_ocr_text: Mapped[str | None] = mapped_column(Text, nullable=True)
+    # 0 = original quote; 1, 2, … = revised quotes received after negotiation rounds.
+    negotiation_round: Mapped[int] = mapped_column(Integer, default=0, nullable=False)
 
     rfq = relationship("RFQ", back_populates="quotations")
     supplier = relationship("Supplier", back_populates="quotations")

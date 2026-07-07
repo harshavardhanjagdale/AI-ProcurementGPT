@@ -109,18 +109,46 @@ class QuotationService:
         extracted_data: dict,
         raw_text: str,
     ) -> Quotation:
-        """Create a Quotation record from extracted OCR data."""
-        # Check if quotation already exists for this RFQ + supplier
-        existing = await self.quotation_repo.get_by_rfq_and_supplier(rfq_id, supplier_id)
-        if existing:
-            logger.info(f"Quotation already exists for RFQ {rfq_id} + supplier {supplier_id}")
-            return existing
+        """Create a Quotation record from extracted OCR data.
+
+        Each processed attachment yields a new quotation row. A supplier's revised quote
+        (received after a negotiation round) is stored as a NEW row with an incremented
+        negotiation_round, rather than being skipped — so both the original and the revised
+        quote are preserved and can be shown side by side. Duplicate processing of the same
+        attachment is already prevented upstream by the attachment's ocr_processed flag.
+        """
+        prior = await self.quotation_repo.get_all_by_rfq_and_supplier(rfq_id, supplier_id)
+
+        # Only count quotations from distinct emails for negotiation_round.
+        # If a quotation already exists from this exact email, it's a duplicate
+        # (e.g. multiple attachments in the same email, or race condition).
+        existing_for_email = [q for q in prior if q.email_id == email_id]
+        if existing_for_email:
+            logger.warning(
+                f"Quotation already exists for email {email_id} + supplier {supplier_id} — returning existing"
+            )
+            return existing_for_email[0]
+
+        seen_emails = {q.email_id for q in prior if q.email_id}
+        negotiation_round = len(seen_emails)  # 0 = first email, 1 = second email, …
+        if negotiation_round:
+            logger.info(
+                f"Revised quote (round {negotiation_round}) for RFQ {rfq_id} + supplier {supplier_id}"
+            )
+
+        raw_tax_pct = extracted_data.get("tax_percent")
+        raw_tax_amt = extracted_data.get("tax_amount")
+        raw_subtotal = extracted_data.get("subtotal")
+        raw_total = extracted_data.get("total_amount", 0)
 
         quotation = Quotation(
             rfq_id=rfq_id,
             supplier_id=supplier_id,
             email_id=email_id,
-            total_amount=extracted_data.get("total_amount", 0),
+            total_amount=raw_subtotal or raw_total,
+            tax_percent=raw_tax_pct,
+            tax_amount=raw_tax_amt,
+            grand_total=raw_total if raw_tax_amt else None,
             currency=extracted_data.get("currency", "USD"),
             delivery_days=extracted_data.get("delivery_days"),
             warranty_terms=extracted_data.get("warranty_terms"),
@@ -128,6 +156,7 @@ class QuotationService:
             validity_days=extracted_data.get("validity_days", 30),
             status="received",
             raw_ocr_text=raw_text,
+            negotiation_round=negotiation_round,
         )
         quotation = await self.quotation_repo.create(quotation)
 

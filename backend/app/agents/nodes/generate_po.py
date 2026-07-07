@@ -65,6 +65,21 @@ async def generate_purchase_order(state: ProcurementState) -> dict:
             delivery_days = quotation.delivery_days or 14
             delivery_date = date.today() + timedelta(days=delivery_days)
 
+            # Tax calculation — prefer quotation tax, fall back to supplier default
+            supplier_repo = SupplierRepository(session)
+            supplier = await supplier_repo.get_by_id(quotation.supplier_id)
+
+            subtotal = float(quotation.total_amount)
+            tax_pct = (
+                float(quotation.tax_percent)
+                if quotation.tax_percent
+                else (float(supplier.default_tax_percent) if supplier and supplier.default_tax_percent else None)
+            )
+            if tax_pct is None and quotation.currency == "INR":
+                tax_pct = 18.0
+            tax_amt = round(subtotal * tax_pct / 100, 2) if tax_pct else 0
+            grand_total = round(subtotal + tax_amt, 2)
+
             # Create PO
             po = PurchaseOrder(
                 po_number=po_number,
@@ -72,7 +87,10 @@ async def generate_purchase_order(state: ProcurementState) -> dict:
                 supplier_id=quotation.supplier_id,
                 quotation_id=quotation.id,
                 user_id=user_id,
-                total_amount=quotation.total_amount,
+                subtotal=subtotal,
+                tax_percent=tax_pct,
+                tax_amount=tax_amt if tax_pct else None,
+                total_amount=grand_total,
                 currency=quotation.currency,
                 delivery_date=delivery_date,
                 payment_terms=quotation.payment_terms or "Net 30",
@@ -102,10 +120,6 @@ async def generate_purchase_order(state: ProcurementState) -> dict:
 
             logger.info(f"Generated PO {po_number} for RFQ {rfq.rfq_number}")
 
-            # Generate the PDF document for this PO
-            supplier_repo = SupplierRepository(session)
-            supplier = await supplier_repo.get_by_id(quotation.supplier_id)
-
             pdf_items = [
                 {
                     "product_name": item.product_name,
@@ -124,7 +138,10 @@ async def generate_purchase_order(state: ProcurementState) -> dict:
                 supplier_email=supplier.email if supplier else "",
                 supplier_address=supplier.address if supplier else None,
                 items=pdf_items,
-                total_amount=float(quotation.total_amount),
+                subtotal=subtotal,
+                tax_percent=tax_pct,
+                tax_amount=tax_amt if tax_pct else None,
+                total_amount=grand_total,
                 currency=quotation.currency,
                 delivery_date=str(delivery_date),
                 payment_terms=quotation.payment_terms or "Net 30",
@@ -179,12 +196,13 @@ async def send_po_email(state: ProcurementState) -> dict:
 
             items_data = [
                 {
+                    "sr_no": idx + 1,
                     "product_name": item.product_name,
                     "quantity": item.quantity,
                     "unit_price": f"{float(item.unit_price):,.2f}",
                     "total_price": f"{float(item.total_price):,.2f}",
                 }
-                for item in (quotation.items if quotation else [])
+                for idx, item in enumerate(quotation.items if quotation else [])
             ]
 
             email_service = EmailService(session)
@@ -193,6 +211,9 @@ async def send_po_email(state: ProcurementState) -> dict:
                 supplier_id=po.supplier_id,
                 po_number=po.po_number,
                 items=items_data,
+                subtotal=float(po.subtotal) if po.subtotal else float(po.total_amount),
+                tax_percent=float(po.tax_percent) if po.tax_percent else None,
+                tax_amount=float(po.tax_amount) if po.tax_amount else None,
                 total_amount=float(po.total_amount),
                 currency=po.currency,
                 payment_terms=po.payment_terms or "Net 30",

@@ -99,20 +99,31 @@ def render_negotiation_email(
     currency: str,
     negotiation_message: str,
     sender_name: str,
+    quantity: int = 1,
+    gst_percent: float | None = None,
     original_quote_date: str | None = None,
     justification: str | None = None,
 ) -> str:
     template = _load_template("negotiation.html")
+
+    unit_price = original_price / quantity if quantity else original_price
+    target_unit_price = target_price / quantity if quantity else target_price
+    gst_amount = original_price * gst_percent / 100 if gst_percent else 0
+
     context = {
         "rfq_number": rfq_number,
         "supplier_name": supplier_name,
         "round_number": str(round_number),
+        "quantity": str(quantity),
+        "unit_price": f"{unit_price:,.2f}",
         "original_price": f"{original_price:,.2f}",
+        "target_unit_price": f"{target_unit_price:,.2f}",
         "target_price": f"{target_price:,.2f}",
+        "gst_percent": f"{gst_percent:.1f}" if gst_percent else "",
+        "gst_amount": f"{gst_amount:,.2f}" if gst_percent else "",
         "currency": currency,
         "negotiation_message": negotiation_message,
         "sender_name": sender_name,
-        "original_quote_date": original_quote_date or "N/A",
         "justification": justification,
         "generated_date": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
     }
@@ -131,6 +142,9 @@ def render_purchase_order_email(
     sender_name: str,
     shipping_address: str | None = None,
     company_name: str = "ProcureGPT",
+    subtotal: float | None = None,
+    tax_percent: float | None = None,
+    tax_amount: float | None = None,
 ) -> str:
     template = _load_template("purchase_order.html")
     context = {
@@ -138,6 +152,9 @@ def render_purchase_order_email(
         "rfq_number": rfq_number,
         "supplier_name": supplier_name,
         "items": items,
+        "subtotal": f"{subtotal:,.2f}" if subtotal else f"{total_amount:,.2f}",
+        "tax_percent": f"{tax_percent:.1f}" if tax_percent else "",
+        "tax_amount": f"{tax_amount:,.2f}" if tax_amount else "",
         "total_amount": f"{total_amount:,.2f}",
         "currency": currency,
         "payment_terms": payment_terms,

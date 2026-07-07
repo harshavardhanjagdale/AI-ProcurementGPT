@@ -42,12 +42,13 @@ class EmailService:
 
         items_data = [
             {
+                "sr_no": idx + 1,
                 "product_name": item.product_name,
                 "specifications": item.specifications,
                 "quantity": item.quantity,
                 "unit": item.unit,
             }
-            for item in rfq.items
+            for idx, item in enumerate(rfq.items)
         ]
 
         for supplier in suppliers:
@@ -135,8 +136,17 @@ class EmailService:
                 logger.warning(f"RFQ not found for number: {rfq_number}")
                 continue
 
-            # Find supplier by email
+            # Duplicate detection — skip if we already stored this email
             from sqlalchemy import select
+            if parsed.get("message_id"):
+                dup = await self.db.execute(
+                    select(Email.id).where(Email.message_id == parsed["message_id"])
+                )
+                if dup.scalar_one_or_none():
+                    logger.info(f"Skipping duplicate email message_id={parsed['message_id']}")
+                    continue
+
+            # Find supplier by email
             from app.models.supplier import Supplier
             result = await self.db.execute(
                 select(Supplier).where(Supplier.email == parsed["supplier_email"])
@@ -201,6 +211,8 @@ class EmailService:
         target_price: float,
         negotiation_message: str,
         sender_name: str,
+        quantity: int = 1,
+        gst_percent: float | None = None,
     ) -> dict:
         """Send a negotiation email to a supplier."""
         rfq = await self.rfq_repo.get_by_id(rfq_id)
@@ -218,6 +230,8 @@ class EmailService:
             currency=rfq.currency,
             negotiation_message=negotiation_message,
             sender_name=sender_name,
+            quantity=quantity,
+            gst_percent=gst_percent,
         )
 
         send_result = await smtp_client.send_rfq_email(
@@ -243,6 +257,34 @@ class EmailService:
         self.db.add(email_record)
         await self.db.flush()
 
+        # Persist a Negotiation record so this shows up in the Negotiations dashboard/history.
+        # This table was previously never written to, so the page always looked empty.
+        try:
+            from app.models.negotiation import Negotiation
+            from app.repositories.quotation_repository import QuotationRepository
+
+            quotation = await QuotationRepository(self.db).get_by_rfq_and_supplier(rfq_id, supplier_id)
+            if quotation is not None:
+                self.db.add(Negotiation(
+                    rfq_id=rfq_id,
+                    supplier_id=supplier_id,
+                    quotation_id=quotation.id,
+                    round_number=round_number,
+                    original_price=original_price,
+                    target_price=target_price,
+                    email_id=email_record.id,
+                    status="sent" if send_result["success"] else "failed",
+                    ai_strategy_notes=(negotiation_message[:2000] if negotiation_message else None),
+                ))
+                await self.db.flush()
+            else:
+                logger.warning(
+                    f"No quotation found for RFQ {rfq_id} + supplier {supplier_id}; "
+                    "negotiation email sent but Negotiation record not created."
+                )
+        except Exception as e:
+            logger.error(f"Failed to record Negotiation for RFQ {rfq_id}: {e}", exc_info=True)
+
         return {
             "success": send_result["success"],
             "email_id": email_record.id,
@@ -262,6 +304,9 @@ class EmailService:
         sender_name: str,
         pdf_path: str | None = None,
         shipping_address: str | None = None,
+        subtotal: float | None = None,
+        tax_percent: float | None = None,
+        tax_amount: float | None = None,
     ) -> dict:
         """Send purchase order email with PDF attachment."""
         rfq = await self.rfq_repo.get_by_id(rfq_id)
@@ -281,6 +326,9 @@ class EmailService:
             delivery_date=delivery_date,
             sender_name=sender_name,
             shipping_address=shipping_address,
+            subtotal=subtotal,
+            tax_percent=tax_percent,
+            tax_amount=tax_amount,
         )
 
         attachments = []

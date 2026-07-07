@@ -7,21 +7,21 @@ import {
   LayoutDashboard,
   FileText,
   Users,
-  MessageSquare,
   ShoppingCart,
   BarChart3,
   Handshake,
   Bot,
+  LineChart,
 } from "lucide-react";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
   { name: "RFQs", href: "/dashboard/rfqs", icon: FileText },
-  { name: "AI Chat", href: "/dashboard/rfqs/new", icon: Bot },
   { name: "Suppliers", href: "/dashboard/suppliers", icon: Users },
   { name: "Quotations", href: "/dashboard/quotations", icon: BarChart3 },
   { name: "Negotiations", href: "/dashboard/negotiations", icon: Handshake },
   { name: "Purchase Orders", href: "/dashboard/purchase-orders", icon: ShoppingCart },
+  { name: "Analytics", href: "/dashboard/analytics", icon: LineChart },
 ];
 
 export function Sidebar() {

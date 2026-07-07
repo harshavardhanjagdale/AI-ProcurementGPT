@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 
 from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Query
 from pydantic import BaseModel
-from sqlalchemy import select, func, delete
+from sqlalchemy import select, func, delete, update
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.orm import selectinload
 
@@ -17,27 +17,25 @@ from app.models.workflow_step import WorkflowStep
 from app.models.workflow_event import WorkflowEvent
 from app.models.conversation_message import ConversationMessage
 from app.models.base import generate_uuid
-from app.models.base import utc_now
+from app.models.base import utc_now, ist_now
 
 logger = logging.getLogger(__name__)
 
 router = APIRouter()
 
 WORKFLOW_STEPS_TEMPLATE = [
-    {"name": "parse_user_request", "display_name": "Receive Requirement", "agent": "Parser Agent", "order_index": 0},
-    {"name": "validate_rfq_data", "display_name": "Validate RFQ", "agent": "Validator Agent", "order_index": 1},
-    {"name": "create_rfq_record", "display_name": "Generate RFQ", "agent": "RFQ Agent", "order_index": 2},
-    {"name": "select_vendors", "display_name": "Find Suppliers", "agent": "Vendor Agent", "order_index": 3},
+    {"name": "parse_request", "display_name": "Understand Request", "agent": "Parser Agent", "order_index": 0},
+    {"name": "create_rfq_record", "display_name": "Create RFQ", "agent": "RFQ Agent", "order_index": 1},
+    {"name": "resolve_direct_supplier", "display_name": "Direct Supplier", "agent": "Vendor Agent", "order_index": 2},
+    {"name": "select_vendors", "display_name": "Select Vendors", "agent": "Vendor Agent", "order_index": 3},
     {"name": "generate_rfq_emails", "display_name": "Draft Emails", "agent": "Email Agent", "order_index": 4},
     {"name": "send_rfq_emails", "display_name": "Send Emails", "agent": "Email Agent", "order_index": 5},
-    {"name": "await_supplier_replies", "display_name": "Waiting Supplier", "agent": "Inbox Agent", "order_index": 6},
-    {"name": "process_attachments", "display_name": "OCR Processing", "agent": "OCR Agent", "order_index": 7},
-    {"name": "analyze_quotations", "display_name": "Quotation Comparison", "agent": "Analysis Agent", "order_index": 8},
-    {"name": "present_recommendation", "display_name": "Recommendation", "agent": "Analysis Agent", "order_index": 9},
-    {"name": "user_decision_gate", "display_name": "Your Decision", "agent": "Human", "order_index": 10},
-    {"name": "negotiate_with_suppliers", "display_name": "Negotiation", "agent": "Negotiation Agent", "order_index": 11},
-    {"name": "generate_purchase_order", "display_name": "Purchase Order", "agent": "PO Agent", "order_index": 12},
-    {"name": "send_po_email", "display_name": "Send PO", "agent": "Email Agent", "order_index": 13},
+    {"name": "await_supplier_replies", "display_name": "Await Replies", "agent": "Inbox Agent", "order_index": 6},
+    {"name": "ocr_extract", "display_name": "OCR Extract", "agent": "OCR Agent", "order_index": 7},
+    {"name": "user_decision_gate", "display_name": "Your Decision", "agent": "Human", "order_index": 8},
+    {"name": "negotiate_with_suppliers", "display_name": "Negotiation", "agent": "Negotiation Agent", "order_index": 9},
+    {"name": "generate_purchase_order", "display_name": "Purchase Order", "agent": "PO Agent", "order_index": 10},
+    {"name": "send_po_email", "display_name": "Send PO", "agent": "Email Agent", "order_index": 11},
 ]
 
 
@@ -55,6 +53,7 @@ class RenameSessionRequest(BaseModel):
 
 class DecisionRequest(BaseModel):
     decision: str  # "approve" | "negotiate" | "cancel"
+    target_price: float | None = None  # required when decision == "negotiate"
 
 
 # ─────────────────────────────────────────────────────────────
@@ -275,6 +274,35 @@ async def create_session(
     return _session_detail(session)
 
 
+STEPS_ACCEPTING_CHAT = {"waiting_input"}
+
+STEP_CONTEXT_MESSAGES = {
+    "await_supplier_replies": (
+        "I'm currently waiting for supplier responses. You don't need to do anything right now — "
+        "I'll notify you automatically when quotations arrive. You can also click the mail icon "
+        "to manually check for replies."
+    ),
+    "ocr_extract": (
+        "I'm processing the received quotation(s) — extracting data and analyzing them. "
+        "Please wait a moment, I'll present the results shortly."
+    ),
+    "user_decision_gate": (
+        "I'm waiting for your decision on the quotation(s). Please use the Approve, Negotiate, "
+        "or Cancel buttons below to proceed."
+    ),
+    "negotiate_with_suppliers": (
+        "Negotiation is in progress. I'm waiting for the supplier's response to our counter-offer."
+    ),
+    "generate_purchase_order": "I'm generating the purchase order. Please wait a moment.",
+    "send_po_email": "I'm sending the purchase order to the supplier. Almost done!",
+    "generate_rfq_emails": "I'm drafting the RFQ emails to send to suppliers. Please wait.",
+    "send_rfq_emails": "I'm sending the RFQ emails now. This will take just a moment.",
+    "select_vendors": "I'm selecting the best vendors for your requirement. Please wait.",
+    "create_rfq_record": "I'm creating the RFQ record. Please wait.",
+    "resolve_direct_supplier": "I'm looking up the supplier you specified. Please wait.",
+}
+
+
 @router.post("/{session_id}/continue")
 async def continue_session(
     session_id: str,
@@ -286,17 +314,93 @@ async def continue_session(
     """
     Send a message in a session to (re)drive the workflow.
 
-    The workflow itself streams node-by-node and can take tens of seconds (LLM parse,
-    vendor selection, real RFQ email sends). It runs as a background task rather than
-    inline: `run_workflow` streams and commits each node's step/event/chat message via
-    its own DB sessions, and the workspace UI polls session/steps/chat every few seconds,
-    so the tree lights up and the chat narrates progress live. Awaiting it here instead
-    would (a) hold this request open for the whole run and (b) risk the same
-    disconnect-cancellation gap we hit on the decision endpoint.
+    Validates that the current step actually accepts free-text user input before
+    resuming the graph. Steps like await_supplier_replies or generate_purchase_order
+    don't accept arbitrary chat — they return a helpful contextual message instead.
     """
     session = await _get_session_or_404(db, session_id, current_user.id)
 
-    # Save the user's message so it shows immediately; then hand off the run.
+    current_step = session.current_step or "waiting_input"
+
+    # ── Guard: terminal sessions cannot be continued ──
+    if session.status in ("completed", "cancelled"):
+        reply_msg = (
+            "This procurement is already complete. Please start a new procurement "
+            "if you need something else."
+            if session.status == "completed"
+            else "This procurement was cancelled. Please start a new one."
+        )
+        msg = ConversationMessage(
+            id=generate_uuid(),
+            session_id=session_id,
+            role="user",
+            content=data.message,
+            message_type="text",
+        )
+        reply = ConversationMessage(
+            id=generate_uuid(),
+            session_id=session_id,
+            role="assistant",
+            content=reply_msg,
+            message_type="text",
+        )
+        db.add(msg)
+        db.add(reply)
+        await db.flush()
+
+        steps_result = await db.execute(
+            select(WorkflowStep)
+            .where(WorkflowStep.session_id == session_id)
+            .order_by(WorkflowStep.order_index)
+        )
+        steps = list(steps_result.scalars().all())
+        return {
+            "message": reply_msg,
+            "session": _session_detail(session),
+            "steps": [_step_data(s) for s in steps],
+            "current_step": session.current_step,
+            "workflow_id": session.langgraph_thread_id,
+        }
+
+    # ── Guard: steps that don't accept free-text input ──
+    if current_step not in STEPS_ACCEPTING_CHAT:
+        context_msg = STEP_CONTEXT_MESSAGES.get(
+            current_step,
+            "The workflow is currently processing. Please wait for the current step to complete before sending a message."
+        )
+        msg = ConversationMessage(
+            id=generate_uuid(),
+            session_id=session_id,
+            role="user",
+            content=data.message,
+            message_type="text",
+        )
+        reply = ConversationMessage(
+            id=generate_uuid(),
+            session_id=session_id,
+            role="assistant",
+            content=context_msg,
+            message_type="text",
+        )
+        db.add(msg)
+        db.add(reply)
+        await db.flush()
+
+        steps_result = await db.execute(
+            select(WorkflowStep)
+            .where(WorkflowStep.session_id == session_id)
+            .order_by(WorkflowStep.order_index)
+        )
+        steps = list(steps_result.scalars().all())
+        return {
+            "message": context_msg,
+            "session": _session_detail(session),
+            "steps": [_step_data(s) for s in steps],
+            "current_step": session.current_step,
+            "workflow_id": session.langgraph_thread_id,
+        }
+
+    # ── Valid: Save user message and run the workflow ──
     user_msg = ConversationMessage(
         id=generate_uuid(),
         session_id=session_id,
@@ -305,7 +409,20 @@ async def continue_session(
         message_type="text",
     )
     db.add(user_msg)
+
+    # Advance the session to the first step *immediately* so the progress bar appears
+    # the moment the user sends a message (the frontend hides it while at waiting_input).
+    # The background run then streams the real per-node progress on top of this.
     session.status = "active"
+    session.current_step = "parse_request"
+    session.current_node = "parse_request"
+    session.current_agent = "Parser Agent"
+    session.progress_percentage = 5.0
+    await db.execute(
+        update(WorkflowStep)
+        .where(WorkflowStep.session_id == session_id, WorkflowStep.name == "parse_request")
+        .values(status="running", started_at=ist_now())
+    )
     await db.flush()
 
     from app.workflows.session_workflow import session_workflow_service
@@ -422,21 +539,83 @@ async def submit_session_decision(
 
     thread_id = session.langgraph_thread_id
 
+    # For "negotiate" we need a target price and the supplier we're negotiating with.
+    # Build the negotiation target from the top-ranked quotation of this RFQ.
+    negotiation_targets = None
+    decision_label = data.decision.capitalize()
+    if data.decision == "negotiate":
+        if not data.target_price or data.target_price <= 0:
+            raise HTTPException(status_code=400, detail="A target_price is required to negotiate.")
+        from app.repositories.quotation_repository import QuotationRepository
+
+        # Use the supplier's *latest* quotation (highest negotiation round) as the baseline.
+        quotes = await QuotationRepository(db).get_by_rfq(session.rfq_id) if session.rfq_id else []
+        top = None
+        for q in quotes:
+            if top is None or (q.negotiation_round or 0) > (top.negotiation_round or 0):
+                top = q
+        if not top:
+            raise HTTPException(status_code=400, detail="There's no quotation to negotiate yet.")
+        total_qty = sum(it.quantity for it in top.items) or 1
+        per_piece_target = float(data.target_price) / total_qty
+        per_piece_original = float(top.total_amount) / total_qty
+        gst_pct = 18.0 if top.currency == "INR" else None
+        negotiation_targets = [{
+            "supplier_id": top.supplier_id,
+            "supplier_name": top.supplier.name if top.supplier else "Supplier",
+            "original_price": float(top.total_amount),
+            "target_price": float(data.target_price),
+            "currency": top.currency,
+            "quantity": total_qty,
+            "gst_percent": gst_pct,
+        }]
+        decision_label = (
+            f"Negotiate — counter-offer {top.currency} {per_piece_target:,.2f}/pc "
+            f"(total {top.currency} {float(data.target_price):,.0f}) to "
+            f"{negotiation_targets[0]['supplier_name']} "
+            f"— they quoted {top.currency} {per_piece_original:,.2f}/pc"
+        )
+
     user_msg = ConversationMessage(
         id=generate_uuid(),
         session_id=session_id,
         role="user",
-        content=f"Decision: {data.decision.capitalize()}",
+        content=f"Decision: {decision_label}",
         message_type="text",
     )
     db.add(user_msg)
+
+    if data.decision == "cancel":
+        session.status = "cancelled"
+        cancel_msg = ConversationMessage(
+            id=generate_uuid(),
+            session_id=session_id,
+            role="assistant",
+            content="This RFQ has been cancelled as requested.",
+            message_type="text",
+            metadata_json={"current_step": "user_decision_gate"},
+        )
+        db.add(cancel_msg)
+        await db.commit()
+
+        from app.workflows.session_workflow import session_workflow_service
+        background_tasks.add_task(
+            session_workflow_service.submit_decision, session_id, thread_id, data.decision, negotiation_targets
+        )
+
+        return {
+            "message": "RFQ cancelled.",
+            "session": _session_detail(session),
+            "current_step": session.current_step,
+            "error": None,
+        }
 
     session.status = "active"
     await db.flush()
 
     from app.workflows.session_workflow import session_workflow_service
     background_tasks.add_task(
-        session_workflow_service.submit_decision, session_id, thread_id, data.decision
+        session_workflow_service.submit_decision, session_id, thread_id, data.decision, negotiation_targets
     )
 
     return {
@@ -531,6 +710,9 @@ def _quotation_data(q) -> dict:
         "supplier_id": q.supplier_id,
         "supplier_name": q.supplier.name if q.supplier else "Unknown",
         "total_amount": float(q.total_amount),
+        "tax_percent": float(q.tax_percent) if q.tax_percent else None,
+        "tax_amount": float(q.tax_amount) if q.tax_amount else None,
+        "grand_total": float(q.grand_total) if q.grand_total else None,
         "currency": q.currency,
         "delivery_days": q.delivery_days,
         "warranty_terms": q.warranty_terms,
@@ -539,6 +721,7 @@ def _quotation_data(q) -> dict:
         "ai_score": float(q.ai_score) if q.ai_score is not None else None,
         "ai_ranking": q.ai_ranking,
         "is_recommended": q.ai_ranking == 1,
+        "negotiation_round": q.negotiation_round or 0,
         "strengths": analysis.get("strengths", []),
         "weaknesses": analysis.get("weaknesses", []),
         "status": q.status,

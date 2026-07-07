@@ -59,13 +59,27 @@ class PurchaseOrderService:
             date.today() + timedelta(days=quotation.delivery_days or 14)
         )
 
+        supplier = await self.supplier_repo.get_by_id(quotation.supplier_id)
+        sub = float(quotation.total_amount)
+        t_pct = (
+            float(quotation.tax_percent) if quotation.tax_percent
+            else (float(supplier.default_tax_percent) if supplier and supplier.default_tax_percent else None)
+        )
+        if t_pct is None and quotation.currency == "INR":
+            t_pct = 18.0
+        t_amt = round(sub * t_pct / 100, 2) if t_pct else 0
+        grand = round(sub + t_amt, 2)
+
         po = PurchaseOrder(
             po_number=po_number,
             rfq_id=rfq_id,
             supplier_id=quotation.supplier_id,
             quotation_id=quotation_id,
             user_id=user_id,
-            total_amount=quotation.total_amount,
+            subtotal=sub,
+            tax_percent=t_pct,
+            tax_amount=t_amt if t_pct else None,
+            total_amount=grand,
             currency=quotation.currency,
             delivery_date=calc_delivery,
             payment_terms=payment_terms or quotation.payment_terms or "Net 30",
@@ -124,6 +138,9 @@ class PurchaseOrderService:
             supplier_email=supplier.email if supplier else "",
             supplier_address=supplier.address if supplier else None,
             items=items_data,
+            subtotal=float(po.subtotal) if po.subtotal else float(po.total_amount),
+            tax_percent=float(po.tax_percent) if po.tax_percent else None,
+            tax_amount=float(po.tax_amount) if po.tax_amount else None,
             total_amount=float(po.total_amount),
             currency=po.currency,
             delivery_date=str(po.delivery_date) if po.delivery_date else "TBD",
@@ -188,12 +205,13 @@ class PurchaseOrderService:
 
         items_data = [
             {
+                "sr_no": idx + 1,
                 "product_name": item.product_name,
                 "quantity": item.quantity,
                 "unit_price": f"{float(item.unit_price):,.2f}",
                 "total_price": f"{float(item.total_price):,.2f}",
             }
-            for item in po.items
+            for idx, item in enumerate(po.items)
         ]
 
         email_service = EmailService(self.db)
@@ -202,6 +220,9 @@ class PurchaseOrderService:
             supplier_id=po.supplier_id,
             po_number=po.po_number,
             items=items_data,
+            subtotal=float(po.subtotal) if po.subtotal else float(po.total_amount),
+            tax_percent=float(po.tax_percent) if po.tax_percent else None,
+            tax_amount=float(po.tax_amount) if po.tax_amount else None,
             total_amount=float(po.total_amount),
             currency=po.currency,
             payment_terms=po.payment_terms or "Net 30",

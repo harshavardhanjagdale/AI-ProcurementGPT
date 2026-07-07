@@ -77,3 +77,49 @@ async def process_attachments(state: ProcurementState) -> dict:
                 "error": error_msg,
                 "error_traceback": error_traceback,
             }
+
+
+async def ocr_extract(state: ProcurementState) -> dict:
+    """
+    Merged graph node: OCR the supplier attachments, analyze/rank the quotations, and
+    prepare the recommendation — all under one node so the trace (LangSmith) and the UI
+    show a single "OCR Extract" step instead of three. Composes the existing functions
+    (process_attachments → analyze_quotations → present_recommendation) unchanged.
+
+    If no quotations could be extracted (supplier replied without a document), the node
+    signals the graph to loop back to await_supplier_replies rather than failing.
+    """
+    from app.agents.nodes.analyze_quotes import analyze_quotations
+    from app.agents.nodes.user_decision import present_recommendation
+
+    out: dict = {}
+
+    ocr = await process_attachments(state)
+    out.update(ocr)
+
+    # If OCR produced nothing and there are no existing quotations for this RFQ,
+    # don't fail — signal that we need to keep waiting for a proper document.
+    analysis = await analyze_quotations({**state, **out})
+
+    if analysis.get("error") == "No quotations found for this RFQ":
+        logger.info(f"[OCR] No quotations extracted yet — will wait for proper document")
+        out.update(analysis)
+        out["current_step"] = "ocr_extract"
+        out["error"] = None  # Clear error so workflow doesn't mark as failed
+        out["no_quotations_yet"] = True
+        return out
+
+    out.update(analysis)
+
+    recommendation = await present_recommendation({**state, **out})
+    out.update(recommendation)
+
+    out["current_step"] = "ocr_extract"
+    return out
+
+
+def route_after_ocr(state: ProcurementState) -> str:
+    """If no quotations were extracted (no document), loop back to waiting."""
+    if state.get("no_quotations_yet"):
+        return "await_supplier_replies"
+    return "user_decision_gate"

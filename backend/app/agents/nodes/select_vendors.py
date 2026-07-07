@@ -56,9 +56,13 @@ async def select_vendors(state: ProcurementState) -> dict:
     async with AsyncSessionLocal() as session:
         repo = SupplierRepository(session)
 
+        suppliers = []
         if categories:
             suppliers = await repo.get_active_by_categories(categories, limit=20)
-        else:
+            if not suppliers:
+                logger.info(f"No suppliers matched categories {categories}, falling back to all active suppliers")
+
+        if not suppliers:
             suppliers = await repo.search(status="active", limit=20)
 
         if not suppliers:
@@ -66,7 +70,7 @@ async def select_vendors(state: ProcurementState) -> dict:
                 "selected_suppliers": [],
                 "supplier_scores": [],
                 "current_step": "select_vendors",
-                "error": "No active suppliers found matching criteria",
+                "error": "No active suppliers found in the system",
             }
 
         supplier_data = [
@@ -137,3 +141,10 @@ async def select_vendors(state: ProcurementState) -> dict:
         "supplier_scores": scores,
         "current_step": "select_vendors",
     }
+
+
+def route_after_vendor_selection(state: ProcurementState) -> str:
+    """Stop the workflow if no suppliers matched — there's nothing to send an RFQ to."""
+    if not state.get("selected_suppliers"):
+        return "no_suppliers"
+    return "generate_rfq_emails"

@@ -24,18 +24,37 @@ class QuotationRepository(BaseRepository[Quotation]):
             select(Quotation)
             .options(selectinload(Quotation.items), selectinload(Quotation.supplier))
             .where(Quotation.rfq_id == rfq_id)
-            .order_by(Quotation.ai_score.desc())  # MySQL doesn't support NULLS LAST
+            # Group a supplier's rounds together (original before revised); recommended
+            # rows are highlighted client-side regardless of order.
+            .order_by(Quotation.supplier_id, Quotation.negotiation_round.asc())
         )
         return list(result.scalars().unique().all())
 
     async def get_by_rfq_and_supplier(self, rfq_id: str, supplier_id: str) -> Quotation | None:
+        """Latest quotation for this RFQ+supplier (highest negotiation round)."""
         result = await self.db.execute(
-            select(Quotation).where(
+            select(Quotation)
+            .options(selectinload(Quotation.items))
+            .where(
                 Quotation.rfq_id == rfq_id,
                 Quotation.supplier_id == supplier_id,
             )
+            .order_by(Quotation.negotiation_round.desc())
+            .limit(1)
         )
-        return result.scalar_one_or_none()
+        return result.scalars().first()
+
+    async def get_all_by_rfq_and_supplier(self, rfq_id: str, supplier_id: str) -> list[Quotation]:
+        """All quotation rounds for this RFQ+supplier, oldest first."""
+        result = await self.db.execute(
+            select(Quotation)
+            .where(
+                Quotation.rfq_id == rfq_id,
+                Quotation.supplier_id == supplier_id,
+            )
+            .order_by(Quotation.negotiation_round.asc())
+        )
+        return list(result.scalars().all())
 
     async def add_items(self, quotation_id: str, items: list[QuotationItem]) -> list[QuotationItem]:
         for item in items:

@@ -3,52 +3,68 @@
 <head>
     <meta charset="utf-8">
     <style>
-        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 700px; margin: 0 auto; }
-        .header { background: #7c3aed; color: white; padding: 20px 30px; border-radius: 8px 8px 0 0; }
-        .header h1 { margin: 0; font-size: 22px; }
-        .content { padding: 30px; border: 1px solid #e5e7eb; border-top: none; }
-        .rfq-badge { background: #faf5ff; border: 1px solid #e9d5ff; padding: 8px 16px; border-radius: 4px; display: inline-block; font-weight: 600; color: #7c3aed; margin-bottom: 20px; }
-        .price-comparison { background: #f8fafc; border-radius: 6px; padding: 20px; margin: 20px 0; }
-        .price-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #e5e7eb; }
-        .price-row:last-child { border-bottom: none; }
-        .highlight { color: #059669; font-weight: 600; font-size: 18px; }
-        .footer { padding: 20px 30px; background: #f8fafc; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px; font-size: 13px; color: #6b7280; }
+        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.5; color: #333; max-width: 700px; margin: 0 auto; }
+        .header { background: #7c3aed; color: white; padding: 16px 24px; border-radius: 8px 8px 0 0; }
+        .header h1 { margin: 0; font-size: 20px; }
+        .header .round { font-size: 13px; opacity: 0.85; margin-top: 2px; }
+        .content { padding: 24px; border: 1px solid #e5e7eb; border-top: none; }
+        .content p { margin: 0 0 10px; }
+        .price-table { width: 100%; border-collapse: collapse; margin: 16px 0; }
+        .price-table th { background: #f8fafc; text-align: left; padding: 8px 12px; border: 1px solid #e5e7eb; font-size: 13px; color: #6b7280; text-transform: uppercase; letter-spacing: 0.3px; }
+        .price-table td { padding: 8px 12px; border: 1px solid #e5e7eb; }
+        .price-table .label { font-weight: 600; width: 45%; }
+        .target-row td { background: #f0fdf4; }
+        .target-price { color: #059669; font-weight: 700; font-size: 16px; }
+        .note { font-size: 13px; color: #6b7280; margin: 12px 0 0; }
+        .footer { padding: 14px 24px; background: #f8fafc; border: 1px solid #e5e7eb; border-top: none; border-radius: 0 0 8px 8px; font-size: 12px; color: #6b7280; }
     </style>
 </head>
 <body>
     <div class="header">
-        <h1>Negotiation - Revised Quotation Request</h1>
+        <h1>Revised Quotation Request</h1>
+        <div class="round">{{ rfq_number }} &middot; Negotiation Round {{ round_number }}</div>
     </div>
     <div class="content">
-        <div class="rfq-badge">{{ rfq_number }} - Round {{ round_number }}</div>
-
         <p>Dear {{ supplier_name }},</p>
-
-        <p>Thank you for your quotation dated {{ original_quote_date }}. We appreciate your prompt response and the quality of your proposal.</p>
-
         <p>{{ negotiation_message }}</p>
 
-        <div class="price-comparison">
-            <h4 style="margin-top: 0;">Price Discussion</h4>
-            <p><strong>Your Quoted Price:</strong> {{ currency }} {{ original_price }}</p>
-            <p><strong>Our Target Price:</strong> <span class="highlight">{{ currency }} {{ target_price }}</span></p>
-            {% if justification %}
-            <p><strong>Basis:</strong> {{ justification }}</p>
+        <table class="price-table">
+            <tr>
+                <th colspan="2">Price Breakdown</th>
+            </tr>
+            <tr>
+                <td class="label">Quantity</td>
+                <td>{{ quantity }} units</td>
+            </tr>
+            <tr>
+                <td class="label">Your Quoted Rate (per unit)</td>
+                <td>{{ currency }} {{ unit_price }}</td>
+            </tr>
+            <tr>
+                <td class="label">Your Quoted Total</td>
+                <td>{{ currency }} {{ original_price }}</td>
+            </tr>
+            {% if gst_percent %}
+            <tr>
+                <td class="label">GST ({{ gst_percent }}%)</td>
+                <td>{{ currency }} {{ gst_amount }}</td>
+            </tr>
             {% endif %}
-        </div>
+            <tr class="target-row">
+                <td class="label">Our Target Rate (per unit)</td>
+                <td class="target-price">{{ currency }} {{ target_unit_price }}</td>
+            </tr>
+            <tr class="target-row">
+                <td class="label">Our Target Total</td>
+                <td class="target-price">{{ currency }} {{ target_price }}</td>
+            </tr>
+        </table>
 
-        <p>We value our partnership and hope to reach a mutually beneficial agreement. Please review and let us know if you can accommodate our request.</p>
-
-        <p><strong>Please respond with your revised quotation within 3 business days.</strong></p>
-
-        <p>Please include <code>{{ rfq_number }}</code> in your reply subject line.</p>
-
-        <p>Best regards,<br>
-        <strong>{{ sender_name }}</strong><br>
-        Procurement Department</p>
+        <p>Please respond with your revised quotation within <strong>3 business days</strong>. Include <strong>{{ rfq_number }}</strong> in the reply subject line.</p>
+        <p>Best regards,<br><strong>{{ sender_name }}</strong><br>Procurement Department</p>
     </div>
     <div class="footer">
-        <p>Reference: {{ rfq_number }} | Negotiation Round {{ round_number }} | {{ generated_date }}</p>
+        {{ rfq_number }} | Round {{ round_number }} | {{ generated_date }}
     </div>
 </body>
 </html>

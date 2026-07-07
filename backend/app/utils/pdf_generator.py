@@ -81,6 +81,9 @@ class POPDFGenerator:
         payment_terms: str,
         shipping_address: str | None = None,
         company_name: str = "ProcureGPT",
+        subtotal: float | None = None,
+        tax_percent: float | None = None,
+        tax_amount: float | None = None,
     ) -> str:
         """
         Generate a Purchase Order PDF.
@@ -163,12 +166,20 @@ class POPDFGenerator:
                 f"{currency} {item['total_price']:,.2f}",
             ])
 
-        # Total row
-        table_data.append(["", "", "", "TOTAL:", f"{currency} {total_amount:,.2f}"])
+        # Track the last data row before summary rows
+        last_data_row = len(table_data) - 1
+
+        # Summary rows
+        display_subtotal = subtotal if subtotal is not None else total_amount
+        table_data.append(["", "", "", "Subtotal:", f"{currency} {display_subtotal:,.2f}"])
+        if tax_percent and tax_amount:
+            table_data.append(["", "", "", f"GST ({tax_percent:.1f}%):", f"{currency} {tax_amount:,.2f}"])
+        table_data.append(["", "", "", "GRAND TOTAL:", f"{currency} {total_amount:,.2f}"])
 
         col_widths = [30, 220, 50, 90, 100]
         items_table = Table(table_data, colWidths=col_widths)
-        items_table.setStyle(TableStyle([
+
+        style_commands = [
             # Header row
             ("BACKGROUND", (0, 0), (-1, 0), colors.HexColor("#1a56db")),
             ("TEXTCOLOR", (0, 0), (-1, 0), colors.white),
@@ -182,23 +193,32 @@ class POPDFGenerator:
             ("ALIGN", (2, 1), (2, -1), "CENTER"),
             ("ALIGN", (3, 1), (-1, -1), "RIGHT"),
 
-            # Total row
+            # Grand total row (bold + highlight)
             ("FONTNAME", (3, -1), (-1, -1), "Helvetica-Bold"),
             ("BACKGROUND", (0, -1), (-1, -1), colors.HexColor("#f0f9ff")),
 
-            # Grid
-            ("GRID", (0, 0), (-1, -2), 0.5, colors.HexColor("#e5e7eb")),
+            # Grid on item rows only (header through last data row)
+            ("GRID", (0, 0), (-1, last_data_row), 0.5, colors.HexColor("#e5e7eb")),
             ("BOX", (0, 0), (-1, -1), 1, colors.HexColor("#1a56db")),
 
-            # Alternating rows
-            ("ROWBACKGROUNDS", (0, 1), (-1, -2), [colors.white, colors.HexColor("#f8fafc")]),
+            # Summary rows: top border separator
+            ("LINEABOVE", (3, last_data_row + 1), (-1, last_data_row + 1), 1, colors.HexColor("#1a56db")),
+
+            # Alternating row backgrounds for data rows only
+            ("ROWBACKGROUNDS", (0, 1), (-1, last_data_row), [colors.white, colors.HexColor("#f8fafc")]),
 
             # Padding
             ("TOPPADDING", (0, 0), (-1, -1), 8),
             ("BOTTOMPADDING", (0, 0), (-1, -1), 8),
             ("LEFTPADDING", (0, 0), (-1, -1), 6),
             ("RIGHTPADDING", (0, 0), (-1, -1), 6),
-        ]))
+        ]
+
+        # Bold the summary labels
+        for r in range(last_data_row + 1, len(table_data)):
+            style_commands.append(("FONTNAME", (3, r), (3, r), "Helvetica-Bold"))
+
+        items_table.setStyle(TableStyle(style_commands))
         elements.append(items_table)
         elements.append(Spacer(1, 30))
 

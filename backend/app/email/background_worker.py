@@ -7,6 +7,7 @@ import logging
 
 from app.database.connection import AsyncSessionLocal
 from app.services.email_service import EmailService
+from app.workflows.event_bus import workflow_event_bus
 
 logger = logging.getLogger(__name__)
 
@@ -93,8 +94,28 @@ class EmailPollingWorker:
         # so the process_attachments node can actually see them.
         if to_resume:
             from app.workflows.session_workflow import session_workflow_service
+            from app.models.base import generate_uuid, ist_now
 
-            for session_id, thread_id in to_resume:
+            for session_id, thread_id, chat_content in to_resume:
+                await workflow_event_bus.publish(session_id, {
+                    "type": "workflow_progress",
+                    "workflowId": session_id,
+                    "currentStep": "ocr_extract",
+                    "totalSteps": 12,
+                    "progress": 66,
+                    "currentStage": "Evaluation",
+                    "currentAgent": "OCR Agent",
+                    "status": "active",
+                    "message": chat_content,
+                    "timestamp": ist_now().isoformat(),
+                    "chatMessage": {
+                        "id": generate_uuid(),
+                        "role": "assistant",
+                        "content": chat_content,
+                        "message_type": "event",
+                        "created_at": ist_now().isoformat(),
+                    },
+                })
                 await session_workflow_service.resume_after_reply(session_id, thread_id)
 
         return results
@@ -131,10 +152,10 @@ class EmailPollingWorker:
                 logger.warning(f"[WORKFLOW] Session {ws.id} has no langgraph_thread_id, cannot resume")
                 continue
 
-            ws.current_step = "process_attachments"
+            ws.current_step = "ocr_extract"
             ws.current_agent = "OCR Agent"
             ws.status = "active"
-            ws.progress_percentage = 57.0
+            ws.progress_percentage = 66.0
 
             # Update step statuses
             await session.execute(
@@ -146,7 +167,7 @@ class EmailPollingWorker:
             await session.execute(
                 update(WorkflowStep).where(
                     WorkflowStep.session_id == ws.id,
-                    WorkflowStep.name == "process_attachments",
+                    WorkflowStep.name == "ocr_extract",
                 ).values(status="running", started_at=ist_now())
             )
 
@@ -172,7 +193,7 @@ class EmailPollingWorker:
             session.add(msg)
 
             logger.info(f"[WORKFLOW] Updated session {ws.id} - supplier replied for RFQ {ws.rfq_id}")
-            to_resume.append((ws.id, ws.langgraph_thread_id))
+            to_resume.append((ws.id, ws.langgraph_thread_id, msg.content))
 
         return to_resume
 

@@ -39,3 +39,53 @@ async def get_rfq_pipeline(
     service = DashboardService(db)
     pipeline = await service.get_rfq_pipeline()
     return {"pipeline": pipeline}
+
+
+@router.get("/quotation-analytics")
+async def get_quotation_analytics(
+    db: AsyncSession = Depends(get_db),
+    _current_user=Depends(get_current_user),
+):
+    """Aggregated quotation metrics — KPIs, trends, top suppliers."""
+    service = DashboardService(db)
+    return await service.get_quotation_analytics()
+
+
+@router.get("/negotiation-analytics")
+async def get_negotiation_analytics(
+    db: AsyncSession = Depends(get_db),
+    _current_user=Depends(get_current_user),
+):
+    """Aggregated negotiation metrics — success rate, savings, trends."""
+    service = DashboardService(db)
+    return await service.get_negotiation_analytics()
+
+
+@router.get("/po-analytics")
+async def get_po_analytics(
+    db: AsyncSession = Depends(get_db),
+    _current_user=Depends(get_current_user),
+):
+    """Aggregated PO metrics — spend, status, overdue, top suppliers."""
+    service = DashboardService(db)
+    return await service.get_po_analytics()
+
+
+@router.get("/supplier-performance")
+async def get_supplier_performance(
+    db: AsyncSession = Depends(get_db),
+    _current_user=Depends(get_current_user),
+):
+    """Supplier performance — top by value, response times, win rates."""
+    service = DashboardService(db)
+    return await service.get_supplier_performance()
+
+
+@router.get("/procurement-overview")
+async def get_procurement_overview(
+    db: AsyncSession = Depends(get_db),
+    _current_user=Depends(get_current_user),
+):
+    """Cross-cutting procurement analytics for executive overview."""
+    service = DashboardService(db)
+    return await service.get_procurement_overview()

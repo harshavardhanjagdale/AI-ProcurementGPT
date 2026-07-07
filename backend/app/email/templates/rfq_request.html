@@ -37,17 +37,19 @@
         <table>
             <thead>
                 <tr>
+                    <th>#</th>
                     <th>Item</th>
                     <th>Specifications</th>
-                    <th>Quantity</th>
+                    <th>Qty</th>
                     <th>Unit</th>
                 </tr>
             </thead>
             <tbody>
                 {% for item in items %}
                 <tr>
-                    <td>{{ item.product_name }}</td>
-                    <td>{{ item.specifications or 'N/A' }}</td>
+                    <td>{{ item.sr_no }}</td>
+                    <td><strong>{{ item.product_name }}</strong></td>
+                    <td>{{ item.specifications }}</td>
                     <td>{{ item.quantity }}</td>
                     <td>{{ item.unit }}</td>
                 </tr>

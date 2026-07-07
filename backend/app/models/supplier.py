@@ -15,6 +15,7 @@ class Supplier(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     address: Mapped[str | None] = mapped_column(Text, nullable=True)
     rating: Mapped[float] = mapped_column(Numeric(3, 2), default=0.00, nullable=False)
     avg_delivery_days: Mapped[int | None] = mapped_column(Integer, nullable=True)
+    default_tax_percent: Mapped[float | None] = mapped_column(Numeric(5, 2), nullable=True)
     status: Mapped[str] = mapped_column(String(20), default="active", nullable=False, index=True)
     embedding_vector: Mapped[bytes | None] = mapped_column(BLOB, nullable=True)
     notes: Mapped[str | None] = mapped_column(Text, nullable=True)

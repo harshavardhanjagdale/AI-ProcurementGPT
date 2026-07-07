@@ -61,6 +61,15 @@ async def analyze_quotations(state: ProcurementState) -> dict:
 
         quotations = await quotation_repo.get_by_rfq(rfq_id)
 
+        # Keep only the latest round per supplier so a revised quote supersedes its original
+        # for ranking/recommendation (both are still shown in the comparison table).
+        latest_by_supplier: dict[str, object] = {}
+        for q in quotations:
+            cur = latest_by_supplier.get(q.supplier_id)
+            if cur is None or (q.negotiation_round or 0) > (cur.negotiation_round or 0):
+                latest_by_supplier[q.supplier_id] = q
+        quotations = list(latest_by_supplier.values())
+
         if not quotations:
             return {
                 "comparison_matrix": {},

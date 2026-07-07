@@ -157,11 +157,23 @@ async def download_po_pdf(
     _current_user=Depends(get_current_user),
 ):
     """Download the PO as PDF."""
+    import os
+    from pathlib import Path
+    
     service = PurchaseOrderService(db)
     pdf_path = await service.get_pdf_path(po_id)
 
+    # Ensure the file exists
+    if not os.path.exists(pdf_path):
+        from fastapi import HTTPException
+        raise HTTPException(status_code=404, detail=f"PDF file not found at {pdf_path}")
+
+    # Convert to absolute Path to handle both Windows and Unix paths
+    pdf_file = Path(pdf_path).resolve()
+    filename = pdf_file.name
+
     return FileResponse(
-        path=pdf_path,
+        path=str(pdf_file),
         media_type="application/pdf",
-        filename=f"{pdf_path.split('/')[-1]}",
+        filename=filename,
     )

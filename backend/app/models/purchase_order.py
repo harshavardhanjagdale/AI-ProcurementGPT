@@ -22,6 +22,9 @@ class PurchaseOrder(Base, UUIDPrimaryKeyMixin, TimestampMixin):
     user_id: Mapped[str] = mapped_column(
         String(36), ForeignKey("users.id", ondelete="RESTRICT"), nullable=False
     )
+    subtotal: Mapped[float | None] = mapped_column(Numeric(15, 2), nullable=True)
+    tax_percent: Mapped[float | None] = mapped_column(Numeric(5, 2), nullable=True)
+    tax_amount: Mapped[float | None] = mapped_column(Numeric(15, 2), nullable=True)
     total_amount: Mapped[float] = mapped_column(Numeric(15, 2), nullable=False)
     currency: Mapped[str] = mapped_column(String(3), default="USD", nullable=False)
     delivery_date: Mapped[date | None] = mapped_column(Date, nullable=True)

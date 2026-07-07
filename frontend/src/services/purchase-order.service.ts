@@ -31,7 +31,27 @@ export const purchaseOrderService = {
     return data;
   },
 
+  async downloadPdf(id: string) {
+    try {
+      const response = await api.get(`/purchase-orders/${id}/pdf`, {
+        responseType: "blob",
+      });
+      
+      const url = window.URL.createObjectURL(response.data);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `PO-${id}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Failed to download PDF:", error);
+      throw error;
+    }
+  },
+
   getDownloadUrl(id: string) {
-    return `${api.defaults.baseURL}/purchase-orders/${id}/download`;
+    return `${api.defaults.baseURL}/purchase-orders/${id}/pdf`;
   },
 };

@@ -22,6 +22,7 @@ SAMPLE_SUPPLIERS = [
         "city": "San Francisco",
         "rating": 4.5,
         "avg_delivery_days": 7,
+        "default_tax_percent": None,
         "categories": ["IT Hardware", "Laptops", "Networking Equipment"],
     },
     {
@@ -32,6 +33,7 @@ SAMPLE_SUPPLIERS = [
         "city": "Austin",
         "rating": 4.2,
         "avg_delivery_days": 10,
+        "default_tax_percent": None,
         "categories": ["IT Hardware", "Servers", "Storage Solutions"],
     },
     {
@@ -42,6 +44,7 @@ SAMPLE_SUPPLIERS = [
         "city": "Bangalore",
         "rating": 4.0,
         "avg_delivery_days": 14,
+        "default_tax_percent": 18.0,
         "categories": ["IT Hardware", "Laptops", "Desktops"],
     },
     {
@@ -52,6 +55,7 @@ SAMPLE_SUPPLIERS = [
         "city": "Berlin",
         "rating": 4.7,
         "avg_delivery_days": 12,
+        "default_tax_percent": 19.0,
         "categories": ["IT Hardware", "Enterprise Solutions", "Networking Equipment"],
     },
     {
@@ -62,6 +66,7 @@ SAMPLE_SUPPLIERS = [
         "city": "Shenzhen",
         "rating": 3.8,
         "avg_delivery_days": 21,
+        "default_tax_percent": 13.0,
         "categories": ["IT Hardware", "Components", "Peripherals"],
     },
     {
@@ -72,6 +77,7 @@ SAMPLE_SUPPLIERS = [
         "city": "Chicago",
         "rating": 4.1,
         "avg_delivery_days": 5,
+        "default_tax_percent": None,
         "categories": ["Office Supplies", "Furniture", "Stationery"],
     },
     {
@@ -82,6 +88,7 @@ SAMPLE_SUPPLIERS = [
         "city": "London",
         "rating": 4.3,
         "avg_delivery_days": 8,
+        "default_tax_percent": 20.0,
         "categories": ["Printers", "Office Equipment", "Toner & Ink"],
     },
     {
@@ -92,6 +99,7 @@ SAMPLE_SUPPLIERS = [
         "city": "New York",
         "rating": 4.6,
         "avg_delivery_days": 10,
+        "default_tax_percent": None,
         "categories": ["Cybersecurity", "Networking Equipment", "Firewalls"],
     },
     {
@@ -102,6 +110,7 @@ SAMPLE_SUPPLIERS = [
         "city": "Seattle",
         "rating": 4.4,
         "avg_delivery_days": 3,
+        "default_tax_percent": None,
         "categories": ["Cloud Services", "Software Licenses", "SaaS"],
     },
     {
@@ -112,6 +121,7 @@ SAMPLE_SUPPLIERS = [
         "city": "Tokyo",
         "rating": 4.8,
         "avg_delivery_days": 15,
+        "default_tax_percent": 10.0,
         "categories": ["IT Hardware", "Displays", "Enterprise Solutions"],
     },
 
@@ -125,6 +135,7 @@ SAMPLE_SUPPLIERS = [
         "city": "Dallas",
         "rating": 4.3,
         "avg_delivery_days": 6,
+        "default_tax_percent": None,
         "categories": ["Industrial Equipment", "Safety Equipment", "Tools"],
     },
     {
@@ -135,6 +146,7 @@ SAMPLE_SUPPLIERS = [
         "city": "Pune",
         "rating": 4.2,
         "avg_delivery_days": 8,
+        "default_tax_percent": 18.0,
         "categories": ["Components", "Electronics", "Industrial Parts"],
     },
     {
@@ -145,6 +157,7 @@ SAMPLE_SUPPLIERS = [
         "city": "Manchester",
         "rating": 4.4,
         "avg_delivery_days": 5,
+        "default_tax_percent": 20.0,
         "categories": ["Office Supplies", "Furniture"],
     },
     {
@@ -155,6 +168,7 @@ SAMPLE_SUPPLIERS = [
         "city": "Boston",
         "rating": 4.7,
         "avg_delivery_days": 7,
+        "default_tax_percent": None,
         "categories": ["Networking Equipment", "Firewalls", "Switches"],
     },
     {
@@ -165,6 +179,7 @@ SAMPLE_SUPPLIERS = [
         "city": "Osaka",
         "rating": 4.8,
         "avg_delivery_days": 12,
+        "default_tax_percent": 10.0,
         "categories": ["Laptops", "Servers", "Storage Solutions"],
     },
     {
@@ -175,6 +190,7 @@ SAMPLE_SUPPLIERS = [
         "city": "Hyderabad",
         "rating": 4.1,
         "avg_delivery_days": 6,
+        "default_tax_percent": 18.0,
         "categories": ["Office Equipment", "Printers", "Furniture"],
     },
     {
@@ -185,6 +201,7 @@ SAMPLE_SUPPLIERS = [
         "city": "Singapore",
         "rating": 4.6,
         "avg_delivery_days": 9,
+        "default_tax_percent": 9.0,
         "categories": ["Displays", "Components", "Peripherals"],
     },
     {
@@ -195,6 +212,7 @@ SAMPLE_SUPPLIERS = [
         "city": "Denver",
         "rating": 4.5,
         "avg_delivery_days": 2,
+        "default_tax_percent": None,
         "categories": ["Software Licenses", "Cloud Services", "SaaS"],
     },
     {
@@ -205,6 +223,7 @@ SAMPLE_SUPPLIERS = [
         "city": "Munich",
         "rating": 4.7,
         "avg_delivery_days": 10,
+        "default_tax_percent": 19.0,
         "categories": ["Enterprise Solutions", "Servers", "Networking Equipment"],
     },
     {
@@ -215,6 +234,7 @@ SAMPLE_SUPPLIERS = [
         "city": "Mumbai",
         "rating": 4.3,
         "avg_delivery_days": 4,
+        "default_tax_percent": 18.0,
         "categories": ["Industrial Equipment", "Office Supplies", "IT Hardware"],
     },
 ]

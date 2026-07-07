@@ -65,6 +65,11 @@ export interface Quotation {
   ai_ranking?: number;
   status: string;
   items: QuotationItem[];
+  tax_percent?: number;
+  tax_amount?: number;
+  grand_total?: number;
+  validity_period?: string;
+  negotiation_round?: number;
   created_at: string;
 }
 

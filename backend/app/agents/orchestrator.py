@@ -10,18 +10,16 @@ from langgraph.graph import END, StateGraph
 from langgraph.checkpoint.sqlite.aio import AsyncSqliteSaver
 
 from app.agents.state import ProcurementState
-from app.agents.nodes.parse_request import parse_user_request
-from app.agents.nodes.validate_rfq import validate_rfq_data, route_after_validation
+from app.agents.nodes.parse_request import parse_and_validate
+from app.agents.nodes.validate_rfq import route_after_validation
 from app.agents.nodes.create_rfq import create_rfq_record
-from app.agents.nodes.direct_supplier import resolve_direct_supplier
-from app.agents.nodes.select_vendors import select_vendors
+from app.agents.nodes.direct_supplier import resolve_direct_supplier, route_after_direct_supplier
+from app.agents.nodes.select_vendors import select_vendors, route_after_vendor_selection
 from app.agents.nodes.generate_rfq import generate_rfq_emails
 from app.agents.nodes.send_emails import send_rfq_emails
 from app.agents.nodes.await_replies import await_supplier_replies
-from app.agents.nodes.process_ocr import process_attachments
-from app.agents.nodes.analyze_quotes import analyze_quotations
+from app.agents.nodes.process_ocr import ocr_extract, route_after_ocr
 from app.agents.nodes.user_decision import (
-    present_recommendation,
     user_decision_gate,
     route_user_decision,
 )
@@ -47,32 +45,28 @@ def build_procurement_workflow() -> StateGraph:
     """
     workflow = StateGraph(ProcurementState)
 
-    # Add all nodes
-    workflow.add_node("parse_user_request", parse_user_request)
-    workflow.add_node("validate_rfq_data", validate_rfq_data)
+    # Add all nodes. `parse_request` merges parse+validate; `ocr_extract` merges
+    # OCR + analysis + recommendation — one graph node each, so the trace/UI stay compact.
+    workflow.add_node("parse_request", parse_and_validate)
     workflow.add_node("create_rfq_record", create_rfq_record)
     workflow.add_node("resolve_direct_supplier", resolve_direct_supplier)
     workflow.add_node("select_vendors", select_vendors)
     workflow.add_node("generate_rfq_emails", generate_rfq_emails)
     workflow.add_node("send_rfq_emails", send_rfq_emails)
     workflow.add_node("await_supplier_replies", await_supplier_replies)
-    workflow.add_node("process_attachments", process_attachments)
-    workflow.add_node("analyze_quotations", analyze_quotations)
-    workflow.add_node("present_recommendation", present_recommendation)
+    workflow.add_node("ocr_extract", ocr_extract)
     workflow.add_node("user_decision_gate", user_decision_gate)
     workflow.add_node("negotiate_with_suppliers", negotiate_with_suppliers)
     workflow.add_node("generate_purchase_order", generate_purchase_order)
     workflow.add_node("send_po_email", send_po_email)
 
     # Set entry point
-    workflow.set_entry_point("parse_user_request")
+    workflow.set_entry_point("parse_request")
 
-    # Define edges
-    workflow.add_edge("parse_user_request", "validate_rfq_data")
-
-    # Conditional: validation passes → multi-vendor OR direct supplier OR needs clarification
+    # Conditional: validation passes → multi-vendor OR direct supplier OR needs clarification.
+    # route_after_validation reads parsed_intent.is_complete which parse_request sets.
     workflow.add_conditional_edges(
-        "validate_rfq_data",
+        "parse_request",
         route_after_validation,
         {
             "select_vendors": "create_rfq_record",
@@ -81,22 +75,42 @@ def build_procurement_workflow() -> StateGraph:
         },
     )
 
-    # Direct supplier flow → create RFQ → continue with RFQ generation
-    workflow.add_edge("resolve_direct_supplier", "create_rfq_record")
+    # Direct supplier flow → create RFQ only if supplier was found, else END
+    workflow.add_conditional_edges(
+        "resolve_direct_supplier",
+        route_after_direct_supplier,
+        {
+            "create_rfq_record": "create_rfq_record",
+            "no_supplier": END,
+        },
+    )
 
     # Create RFQ in DB → then select vendors (for multi-vendor path)
     workflow.add_edge("create_rfq_record", "select_vendors")
 
-    # Linear flow: vendors → RFQ generation → send
-    workflow.add_edge("select_vendors", "generate_rfq_emails")
+    # Vendors → RFQ generation, but stop early if no supplier matched
+    workflow.add_conditional_edges(
+        "select_vendors",
+        route_after_vendor_selection,
+        {
+            "generate_rfq_emails": "generate_rfq_emails",
+            "no_suppliers": END,
+        },
+    )
     workflow.add_edge("generate_rfq_emails", "send_rfq_emails")
     workflow.add_edge("send_rfq_emails", "await_supplier_replies")
 
-    # After replies: OCR → Analysis → Recommendation
-    workflow.add_edge("await_supplier_replies", "process_attachments")
-    workflow.add_edge("process_attachments", "analyze_quotations")
-    workflow.add_edge("analyze_quotations", "present_recommendation")
-    workflow.add_edge("present_recommendation", "user_decision_gate")
+    # After replies: OCR + analysis + recommendation (single merged node) → decision gate
+    # If no quotations were extracted (no document attached), loop back to waiting.
+    workflow.add_edge("await_supplier_replies", "ocr_extract")
+    workflow.add_conditional_edges(
+        "ocr_extract",
+        route_after_ocr,
+        {
+            "user_decision_gate": "user_decision_gate",
+            "await_supplier_replies": "await_supplier_replies",
+        },
+    )
 
     # User decision routing
     workflow.add_conditional_edges(
@@ -109,13 +123,14 @@ def build_procurement_workflow() -> StateGraph:
         },
     )
 
-    # Negotiation → may loop back or proceed to PO
+    # Negotiation → may loop back or proceed to PO. The "re-present" branch now routes
+    # back into the merged ocr_extract node (re-analyze + re-recommend).
     workflow.add_conditional_edges(
         "negotiate_with_suppliers",
         route_negotiation_result,
         {
             "generate_purchase_order": "generate_purchase_order",
-            "present_recommendation": "present_recommendation",
+            "present_recommendation": "ocr_extract",
             "await_negotiation_reply": "await_supplier_replies",
         },
     )

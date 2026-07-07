@@ -57,6 +57,9 @@ export interface Quotation {
   supplier_id: string;
   supplier_name: string;
   total_amount: number;
+  tax_percent: number | null;
+  tax_amount: number | null;
+  grand_total: number | null;
   currency: string;
   delivery_days: number | null;
   warranty_terms: string | null;
@@ -65,6 +68,7 @@ export interface Quotation {
   ai_score: number | null;
   ai_ranking: number | null;
   is_recommended: boolean;
+  negotiation_round: number;
   strengths: string[];
   weaknesses: string[];
   status: string;
@@ -77,6 +81,24 @@ export interface WorkflowSessionDetail extends WorkflowSessionSummary {
   started_at: string;
   completed_at: string | null;
   steps?: WorkflowStep[];
+}
+
+export interface WorkflowProgressEvent {
+  type: "workflow_progress" | "chat_message" | "workflow_complete" | "workflow_error" | "state_sync" | "ping" | "error";
+  workflowId: string;
+  currentStep?: string | null;
+  stepIndex?: number;
+  totalSteps?: number;
+  progress?: number;
+  currentStage?: string;
+  currentAgent?: string | null;
+  status?: string;
+  title?: string | null;
+  message?: string | null;
+  timestamp?: string;
+  steps?: WorkflowStep[];
+  chatMessage?: ConversationMessage | null;
+  messages?: ConversationMessage[];
 }
 
 export const workflowService = {
@@ -126,8 +148,15 @@ export const workflowService = {
     };
   },
 
-  async submitDecision(id: string, decision: "approve" | "negotiate" | "cancel") {
-    const { data } = await api.post(`/workflow/${id}/decision`, { decision });
+  async submitDecision(
+    id: string,
+    decision: "approve" | "negotiate" | "cancel",
+    targetPrice?: number
+  ) {
+    const { data } = await api.post(`/workflow/${id}/decision`, {
+      decision,
+      target_price: targetPrice ?? null,
+    });
     return data as {
       message: string;
       session: WorkflowSessionDetail;

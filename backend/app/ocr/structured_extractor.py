@@ -27,6 +27,9 @@ Return a JSON object with this exact structure:
             "total_price": float
         }}
     ],
+    "subtotal": float,
+    "tax_percent": float or null,
+    "tax_amount": float or null,
     "total_amount": float,
     "delivery_days": integer or null,
     "warranty_terms": "string or null",
@@ -41,6 +44,10 @@ Rules:
 - If multiple currencies appear, use the primary one
 - Parse delivery timelines into integer days (e.g., "2 weeks" = 14)
 - Be precise with quantities and prices
+- "subtotal" is the sum of item totals before tax
+- Look for GST, VAT, tax, service tax, CGST, SGST, IGST — extract the combined tax percentage and amount
+- "total_amount" should be the grand total INCLUDING tax
+- If tax is not mentioned in the document, set tax_percent and tax_amount to null and total_amount = subtotal
 
 OCR Text:
 ---

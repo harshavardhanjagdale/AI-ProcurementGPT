@@ -90,6 +90,52 @@ async def get_quotation(
     }
 
 
+@router.get("/rfq/{rfq_id}")
+async def list_quotations_by_rfq(
+    rfq_id: str,
+    db: AsyncSession = Depends(get_db),
+    _current_user=Depends(get_current_user),
+):
+    """List all quotations for a specific RFQ with supplier details."""
+    service = QuotationService(db)
+    quotations = await service.get_rfq_quotations(rfq_id)
+
+    return [
+        {
+            "id": q.id,
+            "rfq_id": q.rfq_id,
+            "supplier_id": q.supplier_id,
+            "supplier_name": q.supplier.name if q.supplier else "Unknown",
+            "total_amount": float(q.total_amount),
+            "tax_percent": float(q.tax_percent) if q.tax_percent else None,
+            "tax_amount": float(q.tax_amount) if q.tax_amount else None,
+            "grand_total": float(q.grand_total) if q.grand_total else None,
+            "currency": q.currency,
+            "delivery_days": q.delivery_days,
+            "warranty_terms": q.warranty_terms,
+            "payment_terms": q.payment_terms,
+            "validity_days": q.validity_days,
+            "ai_score": float(q.ai_score) if q.ai_score else None,
+            "ai_ranking": q.ai_ranking,
+            "status": q.status,
+            "negotiation_round": q.negotiation_round or 0,
+            "items": [
+                {
+                    "id": item.id,
+                    "product_name": item.product_name,
+                    "unit_price": float(item.unit_price),
+                    "quantity": item.quantity,
+                    "total_price": float(item.total_price),
+                    "specifications": item.specifications,
+                }
+                for item in q.items
+            ],
+            "created_at": q.created_at.isoformat() if q.created_at else None,
+        }
+        for q in quotations
+    ]
+
+
 @router.get("/rfq/{rfq_id}/compare")
 async def compare_quotations(
     rfq_id: str,

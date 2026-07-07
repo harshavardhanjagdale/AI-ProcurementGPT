@@ -2,6 +2,7 @@
 Claude (Anthropic) LLM client wrapper for all AI operations.
 Provides structured generation, chat completion, and JSON mode.
 """
+import asyncio
 import json
 import logging
 
@@ -16,10 +17,23 @@ JSON_MODE_INSTRUCTION = (
     "No markdown code fences, no explanation, no text before or after the JSON."
 )
 
+MAX_RETRIES = 3
+RETRY_BASE_DELAY = 2  # seconds
+
+_TRANSIENT_ERRORS = (
+    asyncio.CancelledError,
+    ConnectionError,
+    TimeoutError,
+    OSError,
+)
+
 
 class LLMClient:
     def __init__(self):
-        self.client = AsyncAnthropic(api_key=settings.ANTHROPIC_API_KEY)
+        self.client = AsyncAnthropic(
+            api_key=settings.ANTHROPIC_API_KEY,
+            timeout=120.0,
+        )
         self.model = settings.ANTHROPIC_MODEL
 
     async def generate(
@@ -29,20 +43,35 @@ class LLMClient:
         max_tokens: int = 2000,
         json_mode: bool = False,
     ) -> str:
-        """Basic chat completion."""
+        """Basic chat completion with automatic retry on transient failures."""
         system = system_prompt + JSON_MODE_INSTRUCTION if json_mode else system_prompt
 
-        try:
-            response = await self.client.messages.create(
-                model=self.model,
-                max_tokens=max_tokens,
-                system=system,
-                messages=[{"role": "user", "content": user_prompt}],
-            )
-            return _extract_text(response)
-        except Exception as e:
-            logger.error(f"LLM generation failed: {e}")
-            raise
+        last_exc: Exception | None = None
+        for attempt in range(1, MAX_RETRIES + 1):
+            try:
+                response = await self.client.messages.create(
+                    model=self.model,
+                    max_tokens=max_tokens,
+                    system=system,
+                    messages=[{"role": "user", "content": user_prompt}],
+                )
+                return _extract_text(response)
+            except _TRANSIENT_ERRORS as e:
+                last_exc = e
+                delay = RETRY_BASE_DELAY * (2 ** (attempt - 1))
+                logger.warning(
+                    f"LLM call attempt {attempt}/{MAX_RETRIES} failed "
+                    f"({type(e).__name__}), retrying in {delay}s..."
+                )
+                await asyncio.sleep(delay)
+            except Exception as e:
+                logger.error(f"LLM generation failed (non-retryable): {e}")
+                raise
+
+        logger.error(
+            f"LLM generation failed after {MAX_RETRIES} attempts: {last_exc}"
+        )
+        raise last_exc  # type: ignore[misc]
 
     async def generate_json(
         self,
@@ -85,12 +114,27 @@ class LLMClient:
         if system_prompt:
             kwargs["system"] = system_prompt
 
-        try:
-            response = await self.client.messages.create(**kwargs)
-            return _extract_text(response)
-        except Exception as e:
-            logger.error(f"LLM chat failed: {e}")
-            raise
+        last_exc: Exception | None = None
+        for attempt in range(1, MAX_RETRIES + 1):
+            try:
+                response = await self.client.messages.create(**kwargs)
+                return _extract_text(response)
+            except _TRANSIENT_ERRORS as e:
+                last_exc = e
+                delay = RETRY_BASE_DELAY * (2 ** (attempt - 1))
+                logger.warning(
+                    f"LLM chat attempt {attempt}/{MAX_RETRIES} failed "
+                    f"({type(e).__name__}), retrying in {delay}s..."
+                )
+                await asyncio.sleep(delay)
+            except Exception as e:
+                logger.error(f"LLM chat failed (non-retryable): {e}")
+                raise
+
+        logger.error(
+            f"LLM chat failed after {MAX_RETRIES} attempts: {last_exc}"
+        )
+        raise last_exc  # type: ignore[misc]
 
 
 def _extract_text(response) -> str:

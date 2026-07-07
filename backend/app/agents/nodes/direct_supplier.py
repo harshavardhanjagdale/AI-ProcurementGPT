@@ -67,3 +67,10 @@ async def resolve_direct_supplier(state: ProcurementState) -> dict:
             }],
             "current_step": "resolve_direct_supplier",
         }
+
+
+def route_after_direct_supplier(state: ProcurementState) -> str:
+    """Stop the workflow if the named supplier was not found."""
+    if not state.get("selected_suppliers"):
+        return "no_supplier"
+    return "create_rfq_record"

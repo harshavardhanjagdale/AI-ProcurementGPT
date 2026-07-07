@@ -146,6 +146,29 @@ async def webhook_email_arrived(
     if resume_session_id and resume_thread_id:
         logger.info(f"[WEBHOOK] Resuming workflow for session {resume_session_id}")
         from app.workflows.session_workflow import session_workflow_service
+        from app.workflows.event_bus import workflow_event_bus
+
+        chat_content = "⚡ **Instant Alert!** Supplier email received! Processing quotation immediately..."
+        await workflow_event_bus.publish(resume_session_id, {
+            "type": "workflow_progress",
+            "workflowId": resume_session_id,
+            "currentStep": "ocr_extract",
+            "totalSteps": 12,
+            "progress": 66,
+            "currentStage": "Evaluation",
+            "currentAgent": "OCR Agent",
+            "status": "active",
+            "message": chat_content,
+            "timestamp": ist_now().isoformat(),
+            "chatMessage": {
+                "id": generate_uuid(),
+                "role": "assistant",
+                "content": chat_content,
+                "message_type": "event",
+                "created_at": ist_now().isoformat(),
+            },
+        })
+
         resume_result = await session_workflow_service.resume_after_reply(resume_session_id, resume_thread_id)
         logger.info(f"[WEBHOOK] Workflow result - current step: {resume_result.get('current_step')}")
 
@@ -171,10 +194,10 @@ async def _update_waiting_sessions(session: AsyncSession, rfq_id: str):
     for ws in waiting_sessions:
         logger.info(f"[WEBHOOK] Updating session {ws.id} - email arrived for {rfq_id}")
         
-        ws.current_step = "process_attachments"
+        ws.current_step = "ocr_extract"
         ws.current_agent = "OCR Agent"
         ws.status = "active"
-        ws.progress_percentage = 57.0
+        ws.progress_percentage = 66.0
 
         # Update steps
         await session.execute(
@@ -186,7 +209,7 @@ async def _update_waiting_sessions(session: AsyncSession, rfq_id: str):
         await session.execute(
             update(WorkflowStep).where(
                 WorkflowStep.session_id == ws.id,
-                WorkflowStep.name == "process_attachments",
+                WorkflowStep.name == "ocr_extract",
             ).values(status="running", started_at=ist_now())
         )
 

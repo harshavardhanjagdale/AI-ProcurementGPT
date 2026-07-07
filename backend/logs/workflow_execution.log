@@ -155,3 +155,544 @@
 2026-07-05 19:22:44 | INFO     | _run_graph_streaming:238 | [NODE-DONE] 268d3c1f-e833-4163-bfeb-edb55b3b22b9 -> generate_rfq_emails
 2026-07-05 19:22:50 | INFO     | _run_graph_streaming:238 | [NODE-DONE] 268d3c1f-e833-4163-bfeb-edb55b3b22b9 -> send_rfq_emails
 2026-07-05 19:22:50 | INFO     | _run_graph_streaming:238 | [NODE-DONE] 268d3c1f-e833-4163-bfeb-edb55b3b22b9 -> await_supplier_replies
+2026-07-05 19:27:25 | INFO     | run_workflow:124 | 
+[RUN-WORKFLOW-START] Session: 3c84974f-122b-43e2-89f6-3b6d9a7d105d
+2026-07-05 19:27:25 | INFO     | run_workflow:125 | [USER-INPUT] i want 6 laptops...
+2026-07-05 19:27:25 | INFO     | run_workflow:143 | [SESSION-MODE] NEW | Thread: 535f8fa7-ff32-4ac3-bcf1-37e75452494d
+2026-07-05 19:27:28 | INFO     | _run_graph_streaming:238 | [NODE-DONE] 3c84974f-122b-43e2-89f6-3b6d9a7d105d -> parse_user_request
+2026-07-05 19:27:28 | INFO     | _run_graph_streaming:238 | [NODE-DONE] 3c84974f-122b-43e2-89f6-3b6d9a7d105d -> validate_rfq_data
+2026-07-05 19:27:28 | INFO     | _run_graph_streaming:238 | [NODE-DONE] 3c84974f-122b-43e2-89f6-3b6d9a7d105d -> create_rfq_record
+2026-07-05 19:27:34 | INFO     | _run_graph_streaming:238 | [NODE-DONE] 3c84974f-122b-43e2-89f6-3b6d9a7d105d -> select_vendors
+2026-07-05 19:27:42 | INFO     | _run_graph_streaming:238 | [NODE-DONE] 3c84974f-122b-43e2-89f6-3b6d9a7d105d -> generate_rfq_emails
+2026-07-05 19:27:47 | INFO     | _run_graph_streaming:238 | [NODE-DONE] 3c84974f-122b-43e2-89f6-3b6d9a7d105d -> send_rfq_emails
+2026-07-05 19:27:47 | INFO     | _run_graph_streaming:238 | [NODE-DONE] 3c84974f-122b-43e2-89f6-3b6d9a7d105d -> await_supplier_replies
+2026-07-05 20:27:57 | INFO     | run_workflow:115 | 
+[RUN-WORKFLOW-START] Session: 2f78392a-cb63-423a-9952-a67dd1ff60fb
+2026-07-05 20:27:57 | INFO     | run_workflow:116 | [USER-INPUT] i want 2 laptops...
+2026-07-05 20:27:57 | INFO     | run_workflow:134 | [SESSION-MODE] NEW | Thread: 464ea8d0-d978-4d00-afe5-5c00b4c851bb
+2026-07-05 20:28:01 | INFO     | _run_graph_streaming:229 | [NODE-DONE] 2f78392a-cb63-423a-9952-a67dd1ff60fb -> parse_request
+2026-07-05 20:28:01 | INFO     | _run_graph_streaming:229 | [NODE-DONE] 2f78392a-cb63-423a-9952-a67dd1ff60fb -> create_rfq_record
+2026-07-05 20:28:08 | INFO     | _run_graph_streaming:229 | [NODE-DONE] 2f78392a-cb63-423a-9952-a67dd1ff60fb -> select_vendors
+2026-07-05 20:28:18 | INFO     | _run_graph_streaming:229 | [NODE-DONE] 2f78392a-cb63-423a-9952-a67dd1ff60fb -> generate_rfq_emails
+2026-07-05 20:28:22 | INFO     | _run_graph_streaming:229 | [NODE-DONE] 2f78392a-cb63-423a-9952-a67dd1ff60fb -> send_rfq_emails
+2026-07-05 20:28:22 | INFO     | _run_graph_streaming:229 | [NODE-DONE] 2f78392a-cb63-423a-9952-a67dd1ff60fb -> await_supplier_replies
+2026-07-05 20:45:06 | INFO     | run_workflow:115 | 
+[RUN-WORKFLOW-START] Session: 8831ba4b-2f8c-4bf7-b577-9eb007707224
+2026-07-05 20:45:06 | INFO     | run_workflow:116 | [USER-INPUT] Buy 10 Dell Latitude laptops...
+2026-07-05 20:45:06 | INFO     | run_workflow:134 | [SESSION-MODE] NEW | Thread: ede9825d-78d3-4d92-b259-18e6ba174eee
+2026-07-05 20:45:09 | INFO     | _run_graph_streaming:229 | [NODE-DONE] 8831ba4b-2f8c-4bf7-b577-9eb007707224 -> parse_request
+2026-07-05 20:45:09 | INFO     | _run_graph_streaming:229 | [NODE-DONE] 8831ba4b-2f8c-4bf7-b577-9eb007707224 -> create_rfq_record
+2026-07-05 20:45:09 | INFO     | _run_graph_streaming:229 | [NODE-DONE] 8831ba4b-2f8c-4bf7-b577-9eb007707224 -> select_vendors
+2026-07-05 20:45:18 | INFO     | _run_graph_streaming:229 | [NODE-DONE] 8831ba4b-2f8c-4bf7-b577-9eb007707224 -> generate_rfq_emails
+2026-07-05 20:45:22 | INFO     | _run_graph_streaming:229 | [NODE-DONE] 8831ba4b-2f8c-4bf7-b577-9eb007707224 -> send_rfq_emails
+2026-07-05 20:45:22 | INFO     | _run_graph_streaming:229 | [NODE-DONE] 8831ba4b-2f8c-4bf7-b577-9eb007707224 -> await_supplier_replies
+2026-07-05 21:04:43 | INFO     | run_workflow:115 | 
+[RUN-WORKFLOW-START] Session: 048d6065-01b4-45ed-8245-15595d9514ba
+2026-07-05 21:04:43 | INFO     | run_workflow:116 | [USER-INPUT] by 10 nut bolt...
+2026-07-05 21:04:43 | INFO     | run_workflow:134 | [SESSION-MODE] NEW | Thread: a0fdca2d-b392-49e3-8aab-584cf78fb129
+2026-07-05 21:04:46 | INFO     | _run_graph_streaming:229 | [NODE-DONE] 048d6065-01b4-45ed-8245-15595d9514ba -> parse_request
+2026-07-05 21:04:46 | INFO     | _run_graph_streaming:229 | [NODE-DONE] 048d6065-01b4-45ed-8245-15595d9514ba -> create_rfq_record
+2026-07-05 21:04:47 | INFO     | _run_graph_streaming:229 | [NODE-DONE] 048d6065-01b4-45ed-8245-15595d9514ba -> select_vendors
+2026-07-05 21:05:19 | INFO     | _run_graph_streaming:229 | [NODE-DONE] 048d6065-01b4-45ed-8245-15595d9514ba -> generate_rfq_emails
+2026-07-05 21:05:39 | INFO     | _run_graph_streaming:229 | [NODE-DONE] 048d6065-01b4-45ed-8245-15595d9514ba -> send_rfq_emails
+2026-07-05 21:05:39 | INFO     | _run_graph_streaming:229 | [NODE-DONE] 048d6065-01b4-45ed-8245-15595d9514ba -> await_supplier_replies
+2026-07-05 21:11:03 | INFO     | run_workflow:115 | 
+[RUN-WORKFLOW-START] Session: 048d6065-01b4-45ed-8245-15595d9514ba
+2026-07-05 21:11:03 | INFO     | run_workflow:116 | [USER-INPUT] ok...
+2026-07-05 21:11:03 | INFO     | run_workflow:134 | [SESSION-MODE] RESUME | Thread: a0fdca2d-b392-49e3-8aab-584cf78fb129
+2026-07-05 21:11:03 | INFO     | _run_graph_streaming:229 | [NODE-DONE] 048d6065-01b4-45ed-8245-15595d9514ba -> ocr_extract
+2026-07-05 21:21:39 | INFO     | run_workflow:115 | 
+[RUN-WORKFLOW-START] Session: 689150ca-d04a-43ba-9f75-fbc9f2defec2
+2026-07-05 21:21:39 | INFO     | run_workflow:116 | [USER-INPUT] purchase 2 laptops...
+2026-07-05 21:21:39 | INFO     | run_workflow:134 | [SESSION-MODE] NEW | Thread: 422f2968-dd0d-4e51-bb72-f9978af0d1eb
+2026-07-05 21:21:44 | INFO     | _run_graph_streaming:229 | [NODE-DONE] 689150ca-d04a-43ba-9f75-fbc9f2defec2 -> parse_request
+2026-07-05 21:21:44 | INFO     | _run_graph_streaming:229 | [NODE-DONE] 689150ca-d04a-43ba-9f75-fbc9f2defec2 -> create_rfq_record
+2026-07-05 21:21:49 | INFO     | _run_graph_streaming:229 | [NODE-DONE] 689150ca-d04a-43ba-9f75-fbc9f2defec2 -> select_vendors
+2026-07-05 21:21:56 | INFO     | _run_graph_streaming:229 | [NODE-DONE] 689150ca-d04a-43ba-9f75-fbc9f2defec2 -> generate_rfq_emails
+2026-07-05 21:22:00 | INFO     | _run_graph_streaming:229 | [NODE-DONE] 689150ca-d04a-43ba-9f75-fbc9f2defec2 -> send_rfq_emails
+2026-07-05 21:22:00 | INFO     | _run_graph_streaming:229 | [NODE-DONE] 689150ca-d04a-43ba-9f75-fbc9f2defec2 -> await_supplier_replies
+2026-07-05 21:29:41 | INFO     | _run_graph_streaming:229 | [NODE-DONE] 689150ca-d04a-43ba-9f75-fbc9f2defec2 -> ocr_extract
+2026-07-05 21:33:31 | INFO     | _run_graph_streaming:241 | [NODE-DONE] 689150ca-d04a-43ba-9f75-fbc9f2defec2 -> user_decision_gate
+2026-07-05 21:33:32 | INFO     | _run_graph_streaming:241 | [NODE-DONE] 689150ca-d04a-43ba-9f75-fbc9f2defec2 -> generate_purchase_order
+2026-07-05 21:33:36 | INFO     | _run_graph_streaming:241 | [NODE-DONE] 689150ca-d04a-43ba-9f75-fbc9f2defec2 -> send_po_email
+2026-07-05 21:35:34 | INFO     | run_workflow:115 | 
+[RUN-WORKFLOW-START] Session: 04736d46-407d-47d0-a442-27fd6bef144e
+2026-07-05 21:35:34 | INFO     | run_workflow:116 | [USER-INPUT] Buy 10 Dell Latitude laptops...
+2026-07-05 21:35:34 | INFO     | run_workflow:134 | [SESSION-MODE] NEW | Thread: ce37c890-cae8-481a-80ab-549d247a69ef
+2026-07-05 21:35:37 | INFO     | _run_graph_streaming:241 | [NODE-DONE] 04736d46-407d-47d0-a442-27fd6bef144e -> parse_request
+2026-07-05 21:35:37 | INFO     | _run_graph_streaming:241 | [NODE-DONE] 04736d46-407d-47d0-a442-27fd6bef144e -> create_rfq_record
+2026-07-05 21:35:37 | INFO     | _run_graph_streaming:241 | [NODE-DONE] 04736d46-407d-47d0-a442-27fd6bef144e -> select_vendors
+2026-07-05 21:35:37 | INFO     | _run_graph_streaming:241 | [NODE-DONE] 04736d46-407d-47d0-a442-27fd6bef144e -> generate_rfq_emails
+2026-07-05 21:35:37 | INFO     | _run_graph_streaming:241 | [NODE-DONE] 04736d46-407d-47d0-a442-27fd6bef144e -> send_rfq_emails
+2026-07-05 21:35:37 | INFO     | _run_graph_streaming:241 | [NODE-DONE] 04736d46-407d-47d0-a442-27fd6bef144e -> await_supplier_replies
+2026-07-05 21:47:33 | INFO     | run_workflow:115 | 
+[RUN-WORKFLOW-START] Session: 53db4e27-cc01-4444-b229-6a00c0b9bce4
+2026-07-05 21:47:33 | INFO     | run_workflow:116 | [USER-INPUT] buy 5 live unicorns...
+2026-07-05 21:47:33 | INFO     | run_workflow:163 | [SESSION-MODE] NEW | Thread: 4f3a6c82-463b-4ca9-8338-49c681920d23
+2026-07-05 21:47:37 | INFO     | _run_graph_streaming:258 | [NODE-DONE] 53db4e27-cc01-4444-b229-6a00c0b9bce4 -> parse_request
+2026-07-05 21:47:37 | INFO     | _run_graph_streaming:258 | [NODE-DONE] 53db4e27-cc01-4444-b229-6a00c0b9bce4 -> create_rfq_record
+2026-07-05 21:47:37 | INFO     | _run_graph_streaming:258 | [NODE-DONE] 53db4e27-cc01-4444-b229-6a00c0b9bce4 -> select_vendors
+2026-07-05 21:47:37 | INFO     | run_workflow:115 | 
+[RUN-WORKFLOW-START] Session: 53db4e27-cc01-4444-b229-6a00c0b9bce4
+2026-07-05 21:47:37 | INFO     | run_workflow:116 | [USER-INPUT] buy 5 laptops...
+2026-07-05 21:47:37 | INFO     | run_workflow:163 | [SESSION-MODE] RESTART | Thread: 9d8c4509-79a0-46f2-bb87-4a6fea8746fb
+2026-07-05 21:47:40 | INFO     | _run_graph_streaming:258 | [NODE-DONE] 53db4e27-cc01-4444-b229-6a00c0b9bce4 -> parse_request
+2026-07-05 21:47:40 | INFO     | _run_graph_streaming:258 | [NODE-DONE] 53db4e27-cc01-4444-b229-6a00c0b9bce4 -> create_rfq_record
+2026-07-05 21:47:46 | INFO     | _run_graph_streaming:258 | [NODE-DONE] 53db4e27-cc01-4444-b229-6a00c0b9bce4 -> select_vendors
+2026-07-05 21:47:51 | INFO     | _run_graph_streaming:258 | [NODE-DONE] 53db4e27-cc01-4444-b229-6a00c0b9bce4 -> generate_rfq_emails
+2026-07-05 21:47:56 | INFO     | _run_graph_streaming:258 | [NODE-DONE] 53db4e27-cc01-4444-b229-6a00c0b9bce4 -> send_rfq_emails
+2026-07-05 21:47:56 | INFO     | _run_graph_streaming:258 | [NODE-DONE] 53db4e27-cc01-4444-b229-6a00c0b9bce4 -> await_supplier_replies
+2026-07-05 21:54:29 | INFO     | run_workflow:115 | 
+[RUN-WORKFLOW-START] Session: ae179df9-8c15-4184-b506-4672ecd8ee6e
+2026-07-05 21:54:29 | INFO     | run_workflow:116 | [USER-INPUT] Buy 10 Dell Latitude laptops...
+2026-07-05 21:54:29 | INFO     | run_workflow:163 | [SESSION-MODE] NEW | Thread: 39f4b152-242a-40fa-b431-d04a63b222b4
+2026-07-05 21:54:32 | INFO     | _run_graph_streaming:258 | [NODE-DONE] ae179df9-8c15-4184-b506-4672ecd8ee6e -> parse_request
+2026-07-05 21:54:32 | INFO     | _run_graph_streaming:258 | [NODE-DONE] ae179df9-8c15-4184-b506-4672ecd8ee6e -> create_rfq_record
+2026-07-05 21:54:33 | INFO     | _run_graph_streaming:258 | [NODE-DONE] ae179df9-8c15-4184-b506-4672ecd8ee6e -> select_vendors
+2026-07-05 21:54:58 | INFO     | run_workflow:115 | 
+[RUN-WORKFLOW-START] Session: ae179df9-8c15-4184-b506-4672ecd8ee6e
+2026-07-05 21:54:58 | INFO     | run_workflow:116 | [USER-INPUT] buy 6 laptops...
+2026-07-05 21:54:58 | INFO     | run_workflow:163 | [SESSION-MODE] RESTART | Thread: cfd5e803-a79d-43f7-bfb8-76b6417c2524
+2026-07-05 21:55:06 | INFO     | _run_graph_streaming:258 | [NODE-DONE] ae179df9-8c15-4184-b506-4672ecd8ee6e -> parse_request
+2026-07-05 21:55:06 | INFO     | _run_graph_streaming:258 | [NODE-DONE] ae179df9-8c15-4184-b506-4672ecd8ee6e -> create_rfq_record
+2026-07-05 21:55:14 | INFO     | _run_graph_streaming:258 | [NODE-DONE] ae179df9-8c15-4184-b506-4672ecd8ee6e -> select_vendors
+2026-07-05 21:55:21 | INFO     | _run_graph_streaming:258 | [NODE-DONE] ae179df9-8c15-4184-b506-4672ecd8ee6e -> generate_rfq_emails
+2026-07-05 21:55:25 | INFO     | _run_graph_streaming:258 | [NODE-DONE] ae179df9-8c15-4184-b506-4672ecd8ee6e -> send_rfq_emails
+2026-07-05 21:55:25 | INFO     | _run_graph_streaming:258 | [NODE-DONE] ae179df9-8c15-4184-b506-4672ecd8ee6e -> await_supplier_replies
+2026-07-05 21:56:43 | INFO     | _run_graph_streaming:258 | [NODE-DONE] ae179df9-8c15-4184-b506-4672ecd8ee6e -> ocr_extract
+2026-07-05 21:57:15 | INFO     | _run_graph_streaming:258 | [NODE-DONE] ae179df9-8c15-4184-b506-4672ecd8ee6e -> user_decision_gate
+2026-07-05 21:57:15 | INFO     | _run_graph_streaming:258 | [NODE-DONE] ae179df9-8c15-4184-b506-4672ecd8ee6e -> negotiate_with_suppliers
+2026-07-05 21:57:15 | INFO     | _run_graph_streaming:258 | [NODE-DONE] ae179df9-8c15-4184-b506-4672ecd8ee6e -> await_supplier_replies
+2026-07-06 11:04:22 | INFO     | run_workflow:115 | 
+[RUN-WORKFLOW-START] Session: b38c2334-0f38-4669-ade8-d5972cf8f44b
+2026-07-06 11:04:22 | INFO     | run_workflow:116 | [USER-INPUT] buy 2 laptop...
+2026-07-06 11:04:22 | INFO     | run_workflow:163 | [SESSION-MODE] NEW | Thread: 2b8ca1ad-afa3-4caa-9c41-8682cfe41455
+2026-07-06 11:04:27 | INFO     | _run_graph_streaming:258 | [NODE-DONE] b38c2334-0f38-4669-ade8-d5972cf8f44b -> parse_request
+2026-07-06 11:04:27 | INFO     | _run_graph_streaming:258 | [NODE-DONE] b38c2334-0f38-4669-ade8-d5972cf8f44b -> create_rfq_record
+2026-07-06 11:04:32 | INFO     | _run_graph_streaming:258 | [NODE-DONE] b38c2334-0f38-4669-ade8-d5972cf8f44b -> select_vendors
+2026-07-06 11:05:41 | INFO     | _run_graph_streaming:258 | [NODE-DONE] b38c2334-0f38-4669-ade8-d5972cf8f44b -> generate_rfq_emails
+2026-07-06 11:05:46 | INFO     | _run_graph_streaming:258 | [NODE-DONE] b38c2334-0f38-4669-ade8-d5972cf8f44b -> send_rfq_emails
+2026-07-06 11:05:46 | INFO     | _run_graph_streaming:258 | [NODE-DONE] b38c2334-0f38-4669-ade8-d5972cf8f44b -> await_supplier_replies
+2026-07-06 11:08:06 | INFO     | _run_graph_streaming:258 | [NODE-DONE] b38c2334-0f38-4669-ade8-d5972cf8f44b -> ocr_extract
+2026-07-06 11:09:27 | INFO     | _run_graph_streaming:258 | [NODE-DONE] b38c2334-0f38-4669-ade8-d5972cf8f44b -> user_decision_gate
+2026-07-06 11:09:37 | INFO     | _run_graph_streaming:258 | [NODE-DONE] b38c2334-0f38-4669-ade8-d5972cf8f44b -> negotiate_with_suppliers
+2026-07-06 11:09:37 | INFO     | _run_graph_streaming:258 | [NODE-DONE] b38c2334-0f38-4669-ade8-d5972cf8f44b -> await_supplier_replies
+2026-07-06 11:13:40 | INFO     | _run_graph_streaming:258 | [NODE-DONE] b38c2334-0f38-4669-ade8-d5972cf8f44b -> ocr_extract
+2026-07-06 11:14:11 | INFO     | _run_graph_streaming:258 | [NODE-DONE] b38c2334-0f38-4669-ade8-d5972cf8f44b -> user_decision_gate
+2026-07-06 11:14:11 | INFO     | _run_graph_streaming:258 | [NODE-DONE] b38c2334-0f38-4669-ade8-d5972cf8f44b -> generate_purchase_order
+2026-07-06 11:14:16 | INFO     | _run_graph_streaming:258 | [NODE-DONE] b38c2334-0f38-4669-ade8-d5972cf8f44b -> send_po_email
+2026-07-06 12:13:02 | INFO     | run_workflow:115 | 
+[RUN-WORKFLOW-START] Session: efd2af42-8d19-4684-a1ba-845703cb34da
+2026-07-06 12:13:02 | INFO     | run_workflow:116 | [USER-INPUT] buy 4 laptops...
+2026-07-06 12:13:02 | INFO     | run_workflow:163 | [SESSION-MODE] NEW | Thread: a99627f8-e93e-4249-b301-06df7098d5d7
+2026-07-06 12:13:06 | INFO     | _run_graph_streaming:258 | [NODE-DONE] efd2af42-8d19-4684-a1ba-845703cb34da -> parse_request
+2026-07-06 12:13:07 | INFO     | _run_graph_streaming:258 | [NODE-DONE] efd2af42-8d19-4684-a1ba-845703cb34da -> create_rfq_record
+2026-07-06 12:13:13 | INFO     | _run_graph_streaming:258 | [NODE-DONE] efd2af42-8d19-4684-a1ba-845703cb34da -> select_vendors
+2026-07-06 12:13:52 | INFO     | _run_graph_streaming:258 | [NODE-DONE] efd2af42-8d19-4684-a1ba-845703cb34da -> generate_rfq_emails
+2026-07-06 12:14:13 | INFO     | _run_graph_streaming:258 | [NODE-DONE] efd2af42-8d19-4684-a1ba-845703cb34da -> send_rfq_emails
+2026-07-06 12:14:13 | INFO     | _run_graph_streaming:258 | [NODE-DONE] efd2af42-8d19-4684-a1ba-845703cb34da -> await_supplier_replies
+2026-07-06 12:17:01 | INFO     | run_workflow:115 | 
+[RUN-WORKFLOW-START] Session: e27d59d2-4087-4351-bc0f-00a42336bac8
+2026-07-06 12:17:01 | INFO     | run_workflow:116 | [USER-INPUT] buy 9 laptops...
+2026-07-06 12:17:01 | INFO     | run_workflow:163 | [SESSION-MODE] NEW | Thread: 4aaf88fa-1bbb-4a2d-87e0-39ebf8837298
+2026-07-06 12:17:05 | INFO     | _run_graph_streaming:258 | [NODE-DONE] e27d59d2-4087-4351-bc0f-00a42336bac8 -> parse_request
+2026-07-06 12:17:05 | INFO     | _run_graph_streaming:258 | [NODE-DONE] e27d59d2-4087-4351-bc0f-00a42336bac8 -> create_rfq_record
+2026-07-06 12:17:13 | INFO     | _run_graph_streaming:258 | [NODE-DONE] e27d59d2-4087-4351-bc0f-00a42336bac8 -> select_vendors
+2026-07-06 12:17:21 | INFO     | _run_graph_streaming:258 | [NODE-DONE] e27d59d2-4087-4351-bc0f-00a42336bac8 -> generate_rfq_emails
+2026-07-06 12:17:26 | INFO     | _run_graph_streaming:258 | [NODE-DONE] e27d59d2-4087-4351-bc0f-00a42336bac8 -> send_rfq_emails
+2026-07-06 12:17:26 | INFO     | _run_graph_streaming:258 | [NODE-DONE] e27d59d2-4087-4351-bc0f-00a42336bac8 -> await_supplier_replies
+2026-07-06 12:18:37 | INFO     | _run_graph_streaming:258 | [NODE-DONE] e27d59d2-4087-4351-bc0f-00a42336bac8 -> ocr_extract
+2026-07-06 12:19:19 | INFO     | _run_graph_streaming:258 | [NODE-DONE] e27d59d2-4087-4351-bc0f-00a42336bac8 -> user_decision_gate
+2026-07-06 12:19:36 | INFO     | _run_graph_streaming:258 | [NODE-DONE] e27d59d2-4087-4351-bc0f-00a42336bac8 -> negotiate_with_suppliers
+2026-07-06 12:19:36 | INFO     | _run_graph_streaming:258 | [NODE-DONE] e27d59d2-4087-4351-bc0f-00a42336bac8 -> await_supplier_replies
+2026-07-06 12:21:02 | INFO     | _run_graph_streaming:258 | [NODE-DONE] e27d59d2-4087-4351-bc0f-00a42336bac8 -> ocr_extract
+2026-07-06 12:21:16 | INFO     | _run_graph_streaming:258 | [NODE-DONE] e27d59d2-4087-4351-bc0f-00a42336bac8 -> user_decision_gate
+2026-07-06 12:21:16 | INFO     | _run_graph_streaming:258 | [NODE-DONE] e27d59d2-4087-4351-bc0f-00a42336bac8 -> generate_purchase_order
+2026-07-06 12:21:21 | INFO     | _run_graph_streaming:258 | [NODE-DONE] e27d59d2-4087-4351-bc0f-00a42336bac8 -> send_po_email
+2026-07-06 12:50:33 | INFO     | run_workflow:134 | 
+[RUN-WORKFLOW-START] Session: f6035e48-1a88-4159-b2f2-07463596978e
+2026-07-06 12:50:33 | INFO     | run_workflow:135 | [USER-INPUT] i need 2 laptops...
+2026-07-06 12:50:33 | INFO     | run_workflow:182 | [SESSION-MODE] NEW | Thread: 357a5bbb-f7e2-48f2-976d-0cbb8a5df387
+2026-07-06 12:50:38 | INFO     | _run_graph_streaming:277 | [NODE-DONE] f6035e48-1a88-4159-b2f2-07463596978e -> parse_request
+2026-07-06 12:50:38 | INFO     | _run_graph_streaming:277 | [NODE-DONE] f6035e48-1a88-4159-b2f2-07463596978e -> create_rfq_record
+2026-07-06 12:50:45 | INFO     | _run_graph_streaming:277 | [NODE-DONE] f6035e48-1a88-4159-b2f2-07463596978e -> select_vendors
+2026-07-06 12:50:54 | INFO     | _run_graph_streaming:277 | [NODE-DONE] f6035e48-1a88-4159-b2f2-07463596978e -> generate_rfq_emails
+2026-07-06 12:51:00 | INFO     | _run_graph_streaming:277 | [NODE-DONE] f6035e48-1a88-4159-b2f2-07463596978e -> send_rfq_emails
+2026-07-06 12:51:00 | INFO     | _run_graph_streaming:277 | [NODE-DONE] f6035e48-1a88-4159-b2f2-07463596978e -> await_supplier_replies
+2026-07-06 12:58:04 | INFO     | run_workflow:134 | 
+[RUN-WORKFLOW-START] Session: 1479e43e-4b69-4a19-a232-52396d5b0cb8
+2026-07-06 12:58:04 | INFO     | run_workflow:135 | [USER-INPUT] buy 1 laptop...
+2026-07-06 12:58:04 | INFO     | run_workflow:182 | [SESSION-MODE] NEW | Thread: b236a2f9-05ca-4786-816b-61839ef4eecf
+2026-07-06 12:58:07 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 1479e43e-4b69-4a19-a232-52396d5b0cb8 -> parse_request
+2026-07-06 12:58:07 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 1479e43e-4b69-4a19-a232-52396d5b0cb8 -> create_rfq_record
+2026-07-06 12:58:07 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 1479e43e-4b69-4a19-a232-52396d5b0cb8 -> select_vendors
+2026-07-06 12:58:13 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 1479e43e-4b69-4a19-a232-52396d5b0cb8 -> generate_rfq_emails
+2026-07-06 12:58:18 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 1479e43e-4b69-4a19-a232-52396d5b0cb8 -> send_rfq_emails
+2026-07-06 12:58:18 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 1479e43e-4b69-4a19-a232-52396d5b0cb8 -> await_supplier_replies
+2026-07-06 13:11:25 | INFO     | run_workflow:134 | 
+[RUN-WORKFLOW-START] Session: 4f110827-868a-46cc-b3cb-50237bcc8222
+2026-07-06 13:11:25 | INFO     | run_workflow:135 | [USER-INPUT] buy 9 laptops...
+2026-07-06 13:11:25 | INFO     | run_workflow:182 | [SESSION-MODE] NEW | Thread: 9996bd40-55d2-47c1-8b15-d78a1e3d684f
+2026-07-06 13:11:29 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 4f110827-868a-46cc-b3cb-50237bcc8222 -> parse_request
+2026-07-06 13:11:29 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 4f110827-868a-46cc-b3cb-50237bcc8222 -> create_rfq_record
+2026-07-06 13:11:37 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 4f110827-868a-46cc-b3cb-50237bcc8222 -> select_vendors
+2026-07-06 13:11:44 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 4f110827-868a-46cc-b3cb-50237bcc8222 -> generate_rfq_emails
+2026-07-06 13:11:54 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 4f110827-868a-46cc-b3cb-50237bcc8222 -> send_rfq_emails
+2026-07-06 13:11:54 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 4f110827-868a-46cc-b3cb-50237bcc8222 -> await_supplier_replies
+2026-07-06 13:13:15 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 4f110827-868a-46cc-b3cb-50237bcc8222 -> ocr_extract
+2026-07-06 15:06:32 | INFO     | run_workflow:134 | 
+[RUN-WORKFLOW-START] Session: f50d8de1-1037-4461-964c-a756eaeb0645
+2026-07-06 15:06:32 | INFO     | run_workflow:135 | [USER-INPUT] buy 4 laptops...
+2026-07-06 15:06:32 | INFO     | run_workflow:182 | [SESSION-MODE] NEW | Thread: 6a790b44-4d09-4f8f-8950-a90586658cbc
+2026-07-06 15:06:39 | INFO     | _run_graph_streaming:277 | [NODE-DONE] f50d8de1-1037-4461-964c-a756eaeb0645 -> parse_request
+2026-07-06 15:06:40 | INFO     | _run_graph_streaming:277 | [NODE-DONE] f50d8de1-1037-4461-964c-a756eaeb0645 -> create_rfq_record
+2026-07-06 15:06:47 | INFO     | _run_graph_streaming:277 | [NODE-DONE] f50d8de1-1037-4461-964c-a756eaeb0645 -> select_vendors
+2026-07-06 15:06:55 | INFO     | _run_graph_streaming:277 | [NODE-DONE] f50d8de1-1037-4461-964c-a756eaeb0645 -> generate_rfq_emails
+2026-07-06 15:07:00 | INFO     | _run_graph_streaming:277 | [NODE-DONE] f50d8de1-1037-4461-964c-a756eaeb0645 -> send_rfq_emails
+2026-07-06 15:07:00 | INFO     | _run_graph_streaming:277 | [NODE-DONE] f50d8de1-1037-4461-964c-a756eaeb0645 -> await_supplier_replies
+2026-07-06 15:08:57 | INFO     | _run_graph_streaming:277 | [NODE-DONE] f50d8de1-1037-4461-964c-a756eaeb0645 -> ocr_extract
+2026-07-06 15:20:53 | INFO     | run_workflow:134 | 
+[RUN-WORKFLOW-START] Session: 554ded78-6ac8-461f-b931-ba163467f28a
+2026-07-06 15:20:53 | INFO     | run_workflow:135 | [USER-INPUT] buy 3 laptops...
+2026-07-06 15:20:53 | INFO     | run_workflow:182 | [SESSION-MODE] NEW | Thread: e16eaf6f-44bf-46c5-a01b-79809d230bbe
+2026-07-06 15:20:56 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 554ded78-6ac8-461f-b931-ba163467f28a -> parse_request
+2026-07-06 15:20:56 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 554ded78-6ac8-461f-b931-ba163467f28a -> create_rfq_record
+2026-07-06 15:21:03 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 554ded78-6ac8-461f-b931-ba163467f28a -> select_vendors
+2026-07-06 15:21:09 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 554ded78-6ac8-461f-b931-ba163467f28a -> generate_rfq_emails
+2026-07-06 15:21:14 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 554ded78-6ac8-461f-b931-ba163467f28a -> send_rfq_emails
+2026-07-06 15:21:14 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 554ded78-6ac8-461f-b931-ba163467f28a -> await_supplier_replies
+2026-07-06 15:29:38 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 554ded78-6ac8-461f-b931-ba163467f28a -> ocr_extract
+2026-07-06 15:35:19 | INFO     | run_workflow:134 | 
+[RUN-WORKFLOW-START] Session: abeac9b6-a69f-41a6-b3e8-cef13bbbd009
+2026-07-06 15:35:19 | INFO     | run_workflow:135 | [USER-INPUT] purchase 5 laptops...
+2026-07-06 15:35:19 | INFO     | run_workflow:182 | [SESSION-MODE] NEW | Thread: abd88da1-dc9a-408a-839c-71a559f63c37
+2026-07-06 15:35:21 | INFO     | _run_graph_streaming:277 | [NODE-DONE] abeac9b6-a69f-41a6-b3e8-cef13bbbd009 -> parse_request
+2026-07-06 15:35:22 | INFO     | _run_graph_streaming:277 | [NODE-DONE] abeac9b6-a69f-41a6-b3e8-cef13bbbd009 -> create_rfq_record
+2026-07-06 15:35:22 | INFO     | _run_graph_streaming:277 | [NODE-DONE] abeac9b6-a69f-41a6-b3e8-cef13bbbd009 -> select_vendors
+2026-07-06 15:35:30 | INFO     | _run_graph_streaming:277 | [NODE-DONE] abeac9b6-a69f-41a6-b3e8-cef13bbbd009 -> generate_rfq_emails
+2026-07-06 15:35:35 | INFO     | _run_graph_streaming:277 | [NODE-DONE] abeac9b6-a69f-41a6-b3e8-cef13bbbd009 -> send_rfq_emails
+2026-07-06 15:35:36 | INFO     | _run_graph_streaming:277 | [NODE-DONE] abeac9b6-a69f-41a6-b3e8-cef13bbbd009 -> await_supplier_replies
+2026-07-06 15:36:50 | INFO     | _run_graph_streaming:277 | [NODE-DONE] abeac9b6-a69f-41a6-b3e8-cef13bbbd009 -> ocr_extract
+2026-07-06 15:37:28 | INFO     | _run_graph_streaming:277 | [NODE-DONE] abeac9b6-a69f-41a6-b3e8-cef13bbbd009 -> user_decision_gate
+2026-07-06 15:37:29 | INFO     | _run_graph_streaming:277 | [NODE-DONE] abeac9b6-a69f-41a6-b3e8-cef13bbbd009 -> generate_purchase_order
+2026-07-06 15:37:35 | INFO     | _run_graph_streaming:277 | [NODE-DONE] abeac9b6-a69f-41a6-b3e8-cef13bbbd009 -> send_po_email
+2026-07-06 15:38:41 | INFO     | run_workflow:134 | 
+[RUN-WORKFLOW-START] Session: 135a9682-11c5-4e6d-b0f5-935c5e9e0cdf
+2026-07-06 15:38:41 | INFO     | run_workflow:135 | [USER-INPUT] what is array in python...
+2026-07-06 15:38:41 | INFO     | run_workflow:182 | [SESSION-MODE] NEW | Thread: 205a05d9-4a3b-45e0-87ee-15117f91b734
+2026-07-06 15:38:44 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 135a9682-11c5-4e6d-b0f5-935c5e9e0cdf -> parse_request
+2026-07-06 15:38:53 | INFO     | run_workflow:134 | 
+[RUN-WORKFLOW-START] Session: 135a9682-11c5-4e6d-b0f5-935c5e9e0cdf
+2026-07-06 15:38:53 | INFO     | run_workflow:135 | [USER-INPUT] hello how are you...
+2026-07-06 15:38:53 | INFO     | run_workflow:182 | [SESSION-MODE] RESTART | Thread: 40e1bd82-ff3f-4ac9-be37-4aa044207b58
+2026-07-06 15:38:56 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 135a9682-11c5-4e6d-b0f5-935c5e9e0cdf -> parse_request
+2026-07-06 15:39:05 | INFO     | run_workflow:134 | 
+[RUN-WORKFLOW-START] Session: 135a9682-11c5-4e6d-b0f5-935c5e9e0cdf
+2026-07-06 15:39:05 | INFO     | run_workflow:135 | [USER-INPUT] i dont want to purchase...
+2026-07-06 15:39:05 | INFO     | run_workflow:182 | [SESSION-MODE] RESTART | Thread: 9a19591b-79dd-4fd1-9fba-dae694ea4e26
+2026-07-06 15:39:08 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 135a9682-11c5-4e6d-b0f5-935c5e9e0cdf -> parse_request
+2026-07-06 15:39:28 | INFO     | run_workflow:134 | 
+[RUN-WORKFLOW-START] Session: 135a9682-11c5-4e6d-b0f5-935c5e9e0cdf
+2026-07-06 15:39:28 | INFO     | run_workflow:135 | [USER-INPUT] i want to purchase l...
+2026-07-06 15:39:28 | INFO     | run_workflow:182 | [SESSION-MODE] RESTART | Thread: d685c5d1-fd95-4e68-aa2e-0eb5b956e20a
+2026-07-06 15:39:32 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 135a9682-11c5-4e6d-b0f5-935c5e9e0cdf -> parse_request
+2026-07-06 15:39:42 | INFO     | run_workflow:134 | 
+[RUN-WORKFLOW-START] Session: 135a9682-11c5-4e6d-b0f5-935c5e9e0cdf
+2026-07-06 15:39:42 | INFO     | run_workflow:135 | [USER-INPUT] i want to purchase nut...
+2026-07-06 15:39:42 | INFO     | run_workflow:182 | [SESSION-MODE] RESTART | Thread: 95898f15-19b0-4b56-b8d3-2da66d5e1800
+2026-07-06 15:39:45 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 135a9682-11c5-4e6d-b0f5-935c5e9e0cdf -> parse_request
+2026-07-06 15:39:45 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 135a9682-11c5-4e6d-b0f5-935c5e9e0cdf -> create_rfq_record
+2026-07-06 15:39:45 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 135a9682-11c5-4e6d-b0f5-935c5e9e0cdf -> select_vendors
+2026-07-06 15:40:18 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 135a9682-11c5-4e6d-b0f5-935c5e9e0cdf -> generate_rfq_emails
+2026-07-06 15:40:39 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 135a9682-11c5-4e6d-b0f5-935c5e9e0cdf -> send_rfq_emails
+2026-07-06 15:40:39 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 135a9682-11c5-4e6d-b0f5-935c5e9e0cdf -> await_supplier_replies
+2026-07-06 15:42:07 | INFO     | run_workflow:134 | 
+[RUN-WORKFLOW-START] Session: 5c32f798-e988-4001-8ded-270e4286c689
+2026-07-06 15:42:07 | INFO     | run_workflow:135 | [USER-INPUT] Buy 10 Dell Latitude laptops...
+2026-07-06 15:42:08 | INFO     | run_workflow:182 | [SESSION-MODE] NEW | Thread: 73da15d7-d1e3-417e-9118-d4d7314a0ae2
+2026-07-06 15:42:11 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 5c32f798-e988-4001-8ded-270e4286c689 -> parse_request
+2026-07-06 15:42:11 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 5c32f798-e988-4001-8ded-270e4286c689 -> create_rfq_record
+2026-07-06 15:42:11 | INFO     | _run_graph_streaming:277 | [NODE-DONE] 5c32f798-e988-4001-8ded-270e4286c689 -> select_vendors
+2026-07-06 15:49:28 | INFO     | run_workflow:133 | 
+[RUN-WORKFLOW-START] Session: 5c32f798-e988-4001-8ded-270e4286c689
+2026-07-06 15:49:28 | INFO     | run_workflow:134 | [USER-INPUT] Buy 10 Dell Latitude laptops...
+2026-07-06 15:49:28 | INFO     | run_workflow:181 | [SESSION-MODE] RESTART | Thread: 69a4d9bd-11b1-4c2a-8937-36e968315388
+2026-07-06 15:49:32 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 5c32f798-e988-4001-8ded-270e4286c689 -> parse_request
+2026-07-06 15:49:32 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 5c32f798-e988-4001-8ded-270e4286c689 -> create_rfq_record
+2026-07-06 15:49:38 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 5c32f798-e988-4001-8ded-270e4286c689 -> select_vendors
+2026-07-06 15:50:15 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 5c32f798-e988-4001-8ded-270e4286c689 -> generate_rfq_emails
+2026-07-06 15:50:39 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 5c32f798-e988-4001-8ded-270e4286c689 -> send_rfq_emails
+2026-07-06 15:50:39 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 5c32f798-e988-4001-8ded-270e4286c689 -> await_supplier_replies
+2026-07-06 15:51:12 | INFO     | run_workflow:133 | 
+[RUN-WORKFLOW-START] Session: 350480a9-a49a-4412-8c2f-8cfc46def2f6
+2026-07-06 15:51:12 | INFO     | run_workflow:134 | [USER-INPUT] buy 3 laptops...
+2026-07-06 15:51:12 | INFO     | run_workflow:181 | [SESSION-MODE] NEW | Thread: 9b5aea20-b278-4f04-9a72-a13d87cbe9b3
+2026-07-06 15:51:15 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 350480a9-a49a-4412-8c2f-8cfc46def2f6 -> parse_request
+2026-07-06 15:51:15 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 350480a9-a49a-4412-8c2f-8cfc46def2f6 -> create_rfq_record
+2026-07-06 15:51:15 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 350480a9-a49a-4412-8c2f-8cfc46def2f6 -> select_vendors
+2026-07-06 15:51:20 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 350480a9-a49a-4412-8c2f-8cfc46def2f6 -> generate_rfq_emails
+2026-07-06 15:51:24 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 350480a9-a49a-4412-8c2f-8cfc46def2f6 -> send_rfq_emails
+2026-07-06 15:51:24 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 350480a9-a49a-4412-8c2f-8cfc46def2f6 -> await_supplier_replies
+2026-07-06 15:57:34 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 350480a9-a49a-4412-8c2f-8cfc46def2f6 -> ocr_extract
+2026-07-06 16:01:35 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 350480a9-a49a-4412-8c2f-8cfc46def2f6 -> user_decision_gate
+2026-07-06 16:01:46 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 350480a9-a49a-4412-8c2f-8cfc46def2f6 -> negotiate_with_suppliers
+2026-07-06 16:01:46 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 350480a9-a49a-4412-8c2f-8cfc46def2f6 -> await_supplier_replies
+2026-07-06 16:02:53 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 350480a9-a49a-4412-8c2f-8cfc46def2f6 -> ocr_extract
+2026-07-06 16:03:21 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 350480a9-a49a-4412-8c2f-8cfc46def2f6 -> user_decision_gate
+2026-07-06 16:03:33 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 350480a9-a49a-4412-8c2f-8cfc46def2f6 -> negotiate_with_suppliers
+2026-07-06 16:03:33 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 350480a9-a49a-4412-8c2f-8cfc46def2f6 -> await_supplier_replies
+2026-07-06 16:06:21 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 350480a9-a49a-4412-8c2f-8cfc46def2f6 -> ocr_extract
+2026-07-06 16:06:44 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 350480a9-a49a-4412-8c2f-8cfc46def2f6 -> user_decision_gate
+2026-07-06 16:17:41 | INFO     | run_workflow:133 | 
+[RUN-WORKFLOW-START] Session: b53ec76a-1c47-45dd-a46a-3ff9d3c98fcd
+2026-07-06 16:17:41 | INFO     | run_workflow:134 | [USER-INPUT] buy 8 laptops...
+2026-07-06 16:17:41 | INFO     | run_workflow:181 | [SESSION-MODE] NEW | Thread: 970154e2-8f60-4b3e-a34f-0f407ad7e6b1
+2026-07-06 16:17:45 | INFO     | _run_graph_streaming:276 | [NODE-DONE] b53ec76a-1c47-45dd-a46a-3ff9d3c98fcd -> parse_request
+2026-07-06 16:17:45 | INFO     | _run_graph_streaming:276 | [NODE-DONE] b53ec76a-1c47-45dd-a46a-3ff9d3c98fcd -> create_rfq_record
+2026-07-06 16:17:52 | INFO     | _run_graph_streaming:276 | [NODE-DONE] b53ec76a-1c47-45dd-a46a-3ff9d3c98fcd -> select_vendors
+2026-07-06 16:17:58 | INFO     | _run_graph_streaming:276 | [NODE-DONE] b53ec76a-1c47-45dd-a46a-3ff9d3c98fcd -> generate_rfq_emails
+2026-07-06 16:18:03 | INFO     | _run_graph_streaming:276 | [NODE-DONE] b53ec76a-1c47-45dd-a46a-3ff9d3c98fcd -> send_rfq_emails
+2026-07-06 16:18:03 | INFO     | _run_graph_streaming:276 | [NODE-DONE] b53ec76a-1c47-45dd-a46a-3ff9d3c98fcd -> await_supplier_replies
+2026-07-06 16:19:17 | INFO     | _run_graph_streaming:276 | [NODE-DONE] b53ec76a-1c47-45dd-a46a-3ff9d3c98fcd -> ocr_extract
+2026-07-06 16:19:39 | INFO     | _run_graph_streaming:276 | [NODE-DONE] b53ec76a-1c47-45dd-a46a-3ff9d3c98fcd -> user_decision_gate
+2026-07-06 16:19:48 | INFO     | _run_graph_streaming:276 | [NODE-DONE] b53ec76a-1c47-45dd-a46a-3ff9d3c98fcd -> negotiate_with_suppliers
+2026-07-06 16:19:48 | INFO     | _run_graph_streaming:276 | [NODE-DONE] b53ec76a-1c47-45dd-a46a-3ff9d3c98fcd -> await_supplier_replies
+2026-07-06 16:21:36 | INFO     | _run_graph_streaming:276 | [NODE-DONE] b53ec76a-1c47-45dd-a46a-3ff9d3c98fcd -> ocr_extract
+2026-07-06 16:22:37 | INFO     | _run_graph_streaming:276 | [NODE-DONE] b53ec76a-1c47-45dd-a46a-3ff9d3c98fcd -> user_decision_gate
+2026-07-06 22:52:28 | INFO     | run_workflow:133 | 
+[RUN-WORKFLOW-START] Session: bc247623-ee28-4ded-8c12-6fb1ede1108d
+2026-07-06 22:52:28 | INFO     | run_workflow:134 | [USER-INPUT] buy 9 laptops...
+2026-07-06 22:52:28 | INFO     | run_workflow:181 | [SESSION-MODE] NEW | Thread: 391f0690-49b0-4fa1-8dad-6c27f95bc97c
+2026-07-06 22:52:30 | INFO     | _run_graph_streaming:276 | [NODE-DONE] bc247623-ee28-4ded-8c12-6fb1ede1108d -> parse_request
+2026-07-06 22:52:31 | INFO     | _run_graph_streaming:276 | [NODE-DONE] bc247623-ee28-4ded-8c12-6fb1ede1108d -> create_rfq_record
+2026-07-06 22:52:31 | INFO     | _run_graph_streaming:276 | [NODE-DONE] bc247623-ee28-4ded-8c12-6fb1ede1108d -> select_vendors
+2026-07-06 22:52:37 | INFO     | _run_graph_streaming:276 | [NODE-DONE] bc247623-ee28-4ded-8c12-6fb1ede1108d -> generate_rfq_emails
+2026-07-06 22:52:42 | INFO     | _run_graph_streaming:276 | [NODE-DONE] bc247623-ee28-4ded-8c12-6fb1ede1108d -> send_rfq_emails
+2026-07-06 22:52:42 | INFO     | _run_graph_streaming:276 | [NODE-DONE] bc247623-ee28-4ded-8c12-6fb1ede1108d -> await_supplier_replies
+2026-07-06 23:02:53 | INFO     | _run_graph_streaming:276 | [NODE-DONE] bc247623-ee28-4ded-8c12-6fb1ede1108d -> ocr_extract
+2026-07-06 23:10:01 | INFO     | _run_graph_streaming:276 | [NODE-DONE] bc247623-ee28-4ded-8c12-6fb1ede1108d -> user_decision_gate
+2026-07-06 23:10:01 | INFO     | _run_graph_streaming:276 | [NODE-DONE] bc247623-ee28-4ded-8c12-6fb1ede1108d -> generate_purchase_order
+2026-07-06 23:10:06 | INFO     | _run_graph_streaming:276 | [NODE-DONE] bc247623-ee28-4ded-8c12-6fb1ede1108d -> send_po_email
+2026-07-06 23:26:20 | INFO     | run_workflow:133 | 
+[RUN-WORKFLOW-START] Session: 4f3418be-4e26-49db-85bb-fcb0295663f6
+2026-07-06 23:26:20 | INFO     | run_workflow:134 | [USER-INPUT] Buy 10 Dell Latitude laptops...
+2026-07-06 23:26:20 | INFO     | run_workflow:181 | [SESSION-MODE] NEW | Thread: 86648e27-9cc4-4b6e-9e87-cea968dc6ce5
+2026-07-06 23:26:24 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 4f3418be-4e26-49db-85bb-fcb0295663f6 -> parse_request
+2026-07-06 23:26:24 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 4f3418be-4e26-49db-85bb-fcb0295663f6 -> create_rfq_record
+2026-07-06 23:26:30 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 4f3418be-4e26-49db-85bb-fcb0295663f6 -> select_vendors
+2026-07-06 23:27:01 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 4f3418be-4e26-49db-85bb-fcb0295663f6 -> generate_rfq_emails
+2026-07-06 23:27:21 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 4f3418be-4e26-49db-85bb-fcb0295663f6 -> send_rfq_emails
+2026-07-06 23:27:21 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 4f3418be-4e26-49db-85bb-fcb0295663f6 -> await_supplier_replies
+2026-07-06 23:29:35 | INFO     | run_workflow:133 | 
+[RUN-WORKFLOW-START] Session: 5642540d-7974-4e9d-943f-7dbff3191a13
+2026-07-06 23:29:35 | INFO     | run_workflow:134 | [USER-INPUT] Buy 10 Dell Latitude laptops...
+2026-07-06 23:29:35 | INFO     | run_workflow:181 | [SESSION-MODE] NEW | Thread: 4f988888-7606-43a2-89bf-d75e40412cb6
+2026-07-06 23:29:38 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 5642540d-7974-4e9d-943f-7dbff3191a13 -> parse_request
+2026-07-06 23:29:38 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 5642540d-7974-4e9d-943f-7dbff3191a13 -> create_rfq_record
+2026-07-06 23:29:38 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 5642540d-7974-4e9d-943f-7dbff3191a13 -> select_vendors
+2026-07-06 23:30:10 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 5642540d-7974-4e9d-943f-7dbff3191a13 -> generate_rfq_emails
+2026-07-06 23:30:29 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 5642540d-7974-4e9d-943f-7dbff3191a13 -> send_rfq_emails
+2026-07-06 23:30:29 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 5642540d-7974-4e9d-943f-7dbff3191a13 -> await_supplier_replies
+2026-07-06 23:33:54 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 5642540d-7974-4e9d-943f-7dbff3191a13 -> ocr_extract
+2026-07-06 23:35:48 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 5642540d-7974-4e9d-943f-7dbff3191a13 -> user_decision_gate
+2026-07-06 23:44:33 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 5642540d-7974-4e9d-943f-7dbff3191a13 -> negotiate_with_suppliers
+2026-07-06 23:44:33 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 5642540d-7974-4e9d-943f-7dbff3191a13 -> await_supplier_replies
+2026-07-06 23:47:43 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 5642540d-7974-4e9d-943f-7dbff3191a13 -> ocr_extract
+2026-07-06 23:48:33 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 5642540d-7974-4e9d-943f-7dbff3191a13 -> user_decision_gate
+2026-07-06 23:48:33 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 5642540d-7974-4e9d-943f-7dbff3191a13 -> generate_purchase_order
+2026-07-06 23:48:38 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 5642540d-7974-4e9d-943f-7dbff3191a13 -> send_po_email
+2026-07-07 12:38:41 | INFO     | run_workflow:133 | 
+[RUN-WORKFLOW-START] Session: 5b9f0a7a-3a6c-4a35-a699-d638b96c66c5
+2026-07-07 12:38:41 | INFO     | run_workflow:134 | [USER-INPUT] Buy 10 Dell Latitude laptops...
+2026-07-07 12:38:41 | INFO     | run_workflow:181 | [SESSION-MODE] NEW | Thread: 51f44a7b-67e9-45a3-810a-3d9338aaae5a
+2026-07-07 13:09:54 | INFO     | run_workflow:133 | 
+[RUN-WORKFLOW-START] Session: 481f9a39-43d3-435c-8138-9e4a76d51705
+2026-07-07 13:09:54 | INFO     | run_workflow:134 | [USER-INPUT] Buy 10 Dell Latitude laptops...
+2026-07-07 13:09:54 | INFO     | run_workflow:181 | [SESSION-MODE] NEW | Thread: 356def2b-c2ed-4841-b68d-27dd6337ca66
+2026-07-07 13:12:39 | INFO     | run_workflow:133 | 
+[RUN-WORKFLOW-START] Session: 58840494-b1cb-4cc4-ad29-2eaa4c8d2d99
+2026-07-07 13:12:39 | INFO     | run_workflow:134 | [USER-INPUT] Buy 10 Dell Latitude laptops...
+2026-07-07 13:12:39 | INFO     | run_workflow:181 | [SESSION-MODE] NEW | Thread: cbb290b0-69fd-41e2-b061-0a9cc3b7bb13
+2026-07-07 13:12:43 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 58840494-b1cb-4cc4-ad29-2eaa4c8d2d99 -> parse_request
+2026-07-07 13:12:43 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 58840494-b1cb-4cc4-ad29-2eaa4c8d2d99 -> create_rfq_record
+2026-07-07 13:12:50 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 58840494-b1cb-4cc4-ad29-2eaa4c8d2d99 -> select_vendors
+2026-07-07 13:13:23 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 58840494-b1cb-4cc4-ad29-2eaa4c8d2d99 -> generate_rfq_emails
+2026-07-07 13:13:40 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 58840494-b1cb-4cc4-ad29-2eaa4c8d2d99 -> send_rfq_emails
+2026-07-07 13:13:40 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 58840494-b1cb-4cc4-ad29-2eaa4c8d2d99 -> await_supplier_replies
+2026-07-07 13:21:44 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 58840494-b1cb-4cc4-ad29-2eaa4c8d2d99 -> ocr_extract
+2026-07-07 13:22:09 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 58840494-b1cb-4cc4-ad29-2eaa4c8d2d99 -> user_decision_gate
+2026-07-07 13:22:20 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 58840494-b1cb-4cc4-ad29-2eaa4c8d2d99 -> negotiate_with_suppliers
+2026-07-07 13:22:20 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 58840494-b1cb-4cc4-ad29-2eaa4c8d2d99 -> await_supplier_replies
+2026-07-07 13:24:10 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 58840494-b1cb-4cc4-ad29-2eaa4c8d2d99 -> ocr_extract
+2026-07-07 13:24:27 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 58840494-b1cb-4cc4-ad29-2eaa4c8d2d99 -> user_decision_gate
+2026-07-07 13:24:28 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 58840494-b1cb-4cc4-ad29-2eaa4c8d2d99 -> generate_purchase_order
+2026-07-07 13:24:33 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 58840494-b1cb-4cc4-ad29-2eaa4c8d2d99 -> send_po_email
+2026-07-07 13:29:34 | INFO     | run_workflow:133 | 
+[RUN-WORKFLOW-START] Session: 8255a446-f173-4661-8bf0-f4a9298c5286
+2026-07-07 13:29:34 | INFO     | run_workflow:134 | [USER-INPUT] Purchase 50 office chairs from ErgoSupply...
+2026-07-07 13:29:35 | INFO     | run_workflow:181 | [SESSION-MODE] NEW | Thread: 536d0039-17a1-43d2-bd0c-ccf00857bed0
+2026-07-07 13:29:39 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 8255a446-f173-4661-8bf0-f4a9298c5286 -> parse_request
+2026-07-07 13:29:39 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 8255a446-f173-4661-8bf0-f4a9298c5286 -> resolve_direct_supplier
+2026-07-07 13:29:39 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 8255a446-f173-4661-8bf0-f4a9298c5286 -> create_rfq_record
+2026-07-07 13:29:39 | INFO     | _run_graph_streaming:276 | [NODE-DONE] 8255a446-f173-4661-8bf0-f4a9298c5286 -> select_vendors
+2026-07-07 13:39:16 | INFO     | run_workflow:132 | 
+[RUN-WORKFLOW-START] Session: 8255a446-f173-4661-8bf0-f4a9298c5286
+2026-07-07 13:39:16 | INFO     | run_workflow:133 | [USER-INPUT] Purchase 50 office chairs from ErgoSupply...
+2026-07-07 13:39:16 | INFO     | run_workflow:180 | [SESSION-MODE] RESTART | Thread: d42b7a3f-fcb4-4bc0-869b-41df1158e90a
+2026-07-07 13:39:23 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 8255a446-f173-4661-8bf0-f4a9298c5286 -> parse_request
+2026-07-07 13:39:23 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 8255a446-f173-4661-8bf0-f4a9298c5286 -> resolve_direct_supplier
+2026-07-07 13:39:23 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 8255a446-f173-4661-8bf0-f4a9298c5286 -> create_rfq_record
+2026-07-07 13:39:23 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 8255a446-f173-4661-8bf0-f4a9298c5286 -> select_vendors
+2026-07-07 13:39:45 | INFO     | run_workflow:132 | 
+[RUN-WORKFLOW-START] Session: 8255a446-f173-4661-8bf0-f4a9298c5286
+2026-07-07 13:39:45 | INFO     | run_workflow:133 | [USER-INPUT] I need 100 USB-C cables, find me the best price"...
+2026-07-07 13:39:45 | INFO     | run_workflow:180 | [SESSION-MODE] RESTART | Thread: 05539e49-8ca3-433b-bbfd-ed97f41af148
+2026-07-07 13:39:49 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 8255a446-f173-4661-8bf0-f4a9298c5286 -> parse_request
+2026-07-07 13:39:50 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 8255a446-f173-4661-8bf0-f4a9298c5286 -> create_rfq_record
+2026-07-07 13:39:56 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 8255a446-f173-4661-8bf0-f4a9298c5286 -> select_vendors
+2026-07-07 13:40:03 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 8255a446-f173-4661-8bf0-f4a9298c5286 -> generate_rfq_emails
+2026-07-07 13:40:10 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 8255a446-f173-4661-8bf0-f4a9298c5286 -> send_rfq_emails
+2026-07-07 13:40:10 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 8255a446-f173-4661-8bf0-f4a9298c5286 -> await_supplier_replies
+2026-07-07 13:42:08 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 8255a446-f173-4661-8bf0-f4a9298c5286 -> ocr_extract
+2026-07-07 13:58:27 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 8255a446-f173-4661-8bf0-f4a9298c5286 -> user_decision_gate
+2026-07-07 13:58:27 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 8255a446-f173-4661-8bf0-f4a9298c5286 -> generate_purchase_order
+2026-07-07 13:58:33 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 8255a446-f173-4661-8bf0-f4a9298c5286 -> send_po_email
+2026-07-07 13:59:22 | INFO     | run_workflow:132 | 
+[RUN-WORKFLOW-START] Session: 7996ce21-5cc4-44ac-bad0-3a2120341e09
+2026-07-07 13:59:22 | INFO     | run_workflow:133 | [USER-INPUT] buy nut from tech alpha supplier...
+2026-07-07 13:59:22 | INFO     | run_workflow:180 | [SESSION-MODE] NEW | Thread: ff99d0a0-3f78-4871-b427-3ad2197499d6
+2026-07-07 13:59:28 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 7996ce21-5cc4-44ac-bad0-3a2120341e09 -> parse_request
+2026-07-07 13:59:28 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 7996ce21-5cc4-44ac-bad0-3a2120341e09 -> resolve_direct_supplier
+2026-07-07 13:59:28 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 7996ce21-5cc4-44ac-bad0-3a2120341e09 -> create_rfq_record
+2026-07-07 13:59:28 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 7996ce21-5cc4-44ac-bad0-3a2120341e09 -> select_vendors
+2026-07-07 14:00:09 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 7996ce21-5cc4-44ac-bad0-3a2120341e09 -> generate_rfq_emails
+2026-07-07 14:00:30 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 7996ce21-5cc4-44ac-bad0-3a2120341e09 -> send_rfq_emails
+2026-07-07 14:00:30 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 7996ce21-5cc4-44ac-bad0-3a2120341e09 -> await_supplier_replies
+2026-07-07 15:31:48 | INFO     | run_workflow:132 | 
+[RUN-WORKFLOW-START] Session: e9ae1f7a-61e8-4079-97f4-4d070b7e0dcc
+2026-07-07 15:31:48 | INFO     | run_workflow:133 | [USER-INPUT] buy laptops...
+2026-07-07 15:31:48 | INFO     | run_workflow:180 | [SESSION-MODE] NEW | Thread: b8805a3a-1125-4e96-b012-033b2bc3b0b8
+2026-07-07 15:31:52 | INFO     | _run_graph_streaming:275 | [NODE-DONE] e9ae1f7a-61e8-4079-97f4-4d070b7e0dcc -> parse_request
+2026-07-07 15:31:52 | INFO     | _run_graph_streaming:275 | [NODE-DONE] e9ae1f7a-61e8-4079-97f4-4d070b7e0dcc -> create_rfq_record
+2026-07-07 15:31:59 | INFO     | _run_graph_streaming:275 | [NODE-DONE] e9ae1f7a-61e8-4079-97f4-4d070b7e0dcc -> select_vendors
+2026-07-07 15:32:09 | INFO     | _run_graph_streaming:275 | [NODE-DONE] e9ae1f7a-61e8-4079-97f4-4d070b7e0dcc -> generate_rfq_emails
+2026-07-07 15:32:14 | INFO     | _run_graph_streaming:275 | [NODE-DONE] e9ae1f7a-61e8-4079-97f4-4d070b7e0dcc -> send_rfq_emails
+2026-07-07 15:32:14 | INFO     | _run_graph_streaming:275 | [NODE-DONE] e9ae1f7a-61e8-4079-97f4-4d070b7e0dcc -> await_supplier_replies
+2026-07-07 15:34:41 | INFO     | _run_graph_streaming:275 | [NODE-DONE] e9ae1f7a-61e8-4079-97f4-4d070b7e0dcc -> ocr_extract
+2026-07-07 15:47:38 | INFO     | run_workflow:132 | 
+[RUN-WORKFLOW-START] Session: 1edc2f3e-6d09-444e-9488-16145d3233db
+2026-07-07 15:47:38 | INFO     | run_workflow:133 | [USER-INPUT] buy anything...
+2026-07-07 15:47:39 | INFO     | run_workflow:180 | [SESSION-MODE] NEW | Thread: 11b52a40-7d96-45b2-84fc-9812e2c726a0
+2026-07-07 15:47:44 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 1edc2f3e-6d09-444e-9488-16145d3233db -> parse_request
+2026-07-07 15:53:59 | INFO     | run_workflow:132 | 
+[RUN-WORKFLOW-START] Session: 1edc2f3e-6d09-444e-9488-16145d3233db
+2026-07-07 15:53:59 | INFO     | run_workflow:133 | [USER-INPUT] buy laptop...
+2026-07-07 15:53:59 | INFO     | run_workflow:180 | [SESSION-MODE] RESTART | Thread: b16b72db-133d-4df5-88ca-9dd41c5be6cf
+2026-07-07 15:54:03 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 1edc2f3e-6d09-444e-9488-16145d3233db -> parse_request
+2026-07-07 15:54:03 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 1edc2f3e-6d09-444e-9488-16145d3233db -> create_rfq_record
+2026-07-07 15:54:04 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 1edc2f3e-6d09-444e-9488-16145d3233db -> select_vendors
+2026-07-07 15:54:20 | INFO     | run_workflow:132 | 
+[RUN-WORKFLOW-START] Session: 1edc2f3e-6d09-444e-9488-16145d3233db
+2026-07-07 15:54:20 | INFO     | run_workflow:133 | [USER-INPUT] buy 6 laptops...
+2026-07-07 15:54:21 | INFO     | run_workflow:180 | [SESSION-MODE] RESTART | Thread: 5248fbbb-6082-4604-a7f3-66323e32e9c9
+2026-07-07 15:54:24 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 1edc2f3e-6d09-444e-9488-16145d3233db -> parse_request
+2026-07-07 15:54:24 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 1edc2f3e-6d09-444e-9488-16145d3233db -> create_rfq_record
+2026-07-07 15:54:30 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 1edc2f3e-6d09-444e-9488-16145d3233db -> select_vendors
+2026-07-07 15:54:36 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 1edc2f3e-6d09-444e-9488-16145d3233db -> generate_rfq_emails
+2026-07-07 15:54:41 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 1edc2f3e-6d09-444e-9488-16145d3233db -> send_rfq_emails
+2026-07-07 15:54:41 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 1edc2f3e-6d09-444e-9488-16145d3233db -> await_supplier_replies
+2026-07-07 15:55:54 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 1edc2f3e-6d09-444e-9488-16145d3233db -> ocr_extract
+2026-07-07 16:01:24 | INFO     | run_workflow:132 | 
+[RUN-WORKFLOW-START] Session: cbb65b9a-6e81-4831-b6ad-d62fc2b79984
+2026-07-07 16:01:24 | INFO     | run_workflow:133 | [USER-INPUT] buy laptop...
+2026-07-07 16:01:24 | INFO     | run_workflow:180 | [SESSION-MODE] NEW | Thread: 56ded096-6e02-464c-aafd-679237d4215c
+2026-07-07 16:01:29 | INFO     | _run_graph_streaming:275 | [NODE-DONE] cbb65b9a-6e81-4831-b6ad-d62fc2b79984 -> parse_request
+2026-07-07 16:01:30 | INFO     | _run_graph_streaming:275 | [NODE-DONE] cbb65b9a-6e81-4831-b6ad-d62fc2b79984 -> create_rfq_record
+2026-07-07 16:01:30 | INFO     | _run_graph_streaming:275 | [NODE-DONE] cbb65b9a-6e81-4831-b6ad-d62fc2b79984 -> select_vendors
+2026-07-07 16:01:41 | INFO     | run_workflow:132 | 
+[RUN-WORKFLOW-START] Session: cbb65b9a-6e81-4831-b6ad-d62fc2b79984
+2026-07-07 16:01:41 | INFO     | run_workflow:133 | [USER-INPUT] buy laptops...
+2026-07-07 16:01:41 | INFO     | run_workflow:180 | [SESSION-MODE] RESTART | Thread: 17c72bb3-68c2-4ed3-bdb7-c20f8ff683b3
+2026-07-07 16:01:44 | INFO     | _run_graph_streaming:275 | [NODE-DONE] cbb65b9a-6e81-4831-b6ad-d62fc2b79984 -> parse_request
+2026-07-07 16:01:45 | INFO     | _run_graph_streaming:275 | [NODE-DONE] cbb65b9a-6e81-4831-b6ad-d62fc2b79984 -> create_rfq_record
+2026-07-07 16:01:54 | INFO     | _run_graph_streaming:275 | [NODE-DONE] cbb65b9a-6e81-4831-b6ad-d62fc2b79984 -> select_vendors
+2026-07-07 16:02:02 | INFO     | _run_graph_streaming:275 | [NODE-DONE] cbb65b9a-6e81-4831-b6ad-d62fc2b79984 -> generate_rfq_emails
+2026-07-07 16:02:08 | INFO     | _run_graph_streaming:275 | [NODE-DONE] cbb65b9a-6e81-4831-b6ad-d62fc2b79984 -> send_rfq_emails
+2026-07-07 16:02:08 | INFO     | _run_graph_streaming:275 | [NODE-DONE] cbb65b9a-6e81-4831-b6ad-d62fc2b79984 -> await_supplier_replies
+2026-07-07 16:03:18 | INFO     | _run_graph_streaming:275 | [NODE-DONE] cbb65b9a-6e81-4831-b6ad-d62fc2b79984 -> ocr_extract
+2026-07-07 16:03:32 | INFO     | _run_graph_streaming:275 | [NODE-DONE] cbb65b9a-6e81-4831-b6ad-d62fc2b79984 -> user_decision_gate
+2026-07-07 16:03:32 | INFO     | _run_graph_streaming:275 | [NODE-DONE] cbb65b9a-6e81-4831-b6ad-d62fc2b79984 -> generate_purchase_order
+2026-07-07 16:03:40 | INFO     | _run_graph_streaming:275 | [NODE-DONE] cbb65b9a-6e81-4831-b6ad-d62fc2b79984 -> send_po_email
+2026-07-07 16:11:03 | INFO     | run_workflow:132 | 
+[RUN-WORKFLOW-START] Session: b474a1ac-0a06-493f-b74c-22bb1d0ea0ce
+2026-07-07 16:11:03 | INFO     | run_workflow:133 | [USER-INPUT] buy laptop...
+2026-07-07 16:11:03 | INFO     | run_workflow:180 | [SESSION-MODE] NEW | Thread: 40ef13a2-8e92-41e4-af8d-cf390eb230b8
+2026-07-07 16:11:08 | INFO     | _run_graph_streaming:275 | [NODE-DONE] b474a1ac-0a06-493f-b74c-22bb1d0ea0ce -> parse_request
+2026-07-07 16:11:08 | INFO     | _run_graph_streaming:275 | [NODE-DONE] b474a1ac-0a06-493f-b74c-22bb1d0ea0ce -> create_rfq_record
+2026-07-07 16:11:14 | INFO     | _run_graph_streaming:275 | [NODE-DONE] b474a1ac-0a06-493f-b74c-22bb1d0ea0ce -> select_vendors
+2026-07-07 16:11:21 | INFO     | _run_graph_streaming:275 | [NODE-DONE] b474a1ac-0a06-493f-b74c-22bb1d0ea0ce -> generate_rfq_emails
+2026-07-07 16:11:26 | INFO     | _run_graph_streaming:275 | [NODE-DONE] b474a1ac-0a06-493f-b74c-22bb1d0ea0ce -> send_rfq_emails
+2026-07-07 16:11:26 | INFO     | _run_graph_streaming:275 | [NODE-DONE] b474a1ac-0a06-493f-b74c-22bb1d0ea0ce -> await_supplier_replies
+2026-07-07 21:33:56 | INFO     | run_workflow:132 | 
+[RUN-WORKFLOW-START] Session: daef462b-0319-4e04-978b-395307d0b681
+2026-07-07 21:33:56 | INFO     | run_workflow:133 | [USER-INPUT] Buy 10 Dell Latitude laptops...
+2026-07-07 21:33:56 | INFO     | run_workflow:180 | [SESSION-MODE] NEW | Thread: 9f78f0cc-b528-40a9-805a-25fc863aee00
+2026-07-07 21:34:00 | INFO     | _run_graph_streaming:275 | [NODE-DONE] daef462b-0319-4e04-978b-395307d0b681 -> parse_request
+2026-07-07 21:34:00 | INFO     | _run_graph_streaming:275 | [NODE-DONE] daef462b-0319-4e04-978b-395307d0b681 -> create_rfq_record
+2026-07-07 21:34:01 | INFO     | _run_graph_streaming:275 | [NODE-DONE] daef462b-0319-4e04-978b-395307d0b681 -> select_vendors
+2026-07-07 21:34:49 | INFO     | _run_graph_streaming:275 | [NODE-DONE] daef462b-0319-4e04-978b-395307d0b681 -> generate_rfq_emails
+2026-07-07 21:35:17 | INFO     | _run_graph_streaming:275 | [NODE-DONE] daef462b-0319-4e04-978b-395307d0b681 -> send_rfq_emails
+2026-07-07 21:35:17 | INFO     | _run_graph_streaming:275 | [NODE-DONE] daef462b-0319-4e04-978b-395307d0b681 -> await_supplier_replies
+2026-07-07 23:00:37 | INFO     | run_workflow:132 | 
+[RUN-WORKFLOW-START] Session: 23fbc1be-3cae-4382-bbd6-aef1582b13c4
+2026-07-07 23:00:37 | INFO     | run_workflow:133 | [USER-INPUT] Buy 10 Dell Latitude laptops...
+2026-07-07 23:00:37 | INFO     | run_workflow:180 | [SESSION-MODE] NEW | Thread: f5512149-96fe-454d-a37f-5eb18d2ab7a6
+2026-07-07 23:00:41 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 23fbc1be-3cae-4382-bbd6-aef1582b13c4 -> parse_request
+2026-07-07 23:00:42 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 23fbc1be-3cae-4382-bbd6-aef1582b13c4 -> create_rfq_record
+2026-07-07 23:00:49 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 23fbc1be-3cae-4382-bbd6-aef1582b13c4 -> select_vendors
+2026-07-07 23:01:13 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 23fbc1be-3cae-4382-bbd6-aef1582b13c4 -> generate_rfq_emails
+2026-07-07 23:01:28 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 23fbc1be-3cae-4382-bbd6-aef1582b13c4 -> send_rfq_emails
+2026-07-07 23:01:28 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 23fbc1be-3cae-4382-bbd6-aef1582b13c4 -> await_supplier_replies
+2026-07-07 23:10:49 | INFO     | run_workflow:132 | 
+[RUN-WORKFLOW-START] Session: 3b5f3d3b-0b5b-41ec-8cc8-46da97f3659d
+2026-07-07 23:10:49 | INFO     | run_workflow:133 | [USER-INPUT] Buy 10 Dell Latitude laptops from alpha components supplier...
+2026-07-07 23:10:49 | INFO     | run_workflow:180 | [SESSION-MODE] NEW | Thread: a0404ecc-38d3-4d61-9df4-a45d25317250
+2026-07-07 23:10:52 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 3b5f3d3b-0b5b-41ec-8cc8-46da97f3659d -> parse_request
+2026-07-07 23:10:53 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 3b5f3d3b-0b5b-41ec-8cc8-46da97f3659d -> resolve_direct_supplier
+2026-07-07 23:11:31 | INFO     | run_workflow:132 | 
+[RUN-WORKFLOW-START] Session: 3b5f3d3b-0b5b-41ec-8cc8-46da97f3659d
+2026-07-07 23:11:31 | INFO     | run_workflow:133 | [USER-INPUT] Buy 10 Dell Latitude laptops from Alpha Components...
+2026-07-07 23:11:31 | INFO     | run_workflow:180 | [SESSION-MODE] RESTART | Thread: 2f4a793d-9df8-4d83-b3c6-0bd3c40ba532
+2026-07-07 23:11:34 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 3b5f3d3b-0b5b-41ec-8cc8-46da97f3659d -> parse_request
+2026-07-07 23:11:34 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 3b5f3d3b-0b5b-41ec-8cc8-46da97f3659d -> resolve_direct_supplier
+2026-07-07 23:11:35 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 3b5f3d3b-0b5b-41ec-8cc8-46da97f3659d -> create_rfq_record
+2026-07-07 23:11:35 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 3b5f3d3b-0b5b-41ec-8cc8-46da97f3659d -> select_vendors
+2026-07-07 23:11:41 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 3b5f3d3b-0b5b-41ec-8cc8-46da97f3659d -> generate_rfq_emails
+2026-07-07 23:11:46 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 3b5f3d3b-0b5b-41ec-8cc8-46da97f3659d -> send_rfq_emails
+2026-07-07 23:11:47 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 3b5f3d3b-0b5b-41ec-8cc8-46da97f3659d -> await_supplier_replies
+2026-07-07 23:12:55 | INFO     | run_workflow:132 | 
+[RUN-WORKFLOW-START] Session: fc3d06fb-82f8-407d-9eaa-dbe5e2b1b0bb
+2026-07-07 23:12:55 | INFO     | run_workflow:133 | [USER-INPUT] Buy 10 Dell Latitude laptops from Buy 10 Dell Latitude laptops...
+2026-07-07 23:12:55 | INFO     | run_workflow:180 | [SESSION-MODE] NEW | Thread: 620d75ea-5edf-4cae-bf95-072d8c954074
+2026-07-07 23:12:59 | INFO     | _run_graph_streaming:275 | [NODE-DONE] fc3d06fb-82f8-407d-9eaa-dbe5e2b1b0bb -> parse_request
+2026-07-07 23:12:59 | INFO     | _run_graph_streaming:275 | [NODE-DONE] fc3d06fb-82f8-407d-9eaa-dbe5e2b1b0bb -> create_rfq_record
+2026-07-07 23:12:59 | INFO     | _run_graph_streaming:275 | [NODE-DONE] fc3d06fb-82f8-407d-9eaa-dbe5e2b1b0bb -> select_vendors
+2026-07-07 23:13:23 | INFO     | _run_graph_streaming:275 | [NODE-DONE] fc3d06fb-82f8-407d-9eaa-dbe5e2b1b0bb -> generate_rfq_emails
+2026-07-07 23:13:44 | INFO     | _run_graph_streaming:275 | [NODE-DONE] fc3d06fb-82f8-407d-9eaa-dbe5e2b1b0bb -> send_rfq_emails
+2026-07-07 23:13:44 | INFO     | _run_graph_streaming:275 | [NODE-DONE] fc3d06fb-82f8-407d-9eaa-dbe5e2b1b0bb -> await_supplier_replies
+2026-07-07 23:13:48 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 3b5f3d3b-0b5b-41ec-8cc8-46da97f3659d -> ocr_extract
+2026-07-07 23:15:18 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 3b5f3d3b-0b5b-41ec-8cc8-46da97f3659d -> user_decision_gate
+2026-07-07 23:15:31 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 3b5f3d3b-0b5b-41ec-8cc8-46da97f3659d -> negotiate_with_suppliers
+2026-07-07 23:15:31 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 3b5f3d3b-0b5b-41ec-8cc8-46da97f3659d -> await_supplier_replies
+2026-07-07 23:16:32 | INFO     | run_workflow:132 | 
+[RUN-WORKFLOW-START] Session: 771aea46-dd24-4964-8d3b-148be30e2e19
+2026-07-07 23:16:32 | INFO     | run_workflow:133 | [USER-INPUT] Buy 10 Dell Latitude laptops from TechSupply Corp supplier...
+2026-07-07 23:16:32 | INFO     | run_workflow:180 | [SESSION-MODE] NEW | Thread: d75d80c8-0d3f-433a-a981-1007f629c7c7
+2026-07-07 23:16:35 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 771aea46-dd24-4964-8d3b-148be30e2e19 -> parse_request
+2026-07-07 23:16:35 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 771aea46-dd24-4964-8d3b-148be30e2e19 -> resolve_direct_supplier
+2026-07-07 23:16:35 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 771aea46-dd24-4964-8d3b-148be30e2e19 -> create_rfq_record
+2026-07-07 23:16:35 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 771aea46-dd24-4964-8d3b-148be30e2e19 -> select_vendors
+2026-07-07 23:16:41 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 771aea46-dd24-4964-8d3b-148be30e2e19 -> generate_rfq_emails
+2026-07-07 23:16:46 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 771aea46-dd24-4964-8d3b-148be30e2e19 -> send_rfq_emails
+2026-07-07 23:16:46 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 771aea46-dd24-4964-8d3b-148be30e2e19 -> await_supplier_replies
+2026-07-07 23:19:28 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 771aea46-dd24-4964-8d3b-148be30e2e19 -> ocr_extract

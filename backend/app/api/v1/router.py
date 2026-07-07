@@ -12,6 +12,7 @@ from app.api.v1.chat import router as chat_router
 from app.api.v1.dashboard import router as dashboard_router
 from app.api.v1.workflows import router as workflows_router
 from app.api.v1.webhooks import router as webhooks_router
+from app.api.v1.ws import router as ws_router
 
 api_router = APIRouter(prefix="/api/v1")
 
@@ -27,3 +28,4 @@ api_router.include_router(chat_router, prefix="/chat", tags=["Chat & AI"])
 api_router.include_router(dashboard_router, prefix="/dashboard", tags=["Dashboard"])
 api_router.include_router(workflows_router, prefix="/workflow", tags=["Workflow Sessions"])
 api_router.include_router(webhooks_router, tags=["Webhooks"])
+api_router.include_router(ws_router, tags=["WebSocket"])

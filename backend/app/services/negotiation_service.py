@@ -34,6 +34,8 @@ class NegotiationService:
         quotation_id: str,
         target_price: float,
         notes: str | None = None,
+        quantity: int = 1,
+        gst_percent: float | None = None,
     ) -> Negotiation:
         """Start a new negotiation round with a supplier."""
         quotation = await self.quotation_repo.get_by_id(quotation_id)
@@ -88,6 +90,8 @@ class NegotiationService:
             target_price=target_price,
             negotiation_message=negotiation_message,
             sender_name="Procurement Team",
+            quantity=quantity,
+            gst_percent=gst_percent,
         )
 
         if email_result["success"]:
@@ -176,18 +180,20 @@ class NegotiationService:
     ) -> str:
         """Generate the negotiation email message using AI."""
         prompt = (
-            f"Write a negotiation message to {supplier_name} for {product}.\n"
+            f"Write a concise negotiation message (2 short paragraphs, no salutation/sign-off) "
+            f"to {supplier_name} for {product}.\n"
             f"Their price: {currency} {original_price:,.2f}\n"
             f"Our target: {currency} {target_price:,.2f}\n"
             f"Round: {round_number}\n"
-            f"Be professional, firm but respectful. 2-3 paragraphs."
+            f"Be direct, mention competitive alternatives, emphasise long-term value. "
+            f"Don't repeat exact prices excessively — the email already has a price table."
         )
 
         try:
             return await llm_client.generate(
-                system_prompt="You are a skilled procurement negotiator writing an email.",
+                system_prompt="You are a skilled procurement negotiator. Be concise.",
                 user_prompt=prompt,
-                max_tokens=500,
+                max_tokens=400,
             )
         except Exception:
             return (

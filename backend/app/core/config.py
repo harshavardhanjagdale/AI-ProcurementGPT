@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     MYSQL_DATABASE: str = "procuregpt"
 
     ANTHROPIC_API_KEY: str = ""
-    ANTHROPIC_MODEL: str = "claude-opus-4-8"
+    ANTHROPIC_MODEL: str = "claude-sonnet-4-20250514"
     SMTP_HOST: str = "smtp.gmail.com"
     SMTP_PORT: int = 587
     SMTP_USER: str = ""
