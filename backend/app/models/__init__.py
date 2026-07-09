@@ -18,6 +18,7 @@ from app.models.workflow_session import WorkflowSession
 from app.models.workflow_step import WorkflowStep
 from app.models.workflow_event import WorkflowEvent
 from app.models.conversation_message import ConversationMessage
+from app.models.llm_settings import LLMSettings
 from app.database.session_store import SessionCache
 
 __all__ = [
@@ -41,5 +42,6 @@ __all__ = [
     "WorkflowStep",
     "WorkflowEvent",
     "ConversationMessage",
+    "LLMSettings",
     "SessionCache",
 ]

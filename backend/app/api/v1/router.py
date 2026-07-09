@@ -13,6 +13,7 @@ from app.api.v1.dashboard import router as dashboard_router
 from app.api.v1.workflows import router as workflows_router
 from app.api.v1.webhooks import router as webhooks_router
 from app.api.v1.ws import router as ws_router
+from app.api.v1.settings import router as settings_router
 
 api_router = APIRouter(prefix="/api/v1")
 
@@ -29,3 +30,4 @@ api_router.include_router(dashboard_router, prefix="/dashboard", tags=["Dashboar
 api_router.include_router(workflows_router, prefix="/workflow", tags=["Workflow Sessions"])
 api_router.include_router(webhooks_router, tags=["Webhooks"])
 api_router.include_router(ws_router, tags=["WebSocket"])
+api_router.include_router(settings_router, prefix="/settings", tags=["Settings"])

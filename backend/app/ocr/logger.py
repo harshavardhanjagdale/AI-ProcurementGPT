@@ -137,7 +137,7 @@ SUMMARY:
 Total Attachments: {len(results)}
 Successful: {len(successful)}
 Failed: {len(failed)}
-Success Rate: {(len(successful)/len(results)*100):.1f}% if len(results) > 0 else "N/A"
+Success Rate: {((len(successful)/len(results)*100) if len(results) > 0 else 0):.1f}%
 
 SUCCESSFUL ATTACHMENTS:
 -----------------------

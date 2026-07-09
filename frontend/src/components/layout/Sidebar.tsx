@@ -12,6 +12,7 @@ import {
   Handshake,
   Bot,
   LineChart,
+  Settings,
 } from "lucide-react";
 
 const navigation = [
@@ -22,6 +23,7 @@ const navigation = [
   { name: "Negotiations", href: "/dashboard/negotiations", icon: Handshake },
   { name: "Purchase Orders", href: "/dashboard/purchase-orders", icon: ShoppingCart },
   { name: "Analytics", href: "/dashboard/analytics", icon: LineChart },
+  { name: "Settings", href: "/dashboard/settings", icon: Settings },
 ];
 
 export function Sidebar() {
