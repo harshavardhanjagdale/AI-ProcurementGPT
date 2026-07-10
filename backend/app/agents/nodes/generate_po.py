@@ -14,8 +14,46 @@ from app.repositories.rfq_repository import RFQRepository
 from app.repositories.supplier_repository import SupplierRepository
 from app.services.email_service import EmailService
 from app.utils.pdf_generator import pdf_generator
+from app.ai.llm_client import llm_client
 
 logger = logging.getLogger(__name__)
+
+PO_INTRO_SYSTEM_PROMPT = (
+    "You are a professional procurement officer. Write the opening line of a "
+    "purchase-order confirmation email to a supplier: warm, concise, and business "
+    "appropriate. 1-2 sentences. Do NOT include a greeting (no 'Dear ...'), no "
+    "subject, no sign-off, and do not restate the line items or totals — those are "
+    "shown in a table below your text. Return ONLY the sentence(s), plain text."
+)
+
+
+async def _draft_po_intro(po, items: list[dict]) -> str | None:
+    """
+    LLM-draft a short, personalized opening line for the PO email. Best-effort:
+    on any failure we return None and the email falls back to the standard
+    sentence, so PO delivery is never blocked by the LLM. This call is attributed
+    to the workflow run by the token tracker, so the send_po_email node shows real
+    token/cost like the other LLM-backed nodes.
+    """
+    try:
+        product_names = ", ".join(i.get("product_name", "") for i in items[:5]) or "the ordered items"
+        user_prompt = (
+            f"Purchase order {po.po_number} for: {product_names}. "
+            f"Total {po.currency} {float(po.total_amount):,.2f}, "
+            f"payment terms {po.payment_terms or 'Net 30'}, "
+            f"required delivery by {po.delivery_date}. "
+            "Write the opening line confirming this order."
+        )
+        text = await llm_client.generate(
+            system_prompt=PO_INTRO_SYSTEM_PROMPT,
+            user_prompt=user_prompt,
+            max_tokens=200,
+        )
+        text = (text or "").strip()
+        return text or None
+    except Exception as e:
+        logger.warning(f"PO intro LLM draft failed, using default text: {e}")
+        return None
 
 
 async def generate_purchase_order(state: ProcurementState) -> dict:
@@ -205,6 +243,9 @@ async def send_po_email(state: ProcurementState) -> dict:
                 for idx, item in enumerate(quotation.items if quotation else [])
             ]
 
+            # LLM-draft a personalized opening line for the PO email (best-effort).
+            intro_message = await _draft_po_intro(po, items_data)
+
             email_service = EmailService(session)
             result = await email_service.send_purchase_order_email(
                 rfq_id=rfq_id,
@@ -221,6 +262,7 @@ async def send_po_email(state: ProcurementState) -> dict:
                 sender_name="Procurement Team",
                 pdf_path=po_pdf_path,
                 shipping_address=po.shipping_address,
+                intro_message=intro_message,
             )
 
             # Update PO status to sent

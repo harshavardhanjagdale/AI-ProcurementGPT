@@ -24,6 +24,7 @@ langchain==0.3.14
 langgraph==0.2.60
 langgraph-checkpoint-sqlite==3.1.0
 langchain-openai==0.3.0
+langsmith>=0.1.0
 anthropic>=0.40.0
 openai>=1.40.0
 google-generativeai>=0.8.0

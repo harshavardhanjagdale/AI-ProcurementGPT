@@ -145,12 +145,16 @@ def render_purchase_order_email(
     subtotal: float | None = None,
     tax_percent: float | None = None,
     tax_amount: float | None = None,
+    intro_message: str | None = None,
 ) -> str:
     template = _load_template("purchase_order.html")
     context = {
         "po_number": po_number,
         "rfq_number": rfq_number,
         "supplier_name": supplier_name,
+        # LLM-drafted opening line when provided; otherwise the standard sentence.
+        "intro_message": intro_message
+        or "We are pleased to confirm the following purchase order based on your accepted quotation:",
         "items": items,
         "subtotal": f"{subtotal:,.2f}" if subtotal else f"{total_amount:,.2f}",
         "tax_percent": f"{tax_percent:.1f}" if tax_percent else "",

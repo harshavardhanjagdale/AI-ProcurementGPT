@@ -11,3 +11,5 @@ build
 .env.development
 .env.test
 .env.production
+# Local-only Claude Code notes (machine-specific)
+CLAUDE.local.md

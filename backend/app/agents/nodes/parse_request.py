@@ -48,7 +48,202 @@ Other rules:
 - "direct_supplier" should ONLY be set when the user explicitly names a SUPPLIER/VENDOR they want to buy FROM (e.g. "buy from TechSupply Corp", "order from GlobalTech", "purchase from ErgoSupply").
 - Do NOT set direct_supplier for product BRANDS or MANUFACTURERS in the product name. "Dell", "HP", "Lenovo", "Apple", "Samsung", etc. are product brands, NOT supplier names. "Buy 10 Dell laptops" means buy Dell-branded laptops from any supplier — direct_supplier should be null. "Buy 10 laptops from TechSupply" means buy from the supplier TechSupply — direct_supplier should be "TechSupply".
 - Set is_complete to false ONLY if you cannot identify even a single product/item from the message.
-- Be generous with is_complete — if you can figure out what they want to buy, mark it true."""
+- Be generous with is_complete — if you can figure out what they want to buy, mark it true.
+
+WORKED EXAMPLES (study these carefully — they define the exact behavior expected):
+
+Example 1 — brand in product name is NOT a supplier
+User: "I need to buy 10 Dell Latitude laptops for the sales team."
+Output:
+{
+    "title": "Dell Latitude Laptops for Sales Team",
+    "description": "Procurement of 10 Dell Latitude business laptops for the sales department.",
+    "items": [
+        {
+            "product_name": "Dell Latitude Laptop",
+            "specifications": "Dell Latitude series, business-grade, Intel Core i5/i7, 8-16 GB RAM, 256-512 GB SSD, 14-15.6 inch display, Windows OS",
+            "quantity": 10,
+            "unit": "units"
+        }
+    ],
+    "budget_min": null,
+    "budget_max": null,
+    "currency": "USD",
+    "delivery_deadline_days": null,
+    "categories": ["Electronics", "Computers", "IT Equipment"],
+    "direct_supplier": null,
+    "is_complete": true
+}
+Note: "Dell" is a brand in the product name, so direct_supplier stays null.
+
+Example 2 — explicit supplier ("from X") sets direct_supplier, with budget and currency
+User: "Order 50 ergonomic office chairs from ErgoSupply Corp, budget max 20000 USD."
+Output:
+{
+    "title": "Ergonomic Office Chairs from ErgoSupply Corp",
+    "description": "Procurement of 50 ergonomic office chairs from the supplier ErgoSupply Corp.",
+    "items": [
+        {
+            "product_name": "Ergonomic Office Chair",
+            "specifications": "Adjustable height, lumbar support, breathable mesh back, 5-point base with castors, weight capacity 120 kg",
+            "quantity": 50,
+            "unit": "units"
+        }
+    ],
+    "budget_min": null,
+    "budget_max": 20000,
+    "currency": "USD",
+    "delivery_deadline_days": null,
+    "categories": ["Furniture", "Office Supplies"],
+    "direct_supplier": "ErgoSupply Corp",
+    "is_complete": true
+}
+Note: "from ErgoSupply Corp" names a supplier, so direct_supplier is set.
+
+Example 3 — another brand-not-supplier case
+User: "Purchase 5 HP printers for the accounts department."
+Output:
+{
+    "title": "HP Printers for Accounts Department",
+    "description": "Procurement of 5 HP printers for the accounts department.",
+    "items": [
+        {
+            "product_name": "HP Printer",
+            "specifications": "HP business laser/inkjet printer, network-capable, duplex printing, A4 support",
+            "quantity": 5,
+            "unit": "units"
+        }
+    ],
+    "budget_min": null,
+    "budget_max": null,
+    "currency": "USD",
+    "delivery_deadline_days": null,
+    "categories": ["Electronics", "Office Equipment"],
+    "direct_supplier": null,
+    "is_complete": true
+}
+Note: "HP" is a manufacturer brand, not a supplier — direct_supplier stays null.
+
+Example 4 — budget range, non-USD currency, and a delivery deadline
+User: "We need about 200 units of A4 copier paper, budget between 500 and 900 EUR, deliver within 2 weeks."
+Output:
+{
+    "title": "A4 Copier Paper",
+    "description": "Procurement of approximately 200 units of A4 copier paper with a delivery deadline of two weeks.",
+    "items": [
+        {
+            "product_name": "A4 Copier Paper",
+            "specifications": "A4 size (210 x 297 mm), 80 gsm, white, multipurpose copier/printer paper, 500 sheets per ream",
+            "quantity": 200,
+            "unit": "units"
+        }
+    ],
+    "budget_min": 500,
+    "budget_max": 900,
+    "currency": "EUR",
+    "delivery_deadline_days": 14,
+    "categories": ["Office Supplies", "Stationery"],
+    "direct_supplier": null,
+    "is_complete": true
+}
+Note: "between 500 and 900" fills both budget_min and budget_max; "within 2 weeks" -> 14 days.
+
+Example 5 — incomplete request (no identifiable product)
+User: "Hi there, can you help me?"
+Output:
+{
+    "title": "Clarification Needed",
+    "description": "The user greeting did not specify any product or item to procure.",
+    "items": [],
+    "budget_min": null,
+    "budget_max": null,
+    "currency": "USD",
+    "delivery_deadline_days": null,
+    "categories": [],
+    "direct_supplier": null,
+    "is_complete": false
+}
+Note: no product can be identified, so is_complete is false and items is empty.
+
+Example 6 — multiple distinct items in one request
+User: "Buy 3 standing desks and 3 monitor arms for the new hires."
+Output:
+{
+    "title": "Standing Desks and Monitor Arms for New Hires",
+    "description": "Procurement of 3 standing desks and 3 monitor arms for onboarding new hires.",
+    "items": [
+        {
+            "product_name": "Standing Desk",
+            "specifications": "Height-adjustable sit-stand desk, electric motor, 120 x 60 cm desktop, memory presets",
+            "quantity": 3,
+            "unit": "units"
+        },
+        {
+            "product_name": "Monitor Arm",
+            "specifications": "Single-monitor desk-mount arm, VESA 75/100, gas-spring, supports up to 32 inch / 9 kg",
+            "quantity": 3,
+            "unit": "units"
+        }
+    ],
+    "budget_min": null,
+    "budget_max": null,
+    "currency": "USD",
+    "delivery_deadline_days": null,
+    "categories": ["Furniture", "Office Equipment"],
+    "direct_supplier": null,
+    "is_complete": true
+}
+Note: two separate items, each with its own quantity and specifications.
+
+Example 7 — generic product needs sensible default specs
+User: "I need 20 laptops."
+Output:
+{
+    "title": "Laptops",
+    "description": "Procurement of 20 general-purpose business laptops.",
+    "items": [
+        {
+            "product_name": "Business Laptop",
+            "specifications": "Business laptop, Intel Core i5 or equivalent, 8 GB RAM, 256 GB SSD, 14-15.6 inch display, Windows OS",
+            "quantity": 20,
+            "unit": "units"
+        }
+    ],
+    "budget_min": null,
+    "budget_max": null,
+    "currency": "USD",
+    "delivery_deadline_days": null,
+    "categories": ["Electronics", "Computers", "IT Equipment"],
+    "direct_supplier": null,
+    "is_complete": true
+}
+Note: no specs given, so provide reasonable defaults; never leave specifications null.
+
+Example 8 — non-tech / industrial item with attributes
+User: "Get me 500 kg of 304-grade stainless steel sheets from MetalWorks Ltd."
+Output:
+{
+    "title": "304 Stainless Steel Sheets from MetalWorks Ltd",
+    "description": "Procurement of 500 kg of 304-grade stainless steel sheets from the supplier MetalWorks Ltd.",
+    "items": [
+        {
+            "product_name": "Stainless Steel Sheet (304 Grade)",
+            "specifications": "304-grade stainless steel, cold-rolled, 2B finish, standard sheet thickness 1-2 mm",
+            "quantity": 500,
+            "unit": "kg"
+        }
+    ],
+    "budget_min": null,
+    "budget_max": null,
+    "currency": "USD",
+    "delivery_deadline_days": null,
+    "categories": ["Raw Materials", "Metals", "Industrial Supplies"],
+    "direct_supplier": "MetalWorks Ltd",
+    "is_complete": true
+}
+Note: describe material attributes (grade, finish, thickness); unit is "kg"; "from MetalWorks Ltd" sets direct_supplier.
+
+Follow the exact structure, field names, and decision logic shown in these examples for every request you parse."""
 
 
 async def parse_user_request(state: ProcurementState) -> dict:

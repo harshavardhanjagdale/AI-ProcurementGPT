@@ -23,6 +23,7 @@ from app.agents.state import ProcurementState
 from app.workflows.workflow_logger import workflow_logger
 from app.workflows.event_bus import workflow_event_bus
 from app.models.base import ist_now
+from app.ai.token_tracker import track_usage, get_current_usage
 
 logger = logging.getLogger(__name__)
 
@@ -247,7 +248,12 @@ class SessionWorkflowService:
     async def _run_graph_streaming(self, session_id: str, thread_id: str, stream_input) -> dict:
         """Stream the graph, persisting each node's completion (step + event + chat) as it lands."""
         graph = get_procurement_graph()
-        config = {"configurable": {"thread_id": thread_id}}
+        config = {
+            "configurable": {"thread_id": thread_id},
+            "run_name": f"procurement-{session_id[:8]}",
+            "metadata": {"session_id": session_id, "thread_id": thread_id},
+            "tags": ["procurement", f"session:{session_id[:8]}"],
+        }
 
         # Seed the accumulator with the full existing checkpoint state so that on a RESUME
         # (e.g. ocr_extract / decision runs, which only emit their own node's deltas) the
@@ -262,18 +268,25 @@ class SessionWorkflowService:
         except Exception:
             pass
 
+        # Attribute every LLM call the graph nodes make during this run to this
+        # thread, so we can report tokens + cost per procurement (see token_tracker).
         try:
-            async for chunk in graph.astream(stream_input, config=config, stream_mode="updates"):
-                if not isinstance(chunk, dict):
-                    continue
-                for node, delta in chunk.items():
-                    # `__interrupt__` (and any non-dict payload) is a control signal, not a node result.
-                    if node == "__interrupt__" or not isinstance(delta, dict):
+            with track_usage(thread_id) as usage:
+                async for chunk in graph.astream(stream_input, config=config, stream_mode="updates"):
+                    if not isinstance(chunk, dict):
                         continue
-                    acc.update(delta)
-                    step = delta.get("current_step") or node
-                    workflow_logger.info(f"[NODE-DONE] {session_id} -> {step}")
-                    await self._persist_node_progress(session_id, step, acc)
+                    for node, delta in chunk.items():
+                        # `__interrupt__` (and any non-dict payload) is a control signal, not a node result.
+                        if node == "__interrupt__" or not isinstance(delta, dict):
+                            continue
+                        acc.update(delta)
+                        step = delta.get("current_step") or node
+                        workflow_logger.info(
+                            f"[NODE-DONE] {session_id} -> {step} "
+                            f"| tokens so far: {usage.total_tokens} (~${usage.cost_usd:.4f})"
+                        )
+                        await self._persist_node_progress(session_id, step, acc)
+                workflow_logger.info(f"[TOKEN-USAGE] {session_id} -> {usage.summary()}")
         except Exception as e:
             logger.error(f"[SESSION-WORKFLOW] Streaming failed for session {session_id}: {e}", exc_info=True)
             await self._persist_failure(session_id, str(e))
@@ -704,6 +717,12 @@ class SessionWorkflowService:
         title = event_titles.get(current_step, f"Step: {current_step}")
         agent = STEP_AGENT_MAP.get(current_step, "System")
 
+        # Attach the running token/cost total so the timeline can show live spend.
+        usage = get_current_usage()
+        event_meta = {"step": current_step, "suppliers_count": len(suppliers)}
+        if usage is not None:
+            event_meta["tokens"] = usage.summary()
+
         db.add(WorkflowEvent(
             id=generate_uuid(),
             session_id=session_id,
@@ -711,7 +730,7 @@ class SessionWorkflowService:
             title=title,
             description=parsed.get("title", ""),
             agent=agent,
-            metadata_json={"step": current_step, "suppliers_count": len(suppliers)},
+            metadata_json=event_meta,
         ))
 
     def _node_message(self, step: str, values: dict) -> str | None:

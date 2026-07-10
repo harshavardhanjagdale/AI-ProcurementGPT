@@ -1581,3 +1581,203 @@ SUCCESSFUL ATTACHMENTS:
 END OF REPORT
 ================================================================================
 
+2026-07-10 01:49:35 | INFO | log_ocr_start | ================================================================================
+2026-07-10 01:49:35 | INFO | log_ocr_start | OCR PROCESSING STARTED for RFQ: 65ee9b8d-9fc6-47cc-b3f6-e89531d1c444
+2026-07-10 01:49:35 | INFO | log_ocr_start | Attachments to process: 0
+2026-07-10 01:49:35 | INFO | log_ocr_start | ================================================================================
+2026-07-10 01:49:35 | INFO | process_rfq_attachments | [RFQ] Processing started for 65ee9b8d-9fc6-47cc-b3f6-e89531d1c444
+2026-07-10 01:49:50 | INFO | process_rfq_attachments | [RESULTS] Success: 1, Failed: 0
+2026-07-10 01:49:50 | INFO | log_ocr_complete | 
+================================================================================
+2026-07-10 01:49:50 | INFO | log_ocr_complete | OCR PROCESSING COMPLETED for RFQ: 65ee9b8d-9fc6-47cc-b3f6-e89531d1c444
+2026-07-10 01:49:50 | INFO | log_ocr_complete | Results: 1 successful, 0 failed
+2026-07-10 01:49:50 | INFO | log_ocr_complete | Total processing time: 14.38 seconds
+2026-07-10 01:49:50 | INFO | log_ocr_complete | ================================================================================
+2026-07-10 01:49:50 | INFO | generate_ocr_report | 
+
+================================================================================
+OCR PROCESSING REVIEW REPORT
+================================================================================
+
+RFQ ID: 65ee9b8d-9fc6-47cc-b3f6-e89531d1c444
+Processing Date: 2026-07-10 01:49:50.065903 IST
+Total Processing Time: 14.38 seconds
+
+SUMMARY:
+--------
+Total Attachments: 1
+Successful: 1
+Failed: 0
+Success Rate: 100.0%
+
+SUCCESSFUL ATTACHMENTS:
+-----------------------
+
+1. Unknown
+   - Extracted text length: 0 chars
+   - Quotation ID: c9371c09-ac58-41d5-8f58-776f60428ae9
+
+================================================================================
+END OF REPORT
+================================================================================
+
+2026-07-10 14:47:46 | INFO | log_ocr_start | ================================================================================
+2026-07-10 14:47:46 | INFO | log_ocr_start | OCR PROCESSING STARTED for RFQ: be02fdf2-60ad-4c34-b438-129611a3aa59
+2026-07-10 14:47:46 | INFO | log_ocr_start | Attachments to process: 0
+2026-07-10 14:47:46 | INFO | log_ocr_start | ================================================================================
+2026-07-10 14:47:46 | INFO | process_rfq_attachments | [RFQ] Processing started for be02fdf2-60ad-4c34-b438-129611a3aa59
+2026-07-10 14:47:55 | INFO | process_rfq_attachments | [RESULTS] Success: 1, Failed: 0
+2026-07-10 14:47:55 | INFO | log_ocr_complete | 
+================================================================================
+2026-07-10 14:47:55 | INFO | log_ocr_complete | OCR PROCESSING COMPLETED for RFQ: be02fdf2-60ad-4c34-b438-129611a3aa59
+2026-07-10 14:47:55 | INFO | log_ocr_complete | Results: 1 successful, 0 failed
+2026-07-10 14:47:55 | INFO | log_ocr_complete | Total processing time: 8.85 seconds
+2026-07-10 14:47:55 | INFO | log_ocr_complete | ================================================================================
+2026-07-10 14:47:55 | INFO | generate_ocr_report | 
+
+================================================================================
+OCR PROCESSING REVIEW REPORT
+================================================================================
+
+RFQ ID: be02fdf2-60ad-4c34-b438-129611a3aa59
+Processing Date: 2026-07-10 14:47:55.225105 IST
+Total Processing Time: 8.85 seconds
+
+SUMMARY:
+--------
+Total Attachments: 1
+Successful: 1
+Failed: 0
+Success Rate: 100.0%
+
+SUCCESSFUL ATTACHMENTS:
+-----------------------
+
+1. Unknown
+   - Extracted text length: 0 chars
+   - Quotation ID: 7c63368c-7814-444c-8537-d8e77ec48038
+
+================================================================================
+END OF REPORT
+================================================================================
+
+2026-07-10 14:51:23 | INFO | log_ocr_start | ================================================================================
+2026-07-10 14:51:23 | INFO | log_ocr_start | OCR PROCESSING STARTED for RFQ: e5ecb1c4-6446-48af-8ae3-7e6b062b308c
+2026-07-10 14:51:23 | INFO | log_ocr_start | Attachments to process: 0
+2026-07-10 14:51:23 | INFO | log_ocr_start | ================================================================================
+2026-07-10 14:51:23 | INFO | process_rfq_attachments | [RFQ] Processing started for e5ecb1c4-6446-48af-8ae3-7e6b062b308c
+2026-07-10 14:51:29 | INFO | process_rfq_attachments | [RESULTS] Success: 1, Failed: 0
+2026-07-10 14:51:29 | INFO | log_ocr_complete | 
+================================================================================
+2026-07-10 14:51:29 | INFO | log_ocr_complete | OCR PROCESSING COMPLETED for RFQ: e5ecb1c4-6446-48af-8ae3-7e6b062b308c
+2026-07-10 14:51:29 | INFO | log_ocr_complete | Results: 1 successful, 0 failed
+2026-07-10 14:51:29 | INFO | log_ocr_complete | Total processing time: 6.29 seconds
+2026-07-10 14:51:29 | INFO | log_ocr_complete | ================================================================================
+2026-07-10 14:51:29 | INFO | generate_ocr_report | 
+
+================================================================================
+OCR PROCESSING REVIEW REPORT
+================================================================================
+
+RFQ ID: e5ecb1c4-6446-48af-8ae3-7e6b062b308c
+Processing Date: 2026-07-10 14:51:29.332862 IST
+Total Processing Time: 6.29 seconds
+
+SUMMARY:
+--------
+Total Attachments: 1
+Successful: 1
+Failed: 0
+Success Rate: 100.0%
+
+SUCCESSFUL ATTACHMENTS:
+-----------------------
+
+1. Unknown
+   - Extracted text length: 0 chars
+   - Quotation ID: b47cdaaf-4b15-4c0e-8d5b-c64848425b13
+
+================================================================================
+END OF REPORT
+================================================================================
+
+2026-07-10 15:01:19 | INFO | log_ocr_start | ================================================================================
+2026-07-10 15:01:19 | INFO | log_ocr_start | OCR PROCESSING STARTED for RFQ: d3537741-ee8c-46c7-aa89-5787df7c3c35
+2026-07-10 15:01:19 | INFO | log_ocr_start | Attachments to process: 0
+2026-07-10 15:01:19 | INFO | log_ocr_start | ================================================================================
+2026-07-10 15:01:19 | INFO | process_rfq_attachments | [RFQ] Processing started for d3537741-ee8c-46c7-aa89-5787df7c3c35
+2026-07-10 15:01:28 | INFO | process_rfq_attachments | [RESULTS] Success: 1, Failed: 0
+2026-07-10 15:01:28 | INFO | log_ocr_complete | 
+================================================================================
+2026-07-10 15:01:28 | INFO | log_ocr_complete | OCR PROCESSING COMPLETED for RFQ: d3537741-ee8c-46c7-aa89-5787df7c3c35
+2026-07-10 15:01:28 | INFO | log_ocr_complete | Results: 1 successful, 0 failed
+2026-07-10 15:01:28 | INFO | log_ocr_complete | Total processing time: 8.75 seconds
+2026-07-10 15:01:28 | INFO | log_ocr_complete | ================================================================================
+2026-07-10 15:01:28 | INFO | generate_ocr_report | 
+
+================================================================================
+OCR PROCESSING REVIEW REPORT
+================================================================================
+
+RFQ ID: d3537741-ee8c-46c7-aa89-5787df7c3c35
+Processing Date: 2026-07-10 15:01:28.024897 IST
+Total Processing Time: 8.75 seconds
+
+SUMMARY:
+--------
+Total Attachments: 1
+Successful: 1
+Failed: 0
+Success Rate: 100.0%
+
+SUCCESSFUL ATTACHMENTS:
+-----------------------
+
+1. Unknown
+   - Extracted text length: 0 chars
+   - Quotation ID: 287504f1-9461-473d-bedc-caf34b7f3114
+
+================================================================================
+END OF REPORT
+================================================================================
+
+2026-07-10 15:04:48 | INFO | log_ocr_start | ================================================================================
+2026-07-10 15:04:48 | INFO | log_ocr_start | OCR PROCESSING STARTED for RFQ: 01c0478a-0f2c-4a83-8cc7-f4935c3727c7
+2026-07-10 15:04:48 | INFO | log_ocr_start | Attachments to process: 0
+2026-07-10 15:04:48 | INFO | log_ocr_start | ================================================================================
+2026-07-10 15:04:48 | INFO | process_rfq_attachments | [RFQ] Processing started for 01c0478a-0f2c-4a83-8cc7-f4935c3727c7
+2026-07-10 15:04:54 | INFO | process_rfq_attachments | [RESULTS] Success: 1, Failed: 0
+2026-07-10 15:04:54 | INFO | log_ocr_complete | 
+================================================================================
+2026-07-10 15:04:54 | INFO | log_ocr_complete | OCR PROCESSING COMPLETED for RFQ: 01c0478a-0f2c-4a83-8cc7-f4935c3727c7
+2026-07-10 15:04:54 | INFO | log_ocr_complete | Results: 1 successful, 0 failed
+2026-07-10 15:04:54 | INFO | log_ocr_complete | Total processing time: 5.94 seconds
+2026-07-10 15:04:54 | INFO | log_ocr_complete | ================================================================================
+2026-07-10 15:04:54 | INFO | generate_ocr_report | 
+
+================================================================================
+OCR PROCESSING REVIEW REPORT
+================================================================================
+
+RFQ ID: 01c0478a-0f2c-4a83-8cc7-f4935c3727c7
+Processing Date: 2026-07-10 15:04:54.074057 IST
+Total Processing Time: 5.94 seconds
+
+SUMMARY:
+--------
+Total Attachments: 1
+Successful: 1
+Failed: 0
+Success Rate: 100.0%
+
+SUCCESSFUL ATTACHMENTS:
+-----------------------
+
+1. Unknown
+   - Extracted text length: 0 chars
+   - Quotation ID: 70c46571-0ba1-461e-8a40-7a4645a59be1
+
+================================================================================
+END OF REPORT
+================================================================================
+

@@ -18,7 +18,12 @@ class Settings(BaseSettings):
     MYSQL_DATABASE: str = "procuregpt"
 
     ANTHROPIC_API_KEY: str = ""
-    ANTHROPIC_MODEL: str = "claude-sonnet-4-20250514"
+    ANTHROPIC_MODEL: str = "claude-sonnet-5"
+
+    # Tag large static system prompts with cache_control=ephemeral so repeat calls
+    # read them from Anthropic's prompt cache (~90% cheaper). No-op below the model's
+    # min cacheable prefix; verify via usage.cache_read_input_tokens.
+    ANTHROPIC_PROMPT_CACHING: bool = True
 
     OPENAI_API_KEY: str = ""
     OPENAI_MODEL: str = "gpt-4o"

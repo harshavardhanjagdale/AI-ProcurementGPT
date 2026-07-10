@@ -772,3 +772,180 @@
 2026-07-09 19:10:02 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 94e7440d-50ac-4297-bb0c-c51fbc80e791 -> generate_rfq_emails
 2026-07-09 19:10:25 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 94e7440d-50ac-4297-bb0c-c51fbc80e791 -> send_rfq_emails
 2026-07-09 19:10:25 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 94e7440d-50ac-4297-bb0c-c51fbc80e791 -> await_supplier_replies
+2026-07-09 19:34:26 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 94e7440d-50ac-4297-bb0c-c51fbc80e791 -> ocr_extract
+2026-07-09 19:34:43 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 94e7440d-50ac-4297-bb0c-c51fbc80e791 -> user_decision_gate
+2026-07-09 19:34:55 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 94e7440d-50ac-4297-bb0c-c51fbc80e791 -> negotiate_with_suppliers
+2026-07-09 19:34:55 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 94e7440d-50ac-4297-bb0c-c51fbc80e791 -> await_supplier_replies
+2026-07-09 19:36:53 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 94e7440d-50ac-4297-bb0c-c51fbc80e791 -> ocr_extract
+2026-07-09 23:21:47 | INFO     | run_workflow:132 | 
+[RUN-WORKFLOW-START] Session: 2e467004-8f8a-4df3-a3e9-69b717d906d7
+2026-07-09 23:21:47 | INFO     | run_workflow:133 | [USER-INPUT] i need 3 laptops and 4 keyboard...
+2026-07-09 23:21:47 | INFO     | run_workflow:180 | [SESSION-MODE] NEW | Thread: 7a1fdac2-1777-46e3-b23f-5470c956a630
+2026-07-09 23:21:51 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 2e467004-8f8a-4df3-a3e9-69b717d906d7 -> parse_request
+2026-07-09 23:21:51 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 2e467004-8f8a-4df3-a3e9-69b717d906d7 -> create_rfq_record
+2026-07-09 23:21:59 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 2e467004-8f8a-4df3-a3e9-69b717d906d7 -> select_vendors
+2026-07-09 23:22:36 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 2e467004-8f8a-4df3-a3e9-69b717d906d7 -> generate_rfq_emails
+2026-07-09 23:23:04 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 2e467004-8f8a-4df3-a3e9-69b717d906d7 -> send_rfq_emails
+2026-07-09 23:23:04 | INFO     | _run_graph_streaming:275 | [NODE-DONE] 2e467004-8f8a-4df3-a3e9-69b717d906d7 -> await_supplier_replies
+2026-07-10 01:34:56 | INFO     | run_workflow:133 | 
+[RUN-WORKFLOW-START] Session: d4f2e4ac-b356-43e7-869a-ccc4976bd289
+2026-07-10 01:34:56 | INFO     | run_workflow:134 | [USER-INPUT] Buy 10 Dell Latitude laptops...
+2026-07-10 01:34:56 | INFO     | run_workflow:181 | [SESSION-MODE] NEW | Thread: 548c7137-2017-43bc-bdeb-9461e5aa2ce6
+2026-07-10 01:35:01 | INFO     | _run_graph_streaming:279 | [NODE-DONE] d4f2e4ac-b356-43e7-869a-ccc4976bd289 -> parse_request | tokens so far: 1392 (~$0.0074)
+2026-07-10 01:35:02 | INFO     | _run_graph_streaming:279 | [NODE-DONE] d4f2e4ac-b356-43e7-869a-ccc4976bd289 -> create_rfq_record | tokens so far: 1392 (~$0.0074)
+2026-07-10 01:35:11 | INFO     | _run_graph_streaming:279 | [NODE-DONE] d4f2e4ac-b356-43e7-869a-ccc4976bd289 -> select_vendors | tokens so far: 1392 (~$0.0074)
+2026-07-10 01:35:49 | INFO     | _run_graph_streaming:279 | [NODE-DONE] d4f2e4ac-b356-43e7-869a-ccc4976bd289 -> generate_rfq_emails | tokens so far: 6220 (~$0.0575)
+2026-07-10 01:36:12 | INFO     | _run_graph_streaming:279 | [NODE-DONE] d4f2e4ac-b356-43e7-869a-ccc4976bd289 -> send_rfq_emails | tokens so far: 6220 (~$0.0575)
+2026-07-10 01:36:12 | INFO     | _run_graph_streaming:279 | [NODE-DONE] d4f2e4ac-b356-43e7-869a-ccc4976bd289 -> await_supplier_replies | tokens so far: 6220 (~$0.0575)
+2026-07-10 01:36:12 | INFO     | _run_graph_streaming:284 | [TOKEN-USAGE] d4f2e4ac-b356-43e7-869a-ccc4976bd289 -> {'calls': 6, 'input_tokens': 2980, 'output_tokens': 3240, 'cache_read_tokens': 0, 'cache_write_tokens': 0, 'total_tokens': 6220, 'cache_hit_rate': 0.0, 'cost_usd': 0.05754}
+2026-07-10 01:45:28 | INFO     | run_workflow:133 | 
+[RUN-WORKFLOW-START] Session: b6ba001e-a97d-4910-8685-179346f0beba
+2026-07-10 01:45:28 | INFO     | run_workflow:134 | [USER-INPUT] Buy 10 Dell Latitude laptops...
+2026-07-10 01:45:28 | INFO     | run_workflow:181 | [SESSION-MODE] NEW | Thread: e3fd8fb5-9b0d-40c1-84c9-00930ddbecc4
+2026-07-10 01:45:33 | INFO     | _run_graph_streaming:279 | [NODE-DONE] b6ba001e-a97d-4910-8685-179346f0beba -> parse_request | tokens so far: 1395 (~$0.0075)
+2026-07-10 01:45:33 | INFO     | _run_graph_streaming:279 | [NODE-DONE] b6ba001e-a97d-4910-8685-179346f0beba -> create_rfq_record | tokens so far: 1395 (~$0.0075)
+2026-07-10 01:45:42 | INFO     | _run_graph_streaming:279 | [NODE-DONE] b6ba001e-a97d-4910-8685-179346f0beba -> select_vendors | tokens so far: 1395 (~$0.0075)
+2026-07-10 01:46:19 | INFO     | _run_graph_streaming:279 | [NODE-DONE] b6ba001e-a97d-4910-8685-179346f0beba -> generate_rfq_emails | tokens so far: 6161 (~$0.0565)
+2026-07-10 01:46:43 | INFO     | _run_graph_streaming:279 | [NODE-DONE] b6ba001e-a97d-4910-8685-179346f0beba -> send_rfq_emails | tokens so far: 6161 (~$0.0565)
+2026-07-10 01:46:44 | INFO     | _run_graph_streaming:279 | [NODE-DONE] b6ba001e-a97d-4910-8685-179346f0beba -> await_supplier_replies | tokens so far: 6161 (~$0.0565)
+2026-07-10 01:46:44 | INFO     | _run_graph_streaming:284 | [TOKEN-USAGE] b6ba001e-a97d-4910-8685-179346f0beba -> {'calls': 6, 'input_tokens': 2995, 'output_tokens': 3166, 'cache_read_tokens': 0, 'cache_write_tokens': 0, 'total_tokens': 6161, 'cache_hit_rate': 0.0, 'cost_usd': 0.056475}
+2026-07-10 01:49:55 | INFO     | _run_graph_streaming:279 | [NODE-DONE] b6ba001e-a97d-4910-8685-179346f0beba -> ocr_extract | tokens so far: 2746 (~$0.0207)
+2026-07-10 01:49:56 | INFO     | _run_graph_streaming:284 | [TOKEN-USAGE] b6ba001e-a97d-4910-8685-179346f0beba -> {'calls': 2, 'input_tokens': 1704, 'output_tokens': 1042, 'cache_read_tokens': 0, 'cache_write_tokens': 0, 'total_tokens': 2746, 'cache_hit_rate': 0.0, 'cost_usd': 0.020742}
+2026-07-10 01:53:27 | INFO     | _run_graph_streaming:279 | [NODE-DONE] b6ba001e-a97d-4910-8685-179346f0beba -> user_decision_gate | tokens so far: 0 (~$0.0000)
+2026-07-10 01:53:28 | INFO     | _run_graph_streaming:279 | [NODE-DONE] b6ba001e-a97d-4910-8685-179346f0beba -> generate_purchase_order | tokens so far: 0 (~$0.0000)
+2026-07-10 01:53:33 | INFO     | _run_graph_streaming:279 | [NODE-DONE] b6ba001e-a97d-4910-8685-179346f0beba -> send_po_email | tokens so far: 0 (~$0.0000)
+2026-07-10 01:53:33 | INFO     | _run_graph_streaming:284 | [TOKEN-USAGE] b6ba001e-a97d-4910-8685-179346f0beba -> {'calls': 0, 'input_tokens': 0, 'output_tokens': 0, 'cache_read_tokens': 0, 'cache_write_tokens': 0, 'total_tokens': 0, 'cache_hit_rate': 0.0, 'cost_usd': 0}
+2026-07-10 14:43:55 | INFO     | run_workflow:133 | 
+[RUN-WORKFLOW-START] Session: 5391d490-5e8e-4bb3-bd44-73c7d832ca0e
+2026-07-10 14:43:55 | INFO     | run_workflow:134 | [USER-INPUT] Buy 10 Dell Latitude laptops...
+2026-07-10 14:43:55 | INFO     | run_workflow:181 | [SESSION-MODE] NEW | Thread: d17bc31a-b13b-4fd7-a7d5-c465b0d0a546
+2026-07-10 14:44:01 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 5391d490-5e8e-4bb3-bd44-73c7d832ca0e -> parse_request | tokens so far: 290 (~$0.0188)
+2026-07-10 14:44:02 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 5391d490-5e8e-4bb3-bd44-73c7d832ca0e -> create_rfq_record | tokens so far: 290 (~$0.0188)
+2026-07-10 14:44:08 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 5391d490-5e8e-4bb3-bd44-73c7d832ca0e -> select_vendors | tokens so far: 290 (~$0.0188)
+2026-07-10 14:44:16 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 5391d490-5e8e-4bb3-bd44-73c7d832ca0e -> generate_rfq_emails | tokens so far: 1310 (~$0.0297)
+2026-07-10 14:44:21 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 5391d490-5e8e-4bb3-bd44-73c7d832ca0e -> send_rfq_emails | tokens so far: 1310 (~$0.0297)
+2026-07-10 14:44:21 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 5391d490-5e8e-4bb3-bd44-73c7d832ca0e -> await_supplier_replies | tokens so far: 1310 (~$0.0297)
+2026-07-10 14:44:21 | INFO     | _run_graph_streaming:289 | [TOKEN-USAGE] 5391d490-5e8e-4bb3-bd44-73c7d832ca0e -> {'calls': 2, 'input_tokens': 384, 'output_tokens': 926, 'cache_read_tokens': 0, 'cache_write_tokens': 3909, 'total_tokens': 1310, 'cache_hit_rate': 0.0, 'cost_usd': 0.029701}
+2026-07-10 14:48:07 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 5391d490-5e8e-4bb3-bd44-73c7d832ca0e -> ocr_extract | tokens so far: 3186 (~$0.0253)
+2026-07-10 14:48:07 | INFO     | _run_graph_streaming:289 | [TOKEN-USAGE] 5391d490-5e8e-4bb3-bd44-73c7d832ca0e -> {'calls': 2, 'input_tokens': 1876, 'output_tokens': 1310, 'cache_read_tokens': 0, 'cache_write_tokens': 0, 'total_tokens': 3186, 'cache_hit_rate': 0.0, 'cost_usd': 0.025278}
+2026-07-10 14:48:50 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 5391d490-5e8e-4bb3-bd44-73c7d832ca0e -> user_decision_gate | tokens so far: 0 (~$0.0000)
+2026-07-10 14:48:50 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 5391d490-5e8e-4bb3-bd44-73c7d832ca0e -> generate_purchase_order | tokens so far: 0 (~$0.0000)
+2026-07-10 14:48:59 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 5391d490-5e8e-4bb3-bd44-73c7d832ca0e -> send_po_email | tokens so far: 304 (~$0.0018)
+2026-07-10 14:48:59 | INFO     | _run_graph_streaming:289 | [TOKEN-USAGE] 5391d490-5e8e-4bb3-bd44-73c7d832ca0e -> {'calls': 1, 'input_tokens': 227, 'output_tokens': 77, 'cache_read_tokens': 0, 'cache_write_tokens': 0, 'total_tokens': 304, 'cache_hit_rate': 0.0, 'cost_usd': 0.001836}
+2026-07-10 14:49:17 | INFO     | run_workflow:133 | 
+[RUN-WORKFLOW-START] Session: 29186c3a-a60d-4116-ba41-cc7969e24839
+2026-07-10 14:49:17 | INFO     | run_workflow:134 | [USER-INPUT] Buy 10 Dell Latitude laptops...
+2026-07-10 14:49:17 | INFO     | run_workflow:181 | [SESSION-MODE] NEW | Thread: 162a8cbc-38b8-45da-9862-af2c70134146
+2026-07-10 14:49:24 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 29186c3a-a60d-4116-ba41-cc7969e24839 -> parse_request | tokens so far: 290 (~$0.0188)
+2026-07-10 14:49:24 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 29186c3a-a60d-4116-ba41-cc7969e24839 -> create_rfq_record | tokens so far: 290 (~$0.0188)
+2026-07-10 14:49:25 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 29186c3a-a60d-4116-ba41-cc7969e24839 -> select_vendors | tokens so far: 290 (~$0.0188)
+2026-07-10 14:49:32 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 29186c3a-a60d-4116-ba41-cc7969e24839 -> generate_rfq_emails | tokens so far: 1259 (~$0.0289)
+2026-07-10 14:49:38 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 29186c3a-a60d-4116-ba41-cc7969e24839 -> send_rfq_emails | tokens so far: 1259 (~$0.0289)
+2026-07-10 14:49:38 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 29186c3a-a60d-4116-ba41-cc7969e24839 -> await_supplier_replies | tokens so far: 1259 (~$0.0289)
+2026-07-10 14:49:38 | INFO     | _run_graph_streaming:289 | [TOKEN-USAGE] 29186c3a-a60d-4116-ba41-cc7969e24839 -> {'calls': 2, 'input_tokens': 384, 'output_tokens': 875, 'cache_read_tokens': 0, 'cache_write_tokens': 3909, 'total_tokens': 1259, 'cache_hit_rate': 0.0, 'cost_usd': 0.028936}
+2026-07-10 14:51:37 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 29186c3a-a60d-4116-ba41-cc7969e24839 -> ocr_extract | tokens so far: 3046 (~$0.0231)
+2026-07-10 14:51:37 | INFO     | _run_graph_streaming:289 | [TOKEN-USAGE] 29186c3a-a60d-4116-ba41-cc7969e24839 -> {'calls': 2, 'input_tokens': 1881, 'output_tokens': 1165, 'cache_read_tokens': 0, 'cache_write_tokens': 0, 'total_tokens': 3046, 'cache_hit_rate': 0.0, 'cost_usd': 0.023118}
+2026-07-10 14:51:43 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 29186c3a-a60d-4116-ba41-cc7969e24839 -> user_decision_gate | tokens so far: 0 (~$0.0000)
+2026-07-10 14:51:43 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 29186c3a-a60d-4116-ba41-cc7969e24839 -> generate_purchase_order | tokens so far: 0 (~$0.0000)
+2026-07-10 14:51:51 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 29186c3a-a60d-4116-ba41-cc7969e24839 -> send_po_email | tokens so far: 298 (~$0.0017)
+2026-07-10 14:51:52 | INFO     | _run_graph_streaming:289 | [TOKEN-USAGE] 29186c3a-a60d-4116-ba41-cc7969e24839 -> {'calls': 1, 'input_tokens': 227, 'output_tokens': 71, 'cache_read_tokens': 0, 'cache_write_tokens': 0, 'total_tokens': 298, 'cache_hit_rate': 0.0, 'cost_usd': 0.001746}
+2026-07-10 14:59:52 | INFO     | run_workflow:133 | 
+[RUN-WORKFLOW-START] Session: 9f563923-6fd9-4865-b5ca-8a3bab3d6196
+2026-07-10 14:59:52 | INFO     | run_workflow:134 | [USER-INPUT] Buy 10 Dell Latitude laptops...
+2026-07-10 14:59:52 | INFO     | run_workflow:181 | [SESSION-MODE] NEW | Thread: 68aea6e8-e663-47b3-baef-8809c5421168
+2026-07-10 14:59:58 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 9f563923-6fd9-4865-b5ca-8a3bab3d6196 -> parse_request | tokens so far: 290 (~$0.0053)
+2026-07-10 14:59:58 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 9f563923-6fd9-4865-b5ca-8a3bab3d6196 -> create_rfq_record | tokens so far: 290 (~$0.0053)
+2026-07-10 14:59:58 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 9f563923-6fd9-4865-b5ca-8a3bab3d6196 -> select_vendors | tokens so far: 290 (~$0.0053)
+2026-07-10 15:00:06 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 9f563923-6fd9-4865-b5ca-8a3bab3d6196 -> generate_rfq_emails | tokens so far: 1191 (~$0.0144)
+2026-07-10 15:00:17 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 9f563923-6fd9-4865-b5ca-8a3bab3d6196 -> send_rfq_emails | tokens so far: 1191 (~$0.0144)
+2026-07-10 15:00:17 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 9f563923-6fd9-4865-b5ca-8a3bab3d6196 -> await_supplier_replies | tokens so far: 1191 (~$0.0144)
+2026-07-10 15:00:17 | INFO     | _run_graph_streaming:289 | [TOKEN-USAGE] 9f563923-6fd9-4865-b5ca-8a3bab3d6196 -> {'calls': 2, 'input_tokens': 384, 'output_tokens': 807, 'cache_read_tokens': 3909, 'cache_write_tokens': 0, 'total_tokens': 1191, 'cache_hit_rate': 0.911, 'cost_usd': 0.01443}
+2026-07-10 15:01:34 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 9f563923-6fd9-4865-b5ca-8a3bab3d6196 -> ocr_extract | tokens so far: 2874 (~$0.0206)
+2026-07-10 15:01:34 | INFO     | _run_graph_streaming:289 | [TOKEN-USAGE] 9f563923-6fd9-4865-b5ca-8a3bab3d6196 -> {'calls': 2, 'input_tokens': 1876, 'output_tokens': 998, 'cache_read_tokens': 0, 'cache_write_tokens': 0, 'total_tokens': 2874, 'cache_hit_rate': 0.0, 'cost_usd': 0.020598}
+2026-07-10 15:01:47 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 9f563923-6fd9-4865-b5ca-8a3bab3d6196 -> user_decision_gate | tokens so far: 0 (~$0.0000)
+2026-07-10 15:01:48 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 9f563923-6fd9-4865-b5ca-8a3bab3d6196 -> generate_purchase_order | tokens so far: 0 (~$0.0000)
+2026-07-10 15:02:01 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 9f563923-6fd9-4865-b5ca-8a3bab3d6196 -> send_po_email | tokens so far: 300 (~$0.0018)
+2026-07-10 15:02:01 | INFO     | _run_graph_streaming:289 | [TOKEN-USAGE] 9f563923-6fd9-4865-b5ca-8a3bab3d6196 -> {'calls': 1, 'input_tokens': 227, 'output_tokens': 73, 'cache_read_tokens': 0, 'cache_write_tokens': 0, 'total_tokens': 300, 'cache_hit_rate': 0.0, 'cost_usd': 0.001776}
+2026-07-10 15:02:09 | INFO     | run_workflow:133 | 
+[RUN-WORKFLOW-START] Session: 6f11fdee-c45b-493b-b481-7e976b8005ff
+2026-07-10 15:02:09 | INFO     | run_workflow:134 | [USER-INPUT] Buy 10 Dell Latitude laptops...
+2026-07-10 15:02:09 | INFO     | run_workflow:181 | [SESSION-MODE] NEW | Thread: 5324b3c5-98d5-4a34-b1a2-b782ea102dac
+2026-07-10 15:02:15 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 6f11fdee-c45b-493b-b481-7e976b8005ff -> parse_request | tokens so far: 290 (~$0.0053)
+2026-07-10 15:02:15 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 6f11fdee-c45b-493b-b481-7e976b8005ff -> create_rfq_record | tokens so far: 290 (~$0.0053)
+2026-07-10 15:02:16 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 6f11fdee-c45b-493b-b481-7e976b8005ff -> select_vendors | tokens so far: 290 (~$0.0053)
+2026-07-10 15:02:23 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 6f11fdee-c45b-493b-b481-7e976b8005ff -> generate_rfq_emails | tokens so far: 1173 (~$0.0142)
+2026-07-10 15:02:28 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 6f11fdee-c45b-493b-b481-7e976b8005ff -> send_rfq_emails | tokens so far: 1173 (~$0.0142)
+2026-07-10 15:02:28 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 6f11fdee-c45b-493b-b481-7e976b8005ff -> await_supplier_replies | tokens so far: 1173 (~$0.0142)
+2026-07-10 15:02:28 | INFO     | _run_graph_streaming:289 | [TOKEN-USAGE] 6f11fdee-c45b-493b-b481-7e976b8005ff -> {'calls': 2, 'input_tokens': 384, 'output_tokens': 789, 'cache_read_tokens': 3909, 'cache_write_tokens': 0, 'total_tokens': 1173, 'cache_hit_rate': 0.911, 'cost_usd': 0.01416}
+2026-07-10 15:05:00 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 6f11fdee-c45b-493b-b481-7e976b8005ff -> ocr_extract | tokens so far: 2810 (~$0.0196)
+2026-07-10 15:05:00 | INFO     | _run_graph_streaming:289 | [TOKEN-USAGE] 6f11fdee-c45b-493b-b481-7e976b8005ff -> {'calls': 2, 'input_tokens': 1878, 'output_tokens': 932, 'cache_read_tokens': 0, 'cache_write_tokens': 0, 'total_tokens': 2810, 'cache_hit_rate': 0.0, 'cost_usd': 0.019614}
+2026-07-10 15:05:13 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 6f11fdee-c45b-493b-b481-7e976b8005ff -> user_decision_gate | tokens so far: 0 (~$0.0000)
+2026-07-10 15:05:13 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 6f11fdee-c45b-493b-b481-7e976b8005ff -> generate_purchase_order | tokens so far: 0 (~$0.0000)
+2026-07-10 15:05:21 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 6f11fdee-c45b-493b-b481-7e976b8005ff -> send_po_email | tokens so far: 298 (~$0.0017)
+2026-07-10 15:05:21 | INFO     | _run_graph_streaming:289 | [TOKEN-USAGE] 6f11fdee-c45b-493b-b481-7e976b8005ff -> {'calls': 1, 'input_tokens': 227, 'output_tokens': 71, 'cache_read_tokens': 0, 'cache_write_tokens': 0, 'total_tokens': 298, 'cache_hit_rate': 0.0, 'cost_usd': 0.001746}
+2026-07-10 15:48:30 | INFO     | run_workflow:133 | 
+[RUN-WORKFLOW-START] Session: c0d4efc3-30a6-44c4-9459-2aea974c6575
+2026-07-10 15:48:30 | INFO     | run_workflow:134 | [USER-INPUT] Buy 10 Dell Latitude laptops...
+2026-07-10 15:48:30 | INFO     | run_workflow:181 | [SESSION-MODE] NEW | Thread: 5d1ea975-5e61-4830-989c-c11eb7bb91ad
+2026-07-10 15:48:35 | INFO     | _run_graph_streaming:284 | [NODE-DONE] c0d4efc3-30a6-44c4-9459-2aea974c6575 -> parse_request | tokens so far: 290 (~$0.0053)
+2026-07-10 15:48:36 | INFO     | _run_graph_streaming:284 | [NODE-DONE] c0d4efc3-30a6-44c4-9459-2aea974c6575 -> create_rfq_record | tokens so far: 290 (~$0.0053)
+2026-07-10 15:48:44 | INFO     | _run_graph_streaming:284 | [NODE-DONE] c0d4efc3-30a6-44c4-9459-2aea974c6575 -> select_vendors | tokens so far: 290 (~$0.0053)
+2026-07-10 15:48:51 | INFO     | _run_graph_streaming:284 | [NODE-DONE] c0d4efc3-30a6-44c4-9459-2aea974c6575 -> generate_rfq_emails | tokens so far: 1178 (~$0.0142)
+2026-07-10 15:48:56 | INFO     | _run_graph_streaming:284 | [NODE-DONE] c0d4efc3-30a6-44c4-9459-2aea974c6575 -> send_rfq_emails | tokens so far: 1178 (~$0.0142)
+2026-07-10 15:48:56 | INFO     | _run_graph_streaming:284 | [NODE-DONE] c0d4efc3-30a6-44c4-9459-2aea974c6575 -> await_supplier_replies | tokens so far: 1178 (~$0.0142)
+2026-07-10 15:48:56 | INFO     | _run_graph_streaming:289 | [TOKEN-USAGE] c0d4efc3-30a6-44c4-9459-2aea974c6575 -> {'calls': 2, 'input_tokens': 384, 'output_tokens': 794, 'cache_read_tokens': 3909, 'cache_write_tokens': 0, 'total_tokens': 1178, 'cache_hit_rate': 0.911, 'cost_usd': 0.014235}
+2026-07-10 15:49:41 | INFO     | run_workflow:133 | 
+[RUN-WORKFLOW-START] Session: 1bef6f48-ef9d-402a-9fe8-ab6b1eeaa87b
+2026-07-10 15:49:41 | INFO     | run_workflow:134 | [USER-INPUT] Buy 10 Dell Latitude laptops...
+2026-07-10 15:49:41 | INFO     | run_workflow:181 | [SESSION-MODE] NEW | Thread: 1b7610f7-186f-4a9c-b1aa-7cf7c1165c48
+2026-07-10 15:49:45 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 1bef6f48-ef9d-402a-9fe8-ab6b1eeaa87b -> parse_request | tokens so far: 290 (~$0.0053)
+2026-07-10 15:49:45 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 1bef6f48-ef9d-402a-9fe8-ab6b1eeaa87b -> create_rfq_record | tokens so far: 290 (~$0.0053)
+2026-07-10 15:49:46 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 1bef6f48-ef9d-402a-9fe8-ab6b1eeaa87b -> select_vendors | tokens so far: 290 (~$0.0053)
+2026-07-10 15:49:53 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 1bef6f48-ef9d-402a-9fe8-ab6b1eeaa87b -> generate_rfq_emails | tokens so far: 1167 (~$0.0141)
+2026-07-10 15:49:57 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 1bef6f48-ef9d-402a-9fe8-ab6b1eeaa87b -> send_rfq_emails | tokens so far: 1167 (~$0.0141)
+2026-07-10 15:49:57 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 1bef6f48-ef9d-402a-9fe8-ab6b1eeaa87b -> await_supplier_replies | tokens so far: 1167 (~$0.0141)
+2026-07-10 15:49:57 | INFO     | _run_graph_streaming:289 | [TOKEN-USAGE] 1bef6f48-ef9d-402a-9fe8-ab6b1eeaa87b -> {'calls': 2, 'input_tokens': 384, 'output_tokens': 783, 'cache_read_tokens': 3909, 'cache_write_tokens': 0, 'total_tokens': 1167, 'cache_hit_rate': 0.911, 'cost_usd': 0.01407}
+2026-07-10 15:50:32 | INFO     | run_workflow:133 | 
+[RUN-WORKFLOW-START] Session: 3b560757-0ee2-4e09-a0df-209b44e1ede5
+2026-07-10 15:50:32 | INFO     | run_workflow:134 | [USER-INPUT] Buy 10 Dell Latitude laptops...
+2026-07-10 15:50:32 | INFO     | run_workflow:181 | [SESSION-MODE] NEW | Thread: 9b6369ab-4e6b-415e-91b8-7edf3dec9a13
+2026-07-10 15:50:37 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 3b560757-0ee2-4e09-a0df-209b44e1ede5 -> parse_request | tokens so far: 290 (~$0.0053)
+2026-07-10 15:50:37 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 3b560757-0ee2-4e09-a0df-209b44e1ede5 -> create_rfq_record | tokens so far: 290 (~$0.0053)
+2026-07-10 15:50:37 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 3b560757-0ee2-4e09-a0df-209b44e1ede5 -> select_vendors | tokens so far: 290 (~$0.0053)
+2026-07-10 15:50:45 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 3b560757-0ee2-4e09-a0df-209b44e1ede5 -> generate_rfq_emails | tokens so far: 1280 (~$0.0158)
+2026-07-10 15:50:49 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 3b560757-0ee2-4e09-a0df-209b44e1ede5 -> send_rfq_emails | tokens so far: 1280 (~$0.0158)
+2026-07-10 15:50:49 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 3b560757-0ee2-4e09-a0df-209b44e1ede5 -> await_supplier_replies | tokens so far: 1280 (~$0.0158)
+2026-07-10 15:50:49 | INFO     | _run_graph_streaming:289 | [TOKEN-USAGE] 3b560757-0ee2-4e09-a0df-209b44e1ede5 -> {'calls': 2, 'input_tokens': 384, 'output_tokens': 896, 'cache_read_tokens': 3909, 'cache_write_tokens': 0, 'total_tokens': 1280, 'cache_hit_rate': 0.911, 'cost_usd': 0.015765}
+2026-07-10 16:00:55 | INFO     | run_workflow:133 | 
+[RUN-WORKFLOW-START] Session: 07f8aed6-0f68-4f82-b891-4cc7dcfc32bc
+2026-07-10 16:00:55 | INFO     | run_workflow:134 | [USER-INPUT] Buy 10 Dell Latitude laptops...
+2026-07-10 16:00:55 | INFO     | run_workflow:181 | [SESSION-MODE] NEW | Thread: a31898e8-7756-4870-aa8d-1509f1d1425f
+2026-07-10 16:01:00 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 07f8aed6-0f68-4f82-b891-4cc7dcfc32bc -> parse_request | tokens so far: 290 (~$0.0053)
+2026-07-10 16:01:01 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 07f8aed6-0f68-4f82-b891-4cc7dcfc32bc -> create_rfq_record | tokens so far: 290 (~$0.0053)
+2026-07-10 16:01:07 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 07f8aed6-0f68-4f82-b891-4cc7dcfc32bc -> select_vendors | tokens so far: 290 (~$0.0053)
+2026-07-10 16:01:13 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 07f8aed6-0f68-4f82-b891-4cc7dcfc32bc -> generate_rfq_emails | tokens so far: 1193 (~$0.0145)
+2026-07-10 16:01:21 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 07f8aed6-0f68-4f82-b891-4cc7dcfc32bc -> send_rfq_emails | tokens so far: 1193 (~$0.0145)
+2026-07-10 16:01:21 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 07f8aed6-0f68-4f82-b891-4cc7dcfc32bc -> await_supplier_replies | tokens so far: 1193 (~$0.0145)
+2026-07-10 16:01:21 | INFO     | _run_graph_streaming:289 | [TOKEN-USAGE] 07f8aed6-0f68-4f82-b891-4cc7dcfc32bc -> {'calls': 2, 'input_tokens': 384, 'output_tokens': 809, 'cache_read_tokens': 3909, 'cache_write_tokens': 0, 'total_tokens': 1193, 'cache_hit_rate': 0.911, 'cost_usd': 0.01446}
+2026-07-10 16:02:55 | INFO     | run_workflow:133 | 
+[RUN-WORKFLOW-START] Session: 7ff6665a-233d-4dd2-a132-f7efe236b230
+2026-07-10 16:02:55 | INFO     | run_workflow:134 | [USER-INPUT] Buy 10 Dell Latitude laptops...
+2026-07-10 16:02:55 | INFO     | run_workflow:181 | [SESSION-MODE] NEW | Thread: cabbcb4d-1670-4c4d-8493-afade4357b03
+2026-07-10 16:03:00 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 7ff6665a-233d-4dd2-a132-f7efe236b230 -> parse_request | tokens so far: 290 (~$0.0053)
+2026-07-10 16:03:01 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 7ff6665a-233d-4dd2-a132-f7efe236b230 -> create_rfq_record | tokens so far: 290 (~$0.0053)
+2026-07-10 16:03:01 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 7ff6665a-233d-4dd2-a132-f7efe236b230 -> select_vendors | tokens so far: 290 (~$0.0053)
+2026-07-10 16:03:09 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 7ff6665a-233d-4dd2-a132-f7efe236b230 -> generate_rfq_emails | tokens so far: 1231 (~$0.0150)
+2026-07-10 16:03:13 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 7ff6665a-233d-4dd2-a132-f7efe236b230 -> send_rfq_emails | tokens so far: 1231 (~$0.0150)
+2026-07-10 16:03:13 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 7ff6665a-233d-4dd2-a132-f7efe236b230 -> await_supplier_replies | tokens so far: 1231 (~$0.0150)
+2026-07-10 16:03:14 | INFO     | _run_graph_streaming:289 | [TOKEN-USAGE] 7ff6665a-233d-4dd2-a132-f7efe236b230 -> {'calls': 2, 'input_tokens': 384, 'output_tokens': 847, 'cache_read_tokens': 3909, 'cache_write_tokens': 0, 'total_tokens': 1231, 'cache_hit_rate': 0.911, 'cost_usd': 0.01503}
+2026-07-10 16:11:51 | INFO     | run_workflow:133 | 
+[RUN-WORKFLOW-START] Session: 01865220-6591-43a5-8421-943f04f1f86a
+2026-07-10 16:11:51 | INFO     | run_workflow:134 | [USER-INPUT] Buy 10 Dell Latitude laptops...
+2026-07-10 16:11:52 | INFO     | run_workflow:181 | [SESSION-MODE] NEW | Thread: 120aa48e-a82c-4743-ba7b-5cf1ab504ee1
+2026-07-10 16:11:56 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 01865220-6591-43a5-8421-943f04f1f86a -> parse_request | tokens so far: 290 (~$0.0188)
+2026-07-10 16:11:56 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 01865220-6591-43a5-8421-943f04f1f86a -> create_rfq_record | tokens so far: 290 (~$0.0188)
+2026-07-10 16:11:56 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 01865220-6591-43a5-8421-943f04f1f86a -> select_vendors | tokens so far: 290 (~$0.0188)
+2026-07-10 16:12:04 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 01865220-6591-43a5-8421-943f04f1f86a -> generate_rfq_emails | tokens so far: 1249 (~$0.0288)
+2026-07-10 16:12:08 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 01865220-6591-43a5-8421-943f04f1f86a -> send_rfq_emails | tokens so far: 1249 (~$0.0288)
+2026-07-10 16:12:08 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 01865220-6591-43a5-8421-943f04f1f86a -> await_supplier_replies | tokens so far: 1249 (~$0.0288)
+2026-07-10 16:12:08 | INFO     | _run_graph_streaming:289 | [TOKEN-USAGE] 01865220-6591-43a5-8421-943f04f1f86a -> {'calls': 2, 'input_tokens': 384, 'output_tokens': 865, 'cache_read_tokens': 0, 'cache_write_tokens': 3909, 'total_tokens': 1249, 'cache_hit_rate': 0.0, 'cost_usd': 0.028786}

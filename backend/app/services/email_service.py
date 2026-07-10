@@ -307,6 +307,7 @@ class EmailService:
         subtotal: float | None = None,
         tax_percent: float | None = None,
         tax_amount: float | None = None,
+        intro_message: str | None = None,
     ) -> dict:
         """Send purchase order email with PDF attachment."""
         rfq = await self.rfq_repo.get_by_id(rfq_id)
@@ -329,6 +330,7 @@ class EmailService:
             subtotal=subtotal,
             tax_percent=tax_percent,
             tax_amount=tax_amount,
+            intro_message=intro_message,
         )
 
         attachments = []

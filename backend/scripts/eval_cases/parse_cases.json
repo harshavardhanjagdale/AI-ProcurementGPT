@@ -1,0 +1,67 @@
+{
+  "prompt_under_test": "app/agents/nodes/parse_request.py::PARSE_SYSTEM_PROMPT",
+  "description": "Golden cases for the request-parsing prompt. Each case asserts on the structured RFQ the LLM must extract from free text.",
+  "cases": [
+    {
+      "id": "simple-laptops",
+      "input": "I need to buy 10 Dell Latitude laptops for the sales team.",
+      "expect": {
+        "is_complete": true,
+        "min_items": 1,
+        "item_name_contains": "laptop",
+        "quantity": 10,
+        "direct_supplier_is_null": true
+      }
+    },
+    {
+      "id": "direct-supplier",
+      "input": "Order 50 ergonomic office chairs from ErgoSupply Corp, budget max 20000 USD.",
+      "expect": {
+        "is_complete": true,
+        "min_items": 1,
+        "item_name_contains": "chair",
+        "quantity": 50,
+        "budget_max": 20000,
+        "direct_supplier_contains": "ErgoSupply"
+      }
+    },
+    {
+      "id": "brand-not-supplier",
+      "input": "Purchase 5 HP printers for the accounts department.",
+      "expect": {
+        "is_complete": true,
+        "min_items": 1,
+        "item_name_contains": "printer",
+        "quantity": 5,
+        "direct_supplier_is_null": true
+      }
+    },
+    {
+      "id": "budget-range-currency",
+      "input": "We need about 200 units of A4 copier paper, budget between 500 and 900 EUR, deliver within 2 weeks.",
+      "expect": {
+        "is_complete": true,
+        "min_items": 1,
+        "item_name_contains": "paper",
+        "currency": "EUR",
+        "budget_max": 900
+      }
+    },
+    {
+      "id": "incomplete-greeting",
+      "input": "Hi there, can you help me?",
+      "expect": {
+        "is_complete": false
+      }
+    },
+    {
+      "id": "multi-item",
+      "input": "Buy 3 standing desks and 3 monitor arms for the new hires.",
+      "expect": {
+        "is_complete": true,
+        "min_items": 2,
+        "direct_supplier_is_null": true
+      }
+    }
+  ]
+}

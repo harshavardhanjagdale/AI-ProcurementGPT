@@ -10,8 +10,15 @@ from abc import ABC, abstractmethod
 from typing import Optional
 
 from app.core.config import settings
+from app.ai.token_tracker import record_usage
 
 logger = logging.getLogger(__name__)
+
+# Prompt caching: min cacheable prefix is ~1024 tokens (Haiku) / ~2048 tokens
+# (Sonnet/Opus). Below this the API silently ignores cache_control, so we only
+# tag the system block when it's plausibly long enough to matter. Verify it
+# actually engaged via usage.cache_read_input_tokens (surfaced in token_tracker).
+_MIN_CHARS_TO_CACHE = 8000  # ~2k+ tokens; at/above Sonnet's cacheable-prefix floor
 
 JSON_MODE_INSTRUCTION = (
     "\n\nRespond with ONLY a single valid JSON object. "
@@ -21,18 +28,24 @@ JSON_MODE_INSTRUCTION = (
 MAX_RETRIES = 3
 RETRY_BASE_DELAY = 2
 
+# Transient network/IO failures worth retrying. NOTE: asyncio.CancelledError is
+# deliberately NOT here — cancellation must propagate so background tasks (the
+# streaming workflow runs as fire-and-forget tasks) can shut down promptly.
+# The provider SDKs (Anthropic/OpenAI) also retry 429/5xx/connection errors
+# internally, so this outer loop is a second, provider-agnostic safety net.
 _TRANSIENT_ERRORS = (
-    asyncio.CancelledError,
     ConnectionError,
     TimeoutError,
     OSError,
 )
 
 AVAILABLE_MODELS = {
+    # Current Anthropic model IDs (use the bare alias — do NOT append date suffixes).
+    # Opus 4.8 is the most capable; Sonnet 5 is the balanced default; Haiku 4.5 is fast/cheap.
     "anthropic": [
-        {"id": "claude-sonnet-4-20250514", "name": "Claude Sonnet 4"},
-        {"id": "claude-haiku-4-20250414", "name": "Claude Haiku 4"},
-        {"id": "claude-opus-4-20250514", "name": "Claude Opus 4"},
+        {"id": "claude-opus-4-8", "name": "Claude Opus 4.8"},
+        {"id": "claude-sonnet-5", "name": "Claude Sonnet 5"},
+        {"id": "claude-haiku-4-5", "name": "Claude Haiku 4.5"},
     ],
     "openai": [
         {"id": "gpt-4o", "name": "GPT-4o"},
@@ -46,6 +59,36 @@ AVAILABLE_MODELS = {
         {"id": "gemini-2.0-flash", "name": "Gemini 2.0 Flash"},
     ],
 }
+
+
+def _maybe_wrap_client(client, provider: str):
+    """
+    Wrap a provider SDK client with LangSmith's tracing wrapper so each individual
+    API call shows up in LangSmith as a nested LLM span *with token counts, cost and
+    latency* under its LangGraph node. Without this, LangSmith sees the graph nodes
+    but has no token data (the nodes call the raw SDK), which is exactly why the
+    "Cost and Tokens" column stays empty.
+
+    No-op (returns the client unchanged) if tracing is off or langsmith isn't
+    available -- so nothing breaks when running without LangSmith.
+    """
+    if not getattr(settings, "LANGSMITH_TRACING", False):
+        return client
+    try:
+        from langsmith import wrappers
+        wrap_fn = {
+            "anthropic": getattr(wrappers, "wrap_anthropic", None),
+            "openai": getattr(wrappers, "wrap_openai", None),
+            "gemini": getattr(wrappers, "wrap_gemini", None),
+        }.get(provider)
+        if wrap_fn is None:
+            return client
+        wrapped = wrap_fn(client)
+        logger.info(f"LangSmith tracing wrapper attached to {provider} client")
+        return wrapped
+    except Exception as e:
+        logger.warning(f"Could not attach LangSmith wrapper to {provider} client: {e}")
+        return client
 
 
 def _strip_json_fences(content: str) -> str:
@@ -90,6 +133,9 @@ class BaseLLMProvider(ABC):
         for attempt in range(1, MAX_RETRIES + 1):
             try:
                 return await self._call(system, user_prompt, max_tokens)
+            except asyncio.CancelledError:
+                # Never retry a cancellation — let it propagate to unwind the task.
+                raise
             except _TRANSIENT_ERRORS as e:
                 last_exc = e
                 delay = RETRY_BASE_DELAY * (2 ** (attempt - 1))
@@ -133,15 +179,69 @@ class AnthropicProvider(BaseLLMProvider):
     def __init__(self, api_key: str, model: str):
         super().__init__(api_key, model)
         from anthropic import AsyncAnthropic
-        self.client = AsyncAnthropic(api_key=api_key, timeout=120.0)
+        self.client = _maybe_wrap_client(AsyncAnthropic(api_key=api_key, timeout=120.0), "anthropic")
+
+    def _build_system_param(self, system: str):
+        """
+        Return the `system` argument for the Anthropic API. When prompt caching is
+        enabled and the system prompt is large enough to be cacheable, send it as a
+        content block with cache_control=ephemeral so repeated calls with the same
+        system prompt read it from cache (~90% cheaper, lower latency) instead of
+        re-processing it every time. The system prompts here (parse/extract/analyze)
+        are static per node, which is exactly the shape prompt caching rewards.
+        """
+        if settings.ANTHROPIC_PROMPT_CACHING and len(system) >= _MIN_CHARS_TO_CACHE:
+            return [{
+                "type": "text",
+                "text": system,
+                "cache_control": {"type": "ephemeral"},
+            }]
+        return system
 
     async def _call(self, system: str, user_prompt: str, max_tokens: int) -> str:
         response = await self.client.messages.create(
             model=self.model,
             max_tokens=max_tokens,
-            system=system,
+            system=self._build_system_param(system),
             messages=[{"role": "user", "content": user_prompt}],
         )
+
+        usage = getattr(response, "usage", None)
+        if usage is not None:
+            cache_read = getattr(usage, "cache_read_input_tokens", 0) or 0
+            cache_write = getattr(usage, "cache_creation_input_tokens", 0) or 0
+            input_tok = getattr(usage, "input_tokens", 0)
+            output_tok = getattr(usage, "output_tokens", 0)
+
+            if cache_read or cache_write:
+                total_input = input_tok + cache_read
+                pct = (cache_read / total_input * 100) if total_input > 0 else 0
+                logger.info(
+                    f"[PROMPT-CACHE] input={input_tok} cache_read={cache_read} "
+                    f"cache_write={cache_write} output={output_tok} "
+                    f"| {'HIT' if cache_read else 'WRITE'} ({pct:.0f}% cached)"
+                )
+
+            record_usage(
+                provider="anthropic",
+                model=self.model,
+                input_tokens=input_tok,
+                output_tokens=output_tok,
+                cache_read_tokens=cache_read,
+                cache_write_tokens=cache_write,
+                label=f"stop={getattr(response, 'stop_reason', '?')}",
+            )
+
+        # Surface truncation instead of silently returning a half-formed answer that
+        # downstream JSON parsing would choke on. request id makes Anthropic support
+        # tickets traceable.
+        if getattr(response, "stop_reason", None) == "max_tokens":
+            logger.warning(
+                "Anthropic response truncated at max_tokens=%d (request_id=%s). "
+                "Consider raising max_tokens for this call.",
+                max_tokens, getattr(response, "_request_id", None),
+            )
+
         return "".join(block.text for block in response.content if block.type == "text")
 
 
@@ -153,7 +253,7 @@ class OpenAIProvider(BaseLLMProvider):
     def __init__(self, api_key: str, model: str):
         super().__init__(api_key, model)
         from openai import AsyncOpenAI
-        self.client = AsyncOpenAI(api_key=api_key, timeout=120.0)
+        self.client = _maybe_wrap_client(AsyncOpenAI(api_key=api_key, timeout=120.0), "openai")
 
     async def _call(self, system: str, user_prompt: str, max_tokens: int) -> str:
         response = await self.client.chat.completions.create(
@@ -164,6 +264,21 @@ class OpenAIProvider(BaseLLMProvider):
                 {"role": "user", "content": user_prompt},
             ],
         )
+
+        usage = getattr(response, "usage", None)
+        if usage is not None:
+            details = getattr(usage, "prompt_tokens_details", None)
+            cached = getattr(details, "cached_tokens", 0) if details else 0
+            record_usage(
+                provider="openai",
+                model=self.model,
+                # OpenAI's prompt_tokens already includes cached tokens; split them
+                # out so the cache line reads consistently across providers.
+                input_tokens=(getattr(usage, "prompt_tokens", 0) or 0) - (cached or 0),
+                output_tokens=getattr(usage, "completion_tokens", 0) or 0,
+                cache_read_tokens=cached or 0,
+            )
+
         return response.choices[0].message.content or ""
 
 
@@ -175,7 +290,7 @@ class GeminiProvider(BaseLLMProvider):
     def __init__(self, api_key: str, model: str):
         super().__init__(api_key, model)
         from google import genai
-        self.client = genai.Client(api_key=api_key)
+        self.client = _maybe_wrap_client(genai.Client(api_key=api_key), "gemini")
 
     async def _call(self, system: str, user_prompt: str, max_tokens: int) -> str:
         from google.genai import types
@@ -187,6 +302,18 @@ class GeminiProvider(BaseLLMProvider):
             contents=full_prompt,
             config=types.GenerateContentConfig(max_output_tokens=max_tokens),
         )
+
+        meta = getattr(response, "usage_metadata", None)
+        if meta is not None:
+            cached = getattr(meta, "cached_content_token_count", 0) or 0
+            record_usage(
+                provider="gemini",
+                model=self.model,
+                input_tokens=(getattr(meta, "prompt_token_count", 0) or 0) - cached,
+                output_tokens=getattr(meta, "candidates_token_count", 0) or 0,
+                cache_read_tokens=cached,
+            )
+
         return response.text or ""
 
 
