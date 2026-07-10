@@ -1,4 +1,5 @@
 import logging
+import os
 import traceback
 
 from dotenv import load_dotenv
@@ -26,9 +27,14 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
+CORS_ORIGINS = os.getenv(
+    "CORS_ORIGINS",
+    "http://localhost:3000,http://localhost:3001,ws://localhost:3000,wss://localhost:3000"
+).split(",")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://localhost:3001", "ws://localhost:3000", "wss://localhost:3000"],
+    allow_origins=[origin.strip() for origin in CORS_ORIGINS],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -46,8 +52,8 @@ async def global_exception_handler(request: Request, exc: Exception):
         status_code=500,
         content={"detail": f"Internal server error: {type(exc).__name__}: {str(exc)}"},
     )
-    # Manually add CORS headers
-    response.headers["Access-Control-Allow-Origin"] = "http://localhost:3000"
+    # Manually add CORS headers (use first configured origin)
+    response.headers["Access-Control-Allow-Origin"] = CORS_ORIGINS[0]
     response.headers["Access-Control-Allow-Credentials"] = "true"
     response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
