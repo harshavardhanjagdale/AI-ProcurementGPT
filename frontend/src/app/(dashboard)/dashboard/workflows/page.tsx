@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -61,7 +61,24 @@ const STEP_ORDER = [
   'send_po_email',
 ];
 
+// useSearchParams() forces client-side rendering, so the page content must live
+// inside a Suspense boundary — otherwise Next.js fails to statically prerender
+// this route at build time (missing-suspense-with-csr-bailout).
 export default function WorkflowMonitorPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center p-8">
+          <Loader2 className="h-6 w-6 animate-spin" />
+        </div>
+      }
+    >
+      <WorkflowMonitorContent />
+    </Suspense>
+  );
+}
+
+function WorkflowMonitorContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const workflowId = searchParams.get('workflow_id');

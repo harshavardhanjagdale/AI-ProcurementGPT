@@ -28,7 +28,7 @@ Return a JSON object with:
     "currency": "USD/EUR/INR/etc (default USD)",
     "delivery_deadline_days": integer or null,
     "categories": ["relevant supplier categories"],
-    "direct_supplier": "supplier name if user explicitly wants to buy from a specific supplier, else null",
+    "direct_supplier": "supplier name(s) if user explicitly wants to buy from specific supplier(s); if several are named, list them ALL comma-separated (e.g. 'Alpha Components, TechSupply'); else null",
     "is_complete": true/false
 }
 
@@ -47,6 +47,8 @@ Other rules:
 - If user doesn't mention budget, currency, or deadline, leave them null. Still mark is_complete as true.
 - "direct_supplier" should ONLY be set when the user explicitly names a SUPPLIER/VENDOR they want to buy FROM (e.g. "buy from TechSupply Corp", "order from GlobalTech", "purchase from ErgoSupply").
 - Do NOT set direct_supplier for product BRANDS or MANUFACTURERS in the product name. "Dell", "HP", "Lenovo", "Apple", "Samsung", etc. are product brands, NOT supplier names. "Buy 10 Dell laptops" means buy Dell-branded laptops from any supplier — direct_supplier should be null. "Buy 10 laptops from TechSupply" means buy from the supplier TechSupply — direct_supplier should be "TechSupply".
+- If the user names MORE THAN ONE supplier (e.g. "from Alpha Components and TechSupply", "order from A, B and C"), include EVERY named supplier in "direct_supplier", comma-separated. Do not drop any.
+- NEVER put supplier/vendor names in "title" or "description". Those describe the PRODUCT only (e.g. title "Laptops", not "Laptops from Alpha Components"). The RFQ title and description are shown to every supplier, so naming one supplier there leaks it to the others. Supplier names belong ONLY in the "direct_supplier" field.
 - Set is_complete to false ONLY if you cannot identify even a single product/item from the message.
 - Be generous with is_complete — if you can figure out what they want to buy, mark it true.
 
@@ -80,8 +82,8 @@ Example 2 — explicit supplier ("from X") sets direct_supplier, with budget and
 User: "Order 50 ergonomic office chairs from ErgoSupply Corp, budget max 20000 USD."
 Output:
 {
-    "title": "Ergonomic Office Chairs from ErgoSupply Corp",
-    "description": "Procurement of 50 ergonomic office chairs from the supplier ErgoSupply Corp.",
+    "title": "Ergonomic Office Chairs",
+    "description": "Procurement of 50 ergonomic office chairs.",
     "items": [
         {
             "product_name": "Ergonomic Office Chair",
@@ -98,7 +100,7 @@ Output:
     "direct_supplier": "ErgoSupply Corp",
     "is_complete": true
 }
-Note: "from ErgoSupply Corp" names a supplier, so direct_supplier is set.
+Note: "from ErgoSupply Corp" names a supplier, so direct_supplier is set — but the supplier name is kept OUT of title/description (product only).
 
 Example 3 — another brand-not-supplier case
 User: "Purchase 5 HP printers for the accounts department."
@@ -223,8 +225,8 @@ Example 8 — non-tech / industrial item with attributes
 User: "Get me 500 kg of 304-grade stainless steel sheets from MetalWorks Ltd."
 Output:
 {
-    "title": "304 Stainless Steel Sheets from MetalWorks Ltd",
-    "description": "Procurement of 500 kg of 304-grade stainless steel sheets from the supplier MetalWorks Ltd.",
+    "title": "304 Stainless Steel Sheets",
+    "description": "Procurement of 500 kg of 304-grade stainless steel sheets.",
     "items": [
         {
             "product_name": "Stainless Steel Sheet (304 Grade)",

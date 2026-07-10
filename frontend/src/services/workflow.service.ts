@@ -82,8 +82,30 @@ export interface WorkflowSessionDetail extends WorkflowSessionSummary {
   steps?: WorkflowStep[];
 }
 
+export type WorkflowEventType =
+  | "workflow_progress"
+  | "chat_message"
+  | "workflow_complete"
+  | "workflow_error"
+  | "state_sync"
+  | "ping"
+  | "error"
+  // Event-driven quotation / negotiation / PO processing events (see useWorkflowSocket)
+  | "quotation_received"
+  | "quotation_ocr_started"
+  | "quotation_ocr_complete"
+  | "quotation_extracting"
+  | "quotation_validated"
+  | "quotation_ready"
+  | "quotation_failed"
+  | "comparison_ready"
+  | "negotiation_draft_ready"
+  | "negotiation_sent"
+  | "po_preview_ready"
+  | "po_finalized";
+
 export interface WorkflowProgressEvent {
-  type: "workflow_progress" | "chat_message" | "workflow_complete" | "workflow_error" | "state_sync" | "ping" | "error";
+  type: WorkflowEventType;
   workflowId: string;
   currentStep?: string | null;
   stepIndex?: number;

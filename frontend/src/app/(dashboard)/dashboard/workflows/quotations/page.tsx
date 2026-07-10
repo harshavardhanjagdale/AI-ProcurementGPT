@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { Suspense, useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -29,7 +29,23 @@ interface WorkflowQuotations {
   quotations: Quotation[];
 }
 
+// useSearchParams() bails out of static rendering, so the content must be wrapped
+// in a Suspense boundary for Next.js to build this route (see workflows/page.tsx).
 export default function QuotationsPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="flex items-center justify-center p-8">
+          <Loader2 className="h-8 w-8 animate-spin" />
+        </div>
+      }
+    >
+      <QuotationsContent />
+    </Suspense>
+  );
+}
+
+function QuotationsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const workflowId = searchParams.get('workflow_id');
