@@ -82,14 +82,16 @@ class SMTPClient:
         all_recipients = to + (cc or [])
 
         try:
-            logger.info(f"Connecting to SMTP {self.host}:{self.port} as {self.username}...")
+            use_tls = self.port == 465
+            logger.info(f"Connecting to SMTP {self.host}:{self.port} (tls={use_tls}, starttls={not use_tls}) as {self.username}...")
             response = await aiosmtplib.send(
                 msg,
                 hostname=self.host,
                 port=self.port,
                 username=self.username,
                 password=self.password,
-                start_tls=True,
+                use_tls=use_tls,
+                start_tls=not use_tls,
                 timeout=30,
             )
             message_id = msg.get("Message-ID", "")
