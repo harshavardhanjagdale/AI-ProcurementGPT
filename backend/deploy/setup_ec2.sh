@@ -16,7 +16,7 @@ MYSQL_ROOT_PASSWORD="ProcureGPT@2026"
 MYSQL_APP_USER="procuregpt"
 MYSQL_APP_PASSWORD="ProcureGPT_DB@2026"
 MYSQL_DATABASE="procuregpt"
-APP_DIR="/opt/procuregpt"
+APP_DIR="/opt/AI-ProcurementGPT"
 REPO_URL="https://github.com/harshavardhanjagdale/AI-ProcurementGPT.git"  # Set your git repo URL here
 
 # --- Step 1: System Update & Dependencies ---
