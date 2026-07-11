@@ -241,6 +241,8 @@ SAMPLE_SUPPLIERS = [
 
 
 async def seed():
+    from app.database.connection import engine
+
     async with AsyncSessionLocal() as session:
         for supplier_data in SAMPLE_SUPPLIERS:
             categories = supplier_data.pop("categories")
@@ -258,6 +260,8 @@ async def seed():
 
         await session.commit()
         print(f"Successfully seeded {len(SAMPLE_SUPPLIERS)} suppliers.")
+
+    await engine.dispose()
 
 
 if __name__ == "__main__":

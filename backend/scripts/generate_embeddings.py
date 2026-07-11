@@ -16,6 +16,8 @@ from app.ai.embeddings import generate_embedding, serialize_embedding, build_sup
 
 
 async def generate_all_embeddings():
+    from app.database.connection import engine
+
     async with AsyncSessionLocal() as session:
         result = await session.execute(
             select(Supplier).where(Supplier.status == "active")
@@ -46,10 +48,12 @@ async def generate_all_embeddings():
                 .values(embedding_vector=embedding_bytes)
             )
 
-            print(f"  ✓ {supplier.name} ({len(categories)} categories)")
+            print(f"  [OK] {supplier.name} ({len(categories)} categories)")
 
         await session.commit()
         print(f"\nDone! Generated embeddings for {len(suppliers)} suppliers.")
+
+    await engine.dispose()
 
 
 if __name__ == "__main__":

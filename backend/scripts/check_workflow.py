@@ -79,4 +79,9 @@ async def check_status():
         else:
             print("No workflow sessions found")
 
-asyncio.run(check_status())
+async def main():
+    from app.database.connection import engine
+    await check_status()
+    await engine.dispose()
+
+asyncio.run(main())

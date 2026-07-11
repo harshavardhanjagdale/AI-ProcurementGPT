@@ -26,6 +26,7 @@ async def backfill():
                 {"pct": pct, "c": country},
             )
             print(f"  {country} -> {pct}%  ({r.rowcount} rows)")
+    await engine.dispose()
     print("Done.")
 
 

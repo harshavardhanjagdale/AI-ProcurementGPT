@@ -17,7 +17,6 @@ from app.models import (
 
 async def create_tables():
     async with engine.begin() as conn:
-        # Only create the new tables, don't drop existing ones
         await conn.run_sync(
             Base.metadata.create_all,
             tables=[
@@ -27,7 +26,8 @@ async def create_tables():
                 ConversationMessage.__table__,
             ]
         )
-    print("✅ Created tables: workflow_sessions, workflow_steps, workflow_events, conversation_messages")
+    await engine.dispose()
+    print("[OK] Created tables: workflow_sessions, workflow_steps, workflow_events, conversation_messages")
 
 
 if __name__ == "__main__":

@@ -33,6 +33,7 @@ async def migrate():
                 else:
                     print(f"  ! {table}.{col_name} FAILED: {e}")
 
+    await engine.dispose()
     print("\nMigration complete.")
 
 
