@@ -82,6 +82,7 @@ class SMTPClient:
         all_recipients = to + (cc or [])
 
         try:
+            logger.info(f"Connecting to SMTP {self.host}:{self.port} as {self.username}...")
             response = await aiosmtplib.send(
                 msg,
                 hostname=self.host,
@@ -89,12 +90,20 @@ class SMTPClient:
                 username=self.username,
                 password=self.password,
                 start_tls=True,
+                timeout=30,
             )
             message_id = msg.get("Message-ID", "")
             logger.info(f"Email sent successfully to {all_recipients}, subject: {subject}")
             return {
                 "success": True,
                 "message_id": message_id,
+                "recipients": all_recipients,
+            }
+        except aiosmtplib.SMTPAuthenticationError as e:
+            logger.error(f"SMTP AUTH FAILED for {self.username}: {e}")
+            return {
+                "success": False,
+                "error": f"Authentication failed: {e}",
                 "recipients": all_recipients,
             }
         except aiosmtplib.SMTPException as e:
@@ -105,7 +114,7 @@ class SMTPClient:
                 "recipients": all_recipients,
             }
         except Exception as e:
-            logger.error(f"Unexpected error sending email: {e}")
+            logger.error(f"Unexpected error sending email: {e}", exc_info=True)
             return {
                 "success": False,
                 "error": str(e),
