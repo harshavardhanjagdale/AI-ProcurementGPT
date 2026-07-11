@@ -5,6 +5,7 @@ Run: python -m scripts.init_db
 import asyncio
 import sys
 from pathlib import Path
+from urllib.parse import quote_plus
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 
@@ -17,7 +18,7 @@ from app.models import Base
 async def ensure_database_exists():
     """Create the database if it doesn't exist."""
     server_url = (
-        f"mysql+aiomysql://{settings.MYSQL_USER}:{settings.MYSQL_PASSWORD}"
+        f"mysql+aiomysql://{settings.MYSQL_USER}:{quote_plus(settings.MYSQL_PASSWORD)}"
         f"@{settings.MYSQL_HOST}:{settings.MYSQL_PORT}/"
     )
     tmp_engine = create_async_engine(server_url, echo=False)
