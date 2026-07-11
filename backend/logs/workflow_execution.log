@@ -949,3 +949,14 @@
 2026-07-10 16:12:08 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 01865220-6591-43a5-8421-943f04f1f86a -> send_rfq_emails | tokens so far: 1249 (~$0.0288)
 2026-07-10 16:12:08 | INFO     | _run_graph_streaming:284 | [NODE-DONE] 01865220-6591-43a5-8421-943f04f1f86a -> await_supplier_replies | tokens so far: 1249 (~$0.0288)
 2026-07-10 16:12:08 | INFO     | _run_graph_streaming:289 | [TOKEN-USAGE] 01865220-6591-43a5-8421-943f04f1f86a -> {'calls': 2, 'input_tokens': 384, 'output_tokens': 865, 'cache_read_tokens': 0, 'cache_write_tokens': 3909, 'total_tokens': 1249, 'cache_hit_rate': 0.0, 'cost_usd': 0.028786}
+2026-07-12 00:07:13 | INFO     | run_workflow:133 | 
+[RUN-WORKFLOW-START] Session: b6ae8d58-4f3d-4595-8759-42fb48e8b942
+2026-07-12 00:07:13 | INFO     | run_workflow:134 | [USER-INPUT] Buy 10 Dell Latitude laptops...
+2026-07-12 00:07:13 | INFO     | run_workflow:181 | [SESSION-MODE] NEW | Thread: 1d5b178c-25bc-435d-8ed1-96487dbc78df
+2026-07-12 00:07:16 | INFO     | _run_graph_streaming:284 | [NODE-DONE] b6ae8d58-4f3d-4595-8759-42fb48e8b942 -> parse_request | tokens so far: 290 (~$0.0195)
+2026-07-12 00:07:17 | INFO     | _run_graph_streaming:284 | [NODE-DONE] b6ae8d58-4f3d-4595-8759-42fb48e8b942 -> create_rfq_record | tokens so far: 290 (~$0.0195)
+2026-07-12 00:07:24 | INFO     | _run_graph_streaming:284 | [NODE-DONE] b6ae8d58-4f3d-4595-8759-42fb48e8b942 -> select_vendors | tokens so far: 290 (~$0.0195)
+2026-07-12 00:07:31 | INFO     | _run_graph_streaming:284 | [NODE-DONE] b6ae8d58-4f3d-4595-8759-42fb48e8b942 -> generate_rfq_emails | tokens so far: 1219 (~$0.0291)
+2026-07-12 00:07:36 | INFO     | _run_graph_streaming:284 | [NODE-DONE] b6ae8d58-4f3d-4595-8759-42fb48e8b942 -> send_rfq_emails | tokens so far: 1219 (~$0.0291)
+2026-07-12 00:07:36 | INFO     | _run_graph_streaming:284 | [NODE-DONE] b6ae8d58-4f3d-4595-8759-42fb48e8b942 -> await_supplier_replies | tokens so far: 1219 (~$0.0291)
+2026-07-12 00:07:36 | INFO     | _run_graph_streaming:289 | [TOKEN-USAGE] b6ae8d58-4f3d-4595-8759-42fb48e8b942 -> {'calls': 2, 'input_tokens': 384, 'output_tokens': 835, 'cache_read_tokens': 0, 'cache_write_tokens': 4114, 'total_tokens': 1219, 'cache_hit_rate': 0.0, 'cost_usd': 0.029104}
