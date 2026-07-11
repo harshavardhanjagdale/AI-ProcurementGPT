@@ -57,11 +57,10 @@ echo "[3/8] Setting up application directory..."
 sudo mkdir -p ${APP_DIR}
 sudo chown ubuntu:ubuntu ${APP_DIR}
 
-if [ -n "${REPO_URL}" ]; then
+if [ ! -d "${APP_DIR}/.git" ]; then
     git clone ${REPO_URL} ${APP_DIR}
 else
-    echo "  WARNING: REPO_URL not set. Please clone your repo to ${APP_DIR} manually."
-    echo "  Then re-run this script, or continue with the remaining steps."
+    echo "Repository already exists. Skipping clone."
 fi
 
 cd ${APP_DIR}/backend
