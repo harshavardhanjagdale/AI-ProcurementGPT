@@ -11,7 +11,7 @@ from app.workflows.event_bus import workflow_event_bus
 
 logger = logging.getLogger(__name__)
 
-POLL_INTERVAL_SECONDS = 60
+POLL_INTERVAL_SECONDS = 15
 
 
 class EmailPollingWorker:

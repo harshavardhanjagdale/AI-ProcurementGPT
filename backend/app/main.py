@@ -80,15 +80,15 @@ async def startup_event():
     # Start email background worker if configured
     mode = settings.EMAIL_PROCESSING_MODE.lower()
     should_poll = mode in ("polling", "both")
-    
+
     if should_poll and settings.IMAP_USER and settings.IMAP_PASSWORD and settings.IMAP_USER != "your-email@gmail.com":
         from app.email.background_worker import email_worker
         await email_worker.start()
-        logging.info(f"✓ Email worker started (mode: {mode})")
+        logging.info(f"Email worker started (mode={mode}, interval=15s, IMAP={settings.IMAP_USER})")
     elif mode == "webhook":
-        logging.info("✓ Webhook mode enabled (no polling)")
+        logging.info("Webhook mode enabled (no polling)")
     else:
-        logging.warning("Email processing disabled")
+        logging.warning(f"Email processing DISABLED (mode={mode}, IMAP_USER={settings.IMAP_USER!r})")
 
 
 @app.on_event("shutdown")
