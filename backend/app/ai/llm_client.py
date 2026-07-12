@@ -72,6 +72,9 @@ def _maybe_wrap_client(client, provider: str):
     No-op (returns the client unchanged) if tracing is off or langsmith isn't
     available -- so nothing breaks when running without LangSmith.
     """
+    logger.warning(
+        f"DEBUG: _maybe_wrap_client(provider={provider}, tracing={getattr(settings, 'LANGSMITH_TRACING', False)})"
+    )
     if not getattr(settings, "LANGSMITH_TRACING", False):
         return client
     try:
