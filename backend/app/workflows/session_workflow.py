@@ -209,6 +209,34 @@ class SessionWorkflowService:
             )
             return {"current_step": None, "error": "state lost"}
 
+        logger.info(
+            f"[RESUME] Snapshot found for {session_id}: "
+            f"next={snapshot.next}, "
+            f"no_quotations_yet={snapshot.values.get('no_quotations_yet')}, "
+            f"validation_failed={snapshot.values.get('validation_failed')}, "
+            f"current_step={snapshot.values.get('current_step')}"
+        )
+
+        # If graph is stuck at user_decision_gate (due to the old bug where
+        # no_quotations_yet wasn't a registered state channel), force it back to
+        # await_supplier_replies so OCR can run on the new attachment.
+        next_nodes = snapshot.next or ()
+        if "user_decision_gate" in next_nodes and not snapshot.values.get("rankings"):
+            logger.warning(
+                f"[RESUME] Graph is parked at user_decision_gate WITHOUT rankings "
+                f"(stale state bug). Forcing back to await_supplier_replies."
+            )
+            await graph.aupdate_state(
+                config,
+                {
+                    "no_quotations_yet": False,
+                    "validation_failed": False,
+                    "validation_message": None,
+                    "current_step": "await_supplier_replies",
+                },
+                as_node="await_supplier_replies",
+            )
+
         return await self._run_graph_streaming(session_id, thread_id, None)
 
     async def submit_decision(
@@ -270,15 +298,16 @@ class SessionWorkflowService:
 
         # Attribute every LLM call the graph nodes make during this run to this
         # thread, so we can report tokens + cost per procurement (see token_tracker).
+        node_count = 0
         try:
             with track_usage(thread_id) as usage:
                 async for chunk in graph.astream(stream_input, config=config, stream_mode="updates"):
                     if not isinstance(chunk, dict):
                         continue
                     for node, delta in chunk.items():
-                        # `__interrupt__` (and any non-dict payload) is a control signal, not a node result.
                         if node == "__interrupt__" or not isinstance(delta, dict):
                             continue
+                        node_count += 1
                         acc.update(delta)
                         step = delta.get("current_step") or node
                         workflow_logger.info(
@@ -323,14 +352,16 @@ class SessionWorkflowService:
                 # After ocr_extract the graph pauses *before* user_decision_gate, so surface
                 # the decision gate as the active step (not a completed one) — that's the
                 # step actually awaiting the user.
-                # If no quotations were found, the graph will route back to waiting — show
-                # await_supplier_replies as the current step, not ocr_extract (which triggers
-                # the decision buttons).
+                # If no quotations were found or validation failed, go back to waiting.
                 display_step = step
                 if step == "ocr_extract" and values.get("no_quotations_yet"):
                     display_step = "await_supplier_replies"
+                elif step == "ocr_extract" and values.get("validation_failed"):
+                    display_step = "await_supplier_replies"
                 elif step == "ocr_extract" and values.get("rankings"):
                     display_step = "user_decision_gate"
+                elif step == "ocr_extract" and not values.get("rankings"):
+                    display_step = "await_supplier_replies"
 
                 session.current_step = display_step
                 session.current_node = display_step
@@ -347,7 +378,9 @@ class SessionWorkflowService:
 
                 if values.get("error"):
                     session.status = "failed"
-                elif step in WAITING_STEPS:
+                elif display_step == "await_supplier_replies":
+                    session.status = "waiting"
+                elif display_step == "user_decision_gate":
                     session.status = "waiting"
                 elif step == "send_po_email" and values.get("po_email_sent"):
                     session.status = "completed"
@@ -641,12 +674,16 @@ class SessionWorkflowService:
             ran_idx = -1
 
         # await_supplier_replies is a resting/waiting node; the decision gate becomes active
-        # right after ocr_extract. Both should show "running", not "completed".
+        # right after ocr_extract IF quotations were found. If validation failed or no
+        # quotations, go back to await_supplier_replies.
         waiting_step = None
         if ran_step == "await_supplier_replies":
             waiting_step = "await_supplier_replies"
         elif ran_step == "ocr_extract":
-            waiting_step = "user_decision_gate"
+            if values.get("no_quotations_yet") or values.get("validation_failed") or not values.get("rankings"):
+                waiting_step = "await_supplier_replies"
+            else:
+                waiting_step = "user_decision_gate"
 
         result = await db.execute(
             select(WorkflowStep)
@@ -668,10 +705,36 @@ class SessionWorkflowService:
         # If the current step ended with an error (e.g. supplier not found), mark it failed
         step_has_error = bool(values.get("error")) and ran_step != "await_supplier_replies"
 
+        # If OCR failed/validation failed, revert await_supplier_replies to running
+        # AND revert all steps AFTER await_supplier_replies back to pending
+        revert_await = (
+            ran_step == "ocr_extract" and
+            (values.get("no_quotations_yet") or values.get("validation_failed") or not values.get("rankings"))
+        )
+
+        await_idx = self._MAIN_ORDER.index("await_supplier_replies")  # 6
+
         for step in steps:
             if step.name in skip:
                 continue  # branch not taken → leave pending
             idx = self._MAIN_ORDER.index(step.name) if step.name in self._MAIN_ORDER else 999
+
+            if revert_await:
+                if step.name == "await_supplier_replies":
+                    step.status = "running"
+                    step.started_at = step.started_at or ist_now()
+                    step.completed_at = None
+                    step.agent = STEP_AGENT_MAP.get(step.name, step.agent)
+                elif idx > await_idx:
+                    # Revert all steps after await_supplier_replies to pending
+                    step.status = "pending"
+                    step.started_at = None
+                    step.completed_at = None
+                    step.execution_time_ms = None
+                    step.agent = STEP_AGENT_MAP.get(step.name, step.agent)
+                elif idx <= await_idx and idx <= ran_idx and step.status != "completed":
+                    _complete(step)
+                continue
 
             if step.name == waiting_step:
                 if step.status != "completed":
@@ -682,6 +745,10 @@ class SessionWorkflowService:
                 if ran_step == "await_supplier_replies":
                     step.status = "running"
                     step.started_at = step.started_at or ist_now()
+                elif ran_step == "ocr_extract" and (values.get("no_quotations_yet") or values.get("validation_failed") or not values.get("rankings")):
+                    step.status = "pending"
+                    step.started_at = None
+                    step.completed_at = None
                 elif step_has_error:
                     step.status = "failed"
                     step.started_at = step.started_at or ist_now()
@@ -692,7 +759,6 @@ class SessionWorkflowService:
                 step.agent = STEP_AGENT_MAP.get(step.name, step.agent)
             elif idx <= ran_idx and step.status != "completed":
                 _complete(step)  # an earlier on-path step that ran
-            # steps after the current one stay pending — do NOT mark them
             # steps after the current one stay pending
 
     async def _emit_event(
@@ -762,7 +828,24 @@ class SessionWorkflowService:
             return f"🔍 Found {len(suppliers)} matching supplier(s): {names}."
 
         if step == "ocr_extract" and values.get("no_quotations_yet"):
-            return "📩 Received a response from the supplier, but no quotation document was attached. Still waiting for a valid quotation with pricing details..."
+            if values.get("validation_failed"):
+                validation_msg = values.get("validation_message", "Unknown validation error")
+                return (
+                    f"⚠️ Supplier sent a response, but the quotation was rejected:\n\n"
+                    f"**Reason:** {validation_msg}\n\n"
+                    f"Waiting for the supplier to send a correct quotation..."
+                )
+            # Check if OCR results have validation failures
+            ocr_results = values.get("ocr_results", [])
+            validation_errors = [r for r in ocr_results if r.get("validation_reason")]
+            if validation_errors:
+                details = validation_errors[0].get("validation_details", "Unknown issue")
+                return (
+                    f"⚠️ Supplier sent a response, but the quotation was rejected:\n\n"
+                    f"**Reason:** {details}\n\n"
+                    f"Waiting for the supplier to send a correct quotation..."
+                )
+            return "📩 Received a response from the supplier, but no quotation document was found in the attachment. Still waiting for a quotation PDF..."
 
         if step in RICH_MESSAGE_STEPS:
             return self._format_response({**values, "current_step": step})
@@ -800,7 +883,13 @@ class SessionWorkflowService:
             rec = result.get("ai_recommendation", {})
             top = (result.get("rankings") or [{}])[0]
             if not result.get("rankings"):
-                return "I've processed the supplier response, but couldn't extract a comparable quotation yet. I'll keep monitoring for valid quotes."
+                # Check if validation specifically failed
+                ocr_results = result.get("ocr_results", [])
+                validation_errors = [r for r in ocr_results if r.get("validation_reason")]
+                if validation_errors:
+                    detail = validation_errors[0].get("validation_details", "")
+                    return f"⚠️ The supplier quotation was rejected: **{detail}**\n\nWaiting for the supplier to send a correct quotation..."
+                return "📩 Processed the supplier response, but could not extract pricing data from the document. The attachment may not be a valid quotation PDF. Waiting for a proper quotation..."
             return (
                 f"All quotations have been analyzed! My recommendation: **{rec.get('supplier_name', 'See comparison')}**\n\n"
                 f"Score: {top.get('score', 0)}/100\n\n"
@@ -817,6 +906,10 @@ class SessionWorkflowService:
             return "Purchase order generated. Sending it to the supplier now..."
 
         if current_step == "await_supplier_replies":
+            # If we're re-entering after a validation failure, don't show any new message
+            # (the rejection reason was already shown by the ocr_extract step message)
+            if result.get("validation_failed") or result.get("no_quotations_yet"):
+                return None
             if result.get("negotiation_round", 0) > 0:
                 return "Counter-offer sent to the supplier! I'm now waiting for their reply."
             return "RFQ emails have been sent! I'm now monitoring for supplier responses. I'll notify you as soon as quotations arrive."

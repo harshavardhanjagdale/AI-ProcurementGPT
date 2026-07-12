@@ -211,12 +211,25 @@ class AnthropicProvider(BaseLLMProvider):
         return system
 
     async def _call(self, system: str, user_prompt: str, max_tokens: int) -> str:
-        response = await self.client.messages.create(
-            model=self.model,
-            max_tokens=max_tokens,
-            system=self._build_system_param(system),
-            messages=[{"role": "user", "content": user_prompt}],
-        )
+        import asyncio as _asyncio
+
+        # Retry on CancelledError (transient TLS/network interruption)
+        last_err = None
+        for _attempt in range(3):
+            try:
+                response = await self.client.messages.create(
+                    model=self.model,
+                    max_tokens=max_tokens,
+                    system=self._build_system_param(system),
+                    messages=[{"role": "user", "content": user_prompt}],
+                )
+                break
+            except _asyncio.CancelledError:
+                last_err = _asyncio.CancelledError()
+                logger.warning(f"[LLM] CancelledError on attempt {_attempt+1}/3, retrying...")
+                await _asyncio.sleep(1)
+        else:
+            raise last_err
 
         usage = getattr(response, "usage", None)
         logger.warning(f"ANTHROPIC USAGE = {usage}")

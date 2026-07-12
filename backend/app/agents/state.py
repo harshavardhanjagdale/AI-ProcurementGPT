@@ -43,3 +43,8 @@ class ProcurementState(TypedDict):
     current_step: str
     error: str | None
     messages: Annotated[list, add_messages]
+
+    # OCR validation flags (used for routing back to waiting)
+    no_quotations_yet: bool
+    validation_failed: bool
+    validation_message: str | None

@@ -18,6 +18,7 @@ class EmailPollingWorker:
     def __init__(self):
         self.running = False
         self._task: asyncio.Task | None = None
+        self._processing = False  # True while a graph resume is in progress
 
     async def start(self):
         """Start the background polling loop."""
@@ -43,10 +44,15 @@ class EmailPollingWorker:
     async def _poll_loop(self):
         """Main polling loop that runs in the background."""
         while self.running:
-            try:
-                await self._check_emails()
-            except Exception as e:
-                logger.error(f"Error in email polling cycle: {e}", exc_info=True)
+            if self._processing:
+                logger.debug("[WORKER] Skipping poll — graph resume still in progress")
+            else:
+                try:
+                    await self._check_emails()
+                except asyncio.CancelledError:
+                    logger.warning("[WORKER] Poll cycle was cancelled")
+                except Exception as e:
+                    logger.error(f"Error in email polling cycle: {e}", exc_info=True)
 
             await asyncio.sleep(POLL_INTERVAL_SECONDS)
 
@@ -96,27 +102,49 @@ class EmailPollingWorker:
             from app.workflows.session_workflow import session_workflow_service
             from app.models.base import generate_uuid, ist_now
 
-            for session_id, thread_id, chat_content in to_resume:
-                await workflow_event_bus.publish(session_id, {
-                    "type": "workflow_progress",
-                    "workflowId": session_id,
-                    "currentStep": "ocr_extract",
-                    "totalSteps": 12,
-                    "progress": 66,
-                    "currentStage": "Evaluation",
-                    "currentAgent": "OCR Agent",
-                    "status": "active",
-                    "message": chat_content,
-                    "timestamp": ist_now().isoformat(),
-                    "chatMessage": {
-                        "id": generate_uuid(),
-                        "role": "assistant",
-                        "content": chat_content,
-                        "message_type": "event",
-                        "created_at": ist_now().isoformat(),
-                    },
-                })
-                await session_workflow_service.resume_after_reply(session_id, thread_id)
+            self._processing = True
+            try:
+                for session_id, thread_id, chat_content in to_resume:
+                    logger.info(f"[WORKER] Publishing WS event for session {session_id}")
+                    await workflow_event_bus.publish(session_id, {
+                        "type": "workflow_progress",
+                        "workflowId": session_id,
+                        "currentStep": "ocr_extract",
+                        "totalSteps": 12,
+                        "progress": 66,
+                        "currentStage": "Evaluation",
+                        "currentAgent": "OCR Agent",
+                        "status": "active",
+                        "message": chat_content,
+                        "timestamp": ist_now().isoformat(),
+                        "chatMessage": {
+                            "id": generate_uuid(),
+                            "role": "assistant",
+                            "content": chat_content,
+                            "message_type": "event",
+                            "created_at": ist_now().isoformat(),
+                        },
+                    })
+                    logger.info(f"[WORKER] Resuming graph for session={session_id}, thread={thread_id}")
+
+                    # Retry up to 2 times on CancelledError (transient network/TLS issue)
+                    max_retries = 2
+                    for attempt in range(max_retries + 1):
+                        try:
+                            result = await session_workflow_service.resume_after_reply(session_id, thread_id)
+                            logger.info(f"[WORKER] Graph resume RESULT for {session_id}: {result}")
+                            break
+                        except asyncio.CancelledError:
+                            if attempt < max_retries:
+                                logger.warning(f"[WORKER] Graph resume CancelledError for {session_id}, retrying ({attempt+1}/{max_retries})...")
+                                await asyncio.sleep(2)
+                            else:
+                                logger.error(f"[WORKER] Graph resume CancelledError for {session_id} after {max_retries} retries")
+                        except Exception as e:
+                            logger.error(f"[WORKER] Graph resume FAILED for {session_id}: {e}", exc_info=True)
+                            break
+            finally:
+                self._processing = False
 
         return results
 

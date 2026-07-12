@@ -1781,3 +1781,260 @@ SUCCESSFUL ATTACHMENTS:
 END OF REPORT
 ================================================================================
 
+2026-07-12 13:24:48 | INFO | log_ocr_start | ================================================================================
+2026-07-12 13:24:48 | INFO | log_ocr_start | OCR PROCESSING STARTED for RFQ: c8c694a5-51d5-4582-ae63-654601b6285a
+2026-07-12 13:24:48 | INFO | log_ocr_start | Attachments to process: 0
+2026-07-12 13:24:48 | INFO | log_ocr_start | ================================================================================
+2026-07-12 13:24:48 | INFO | process_rfq_attachments | [RFQ] Processing started for c8c694a5-51d5-4582-ae63-654601b6285a
+2026-07-12 13:25:00 | INFO | process_rfq_attachments | [RESULTS] Success: 1, Failed: 0
+2026-07-12 13:25:00 | INFO | log_ocr_complete | 
+================================================================================
+2026-07-12 13:25:00 | INFO | log_ocr_complete | OCR PROCESSING COMPLETED for RFQ: c8c694a5-51d5-4582-ae63-654601b6285a
+2026-07-12 13:25:00 | INFO | log_ocr_complete | Results: 1 successful, 0 failed
+2026-07-12 13:25:00 | INFO | log_ocr_complete | Total processing time: 12.12 seconds
+2026-07-12 13:25:00 | INFO | log_ocr_complete | ================================================================================
+2026-07-12 13:25:00 | INFO | generate_ocr_report | 
+
+================================================================================
+OCR PROCESSING REVIEW REPORT
+================================================================================
+
+RFQ ID: c8c694a5-51d5-4582-ae63-654601b6285a
+Processing Date: 2026-07-12 13:25:00.906367 IST
+Total Processing Time: 12.12 seconds
+
+SUMMARY:
+--------
+Total Attachments: 1
+Successful: 1
+Failed: 0
+Success Rate: 100.0%
+
+SUCCESSFUL ATTACHMENTS:
+-----------------------
+
+1. Unknown
+   - Extracted text length: 0 chars
+   - Quotation ID: 650643b2-cdbb-4a02-8bb0-e750dd6cd6eb
+
+================================================================================
+END OF REPORT
+================================================================================
+
+2026-07-12 16:27:34 | INFO | log_ocr_start | ================================================================================
+2026-07-12 16:27:34 | INFO | log_ocr_start | OCR PROCESSING STARTED for RFQ: d221c50f-cb3f-4598-b54a-2469ba4dd65b
+2026-07-12 16:27:34 | INFO | log_ocr_start | Attachments to process: 0
+2026-07-12 16:27:34 | INFO | log_ocr_start | ================================================================================
+2026-07-12 16:27:34 | INFO | process_rfq_attachments | [RFQ] Processing started for d221c50f-cb3f-4598-b54a-2469ba4dd65b
+2026-07-12 16:27:45 | INFO | process_rfq_attachments | [RESULTS] Success: 0, Failed: 1
+2026-07-12 16:27:45 | WARNING | process_rfq_attachments | [FAILED] {'success': False, 'attachment_id': 'fc76ad25-5720-4e7c-99ff-0ed118919168', 'error': "Validation failed: Supplier mismatch: expected 'Alpha Components', but quotation header says 'TechSupply Corp'. Reason: Expected supplier 'Alpha Components' does not match the quotation header supplier 'TechSupply Corp'; these are distinct company names with no clear relation.", 'validation_reason': 'content_validation_failed', 'validation_details': "Supplier mismatch: expected 'Alpha Components', but quotation header says 'TechSupply Corp'. Reason: Expected supplier 'Alpha Components' does not match the quotation header supplier 'TechSupply Corp'; these are distinct company names with no clear relation."}
+2026-07-12 16:39:38 | INFO | log_ocr_start | ================================================================================
+2026-07-12 16:39:38 | INFO | log_ocr_start | OCR PROCESSING STARTED for RFQ: f3143cdc-5bd4-4870-9288-ec36f4687a2a
+2026-07-12 16:39:38 | INFO | log_ocr_start | Attachments to process: 0
+2026-07-12 16:39:38 | INFO | log_ocr_start | ================================================================================
+2026-07-12 16:39:38 | INFO | process_rfq_attachments | [RFQ] Processing started for f3143cdc-5bd4-4870-9288-ec36f4687a2a
+2026-07-12 16:39:49 | INFO | process_rfq_attachments | [RESULTS] Success: 0, Failed: 1
+2026-07-12 16:39:49 | WARNING | process_rfq_attachments | [FAILED] {'success': False, 'attachment_id': '249baad5-25c1-4f67-9f70-e220ace110ef', 'error': "Validation failed: Supplier mismatch: expected 'Alpha Components', but quotation header says 'TechSupply Corp'. Reason: TechSupply Corp is a clearly different company name from the expected supplier Alpha Components, with no similarity or shared trade name.", 'validation_reason': 'content_validation_failed', 'validation_details': "Supplier mismatch: expected 'Alpha Components', but quotation header says 'TechSupply Corp'. Reason: TechSupply Corp is a clearly different company name from the expected supplier Alpha Components, with no similarity or shared trade name."}
+2026-07-12 16:54:23 | INFO | log_ocr_start | ================================================================================
+2026-07-12 16:54:23 | INFO | log_ocr_start | OCR PROCESSING STARTED for RFQ: 48fa8f0f-fae5-442c-a054-46dfec69a497
+2026-07-12 16:54:23 | INFO | log_ocr_start | Attachments to process: 0
+2026-07-12 16:54:23 | INFO | log_ocr_start | ================================================================================
+2026-07-12 16:54:23 | INFO | process_rfq_attachments | [RFQ] Processing started for 48fa8f0f-fae5-442c-a054-46dfec69a497
+2026-07-12 16:54:34 | INFO | process_rfq_attachments | [RESULTS] Success: 0, Failed: 1
+2026-07-12 16:54:34 | WARNING | process_rfq_attachments | [FAILED] {'success': False, 'attachment_id': 'd438bf6a-f902-43ff-b014-aa39123c7cca', 'error': "Validation failed: Supplier mismatch: expected 'Alpha Components', but quotation header says 'TechSupply Corp'. Reason: TechSupply Corp is a clearly different company name from Alpha Components, with no similarity, abbreviation, or trade name relationship.", 'validation_reason': 'content_validation_failed', 'validation_details': "Supplier mismatch: expected 'Alpha Components', but quotation header says 'TechSupply Corp'. Reason: TechSupply Corp is a clearly different company name from Alpha Components, with no similarity, abbreviation, or trade name relationship."}
+2026-07-12 17:17:00 | INFO | log_ocr_start | ================================================================================
+2026-07-12 17:17:00 | INFO | log_ocr_start | OCR PROCESSING STARTED for RFQ: 1e9e1774-67ce-4f19-b155-d90f01990641
+2026-07-12 17:17:00 | INFO | log_ocr_start | Attachments to process: 0
+2026-07-12 17:17:00 | INFO | log_ocr_start | ================================================================================
+2026-07-12 17:17:00 | INFO | process_rfq_attachments | [RFQ] Processing started for 1e9e1774-67ce-4f19-b155-d90f01990641
+2026-07-12 17:17:09 | INFO | process_rfq_attachments | [RESULTS] Success: 0, Failed: 1
+2026-07-12 17:17:09 | WARNING | process_rfq_attachments | [FAILED] {'success': False, 'attachment_id': 'beedeb5b-a97a-4b07-b237-bf7a2df29c95', 'error': "Validation failed: Supplier mismatch: expected 'Alpha Components', but quotation header says 'TechSupply Corp'. Reason: TechSupply Corp is a clearly different company name from Alpha Components, with no similarity or shared branding", 'validation_reason': 'content_validation_failed', 'validation_details': "Supplier mismatch: expected 'Alpha Components', but quotation header says 'TechSupply Corp'. Reason: TechSupply Corp is a clearly different company name from Alpha Components, with no similarity or shared branding"}
+2026-07-12 17:17:55 | INFO | log_ocr_start | ================================================================================
+2026-07-12 17:17:55 | INFO | log_ocr_start | OCR PROCESSING STARTED for RFQ: 1e9e1774-67ce-4f19-b155-d90f01990641
+2026-07-12 17:17:55 | INFO | log_ocr_start | Attachments to process: 0
+2026-07-12 17:17:55 | INFO | log_ocr_start | ================================================================================
+2026-07-12 17:17:55 | INFO | process_rfq_attachments | [RFQ] Processing started for 1e9e1774-67ce-4f19-b155-d90f01990641
+2026-07-12 17:26:52 | INFO | log_ocr_start | ================================================================================
+2026-07-12 17:26:52 | INFO | log_ocr_start | OCR PROCESSING STARTED for RFQ: 78940bd3-5f6c-42ff-bd3d-8ad6ffc9945e
+2026-07-12 17:26:52 | INFO | log_ocr_start | Attachments to process: 0
+2026-07-12 17:26:52 | INFO | log_ocr_start | ================================================================================
+2026-07-12 17:26:52 | INFO | process_rfq_attachments | [RFQ] Processing started for 78940bd3-5f6c-42ff-bd3d-8ad6ffc9945e
+2026-07-12 17:27:00 | INFO | process_rfq_attachments | [RESULTS] Success: 0, Failed: 1
+2026-07-12 17:27:00 | WARNING | process_rfq_attachments | [FAILED] {'success': False, 'attachment_id': '572c1031-c582-43f7-b8d9-7a5586c96900', 'error': "Validation failed: Supplier mismatch: expected 'Alpha Components', but quotation header says 'TechSupply Corp'. Reason: Expected 'Alpha Components' but quotation is from 'TechSupply Corp', a clearly different company name with no similarity", 'validation_reason': 'content_validation_failed', 'validation_details': "Supplier mismatch: expected 'Alpha Components', but quotation header says 'TechSupply Corp'. Reason: Expected 'Alpha Components' but quotation is from 'TechSupply Corp', a clearly different company name with no similarity"}
+2026-07-12 17:27:53 | INFO | log_ocr_start | ================================================================================
+2026-07-12 17:27:53 | INFO | log_ocr_start | OCR PROCESSING STARTED for RFQ: 78940bd3-5f6c-42ff-bd3d-8ad6ffc9945e
+2026-07-12 17:27:53 | INFO | log_ocr_start | Attachments to process: 0
+2026-07-12 17:27:53 | INFO | log_ocr_start | ================================================================================
+2026-07-12 17:27:53 | INFO | process_rfq_attachments | [RFQ] Processing started for 78940bd3-5f6c-42ff-bd3d-8ad6ffc9945e
+2026-07-12 17:28:01 | INFO | process_rfq_attachments | [RESULTS] Success: 1, Failed: 0
+2026-07-12 17:28:01 | INFO | log_ocr_complete | 
+================================================================================
+2026-07-12 17:28:01 | INFO | log_ocr_complete | OCR PROCESSING COMPLETED for RFQ: 78940bd3-5f6c-42ff-bd3d-8ad6ffc9945e
+2026-07-12 17:28:01 | INFO | log_ocr_complete | Results: 1 successful, 0 failed
+2026-07-12 17:28:01 | INFO | log_ocr_complete | Total processing time: 7.55 seconds
+2026-07-12 17:28:01 | INFO | log_ocr_complete | ================================================================================
+2026-07-12 17:28:01 | INFO | generate_ocr_report | 
+
+================================================================================
+OCR PROCESSING REVIEW REPORT
+================================================================================
+
+RFQ ID: 78940bd3-5f6c-42ff-bd3d-8ad6ffc9945e
+Processing Date: 2026-07-12 17:28:01.161718 IST
+Total Processing Time: 7.55 seconds
+
+SUMMARY:
+--------
+Total Attachments: 1
+Successful: 1
+Failed: 0
+Success Rate: 100.0%
+
+SUCCESSFUL ATTACHMENTS:
+-----------------------
+
+1. Unknown
+   - Extracted text length: 0 chars
+   - Quotation ID: d8aa2935-d0bb-4f11-900a-0254a8c99224
+
+================================================================================
+END OF REPORT
+================================================================================
+
+2026-07-12 17:29:57 | INFO | log_ocr_start | ================================================================================
+2026-07-12 17:29:57 | INFO | log_ocr_start | OCR PROCESSING STARTED for RFQ: 78940bd3-5f6c-42ff-bd3d-8ad6ffc9945e
+2026-07-12 17:29:57 | INFO | log_ocr_start | Attachments to process: 0
+2026-07-12 17:29:57 | INFO | log_ocr_start | ================================================================================
+2026-07-12 17:29:57 | INFO | process_rfq_attachments | [RFQ] Processing started for 78940bd3-5f6c-42ff-bd3d-8ad6ffc9945e
+2026-07-12 17:30:04 | INFO | process_rfq_attachments | [RESULTS] Success: 0, Failed: 1
+2026-07-12 17:30:04 | WARNING | process_rfq_attachments | [FAILED] {'success': False, 'attachment_id': 'd57ef413-5572-431f-ac32-3ce4bb53416f', 'error': "Validation failed: Supplier mismatch: expected 'Alpha Components', but quotation header says 'TechSupply Corp'. Reason: TechSupply Corp is a clearly different company name from Alpha Components, with no similarity or trade name overlap.", 'validation_reason': 'content_validation_failed', 'validation_details': "Supplier mismatch: expected 'Alpha Components', but quotation header says 'TechSupply Corp'. Reason: TechSupply Corp is a clearly different company name from Alpha Components, with no similarity or trade name overlap."}
+2026-07-12 17:44:15 | INFO | log_ocr_start | ================================================================================
+2026-07-12 17:44:15 | INFO | log_ocr_start | OCR PROCESSING STARTED for RFQ: c1fd3ace-2f96-4853-b2dd-251fb781dcfa
+2026-07-12 17:44:15 | INFO | log_ocr_start | Attachments to process: 0
+2026-07-12 17:44:15 | INFO | log_ocr_start | ================================================================================
+2026-07-12 17:44:15 | INFO | process_rfq_attachments | [RFQ] Processing started for c1fd3ace-2f96-4853-b2dd-251fb781dcfa
+2026-07-12 17:44:15 | INFO | process_rfq_attachments | [RESULTS] Success: 0, Failed: 0
+2026-07-12 17:44:15 | INFO | log_ocr_complete | 
+================================================================================
+2026-07-12 17:44:15 | INFO | log_ocr_complete | OCR PROCESSING COMPLETED for RFQ: c1fd3ace-2f96-4853-b2dd-251fb781dcfa
+2026-07-12 17:44:15 | INFO | log_ocr_complete | Results: 0 successful, 0 failed
+2026-07-12 17:44:15 | INFO | log_ocr_complete | Total processing time: 0.01 seconds
+2026-07-12 17:44:15 | INFO | log_ocr_complete | ================================================================================
+2026-07-12 17:44:15 | INFO | generate_ocr_report | 
+
+================================================================================
+OCR PROCESSING REVIEW REPORT
+================================================================================
+
+RFQ ID: c1fd3ace-2f96-4853-b2dd-251fb781dcfa
+Processing Date: 2026-07-12 17:44:15.850727 IST
+Total Processing Time: 0.01 seconds
+
+SUMMARY:
+--------
+Total Attachments: 0
+Successful: 0
+Failed: 0
+Success Rate: 0.0%
+
+SUCCESSFUL ATTACHMENTS:
+-----------------------
+
+================================================================================
+END OF REPORT
+================================================================================
+
+2026-07-12 17:46:59 | INFO | log_ocr_start | ================================================================================
+2026-07-12 17:46:59 | INFO | log_ocr_start | OCR PROCESSING STARTED for RFQ: 3ec65fae-5772-4172-ac9f-2ac6c361cafc
+2026-07-12 17:46:59 | INFO | log_ocr_start | Attachments to process: 0
+2026-07-12 17:46:59 | INFO | log_ocr_start | ================================================================================
+2026-07-12 17:46:59 | INFO | process_rfq_attachments | [RFQ] Processing started for 3ec65fae-5772-4172-ac9f-2ac6c361cafc
+2026-07-12 17:47:10 | INFO | process_rfq_attachments | [RESULTS] Success: 0, Failed: 1
+2026-07-12 17:47:10 | WARNING | process_rfq_attachments | [FAILED] {'success': False, 'attachment_id': '76e7269b-0016-4d94-b0a4-26e24f0236b3', 'error': "Validation failed: Supplier mismatch: expected 'Alpha Components', but quotation header says 'TechSupply Corp'. Reason: Quotation supplier 'TechSupply Corp' is a completely different company name from expected 'Alpha Components', with no similarity or shared branding.", 'validation_reason': 'content_validation_failed', 'validation_details': "Supplier mismatch: expected 'Alpha Components', but quotation header says 'TechSupply Corp'. Reason: Quotation supplier 'TechSupply Corp' is a completely different company name from expected 'Alpha Components', with no similarity or shared branding."}
+2026-07-12 17:48:59 | INFO | log_ocr_start | ================================================================================
+2026-07-12 17:48:59 | INFO | log_ocr_start | OCR PROCESSING STARTED for RFQ: 3ec65fae-5772-4172-ac9f-2ac6c361cafc
+2026-07-12 17:48:59 | INFO | log_ocr_start | Attachments to process: 0
+2026-07-12 17:48:59 | INFO | log_ocr_start | ================================================================================
+2026-07-12 17:48:59 | INFO | process_rfq_attachments | [RFQ] Processing started for 3ec65fae-5772-4172-ac9f-2ac6c361cafc
+2026-07-12 17:49:08 | INFO | process_rfq_attachments | [RESULTS] Success: 1, Failed: 0
+2026-07-12 17:49:08 | INFO | log_ocr_complete | 
+================================================================================
+2026-07-12 17:49:08 | INFO | log_ocr_complete | OCR PROCESSING COMPLETED for RFQ: 3ec65fae-5772-4172-ac9f-2ac6c361cafc
+2026-07-12 17:49:08 | INFO | log_ocr_complete | Results: 1 successful, 0 failed
+2026-07-12 17:49:08 | INFO | log_ocr_complete | Total processing time: 9.15 seconds
+2026-07-12 17:49:08 | INFO | log_ocr_complete | ================================================================================
+2026-07-12 17:49:08 | INFO | generate_ocr_report | 
+
+================================================================================
+OCR PROCESSING REVIEW REPORT
+================================================================================
+
+RFQ ID: 3ec65fae-5772-4172-ac9f-2ac6c361cafc
+Processing Date: 2026-07-12 17:49:08.411883 IST
+Total Processing Time: 9.15 seconds
+
+SUMMARY:
+--------
+Total Attachments: 1
+Successful: 1
+Failed: 0
+Success Rate: 100.0%
+
+SUCCESSFUL ATTACHMENTS:
+-----------------------
+
+1. Unknown
+   - Extracted text length: 0 chars
+   - Quotation ID: d394e886-f806-4c01-ac1b-79b9e45dfff1
+
+================================================================================
+END OF REPORT
+================================================================================
+
+2026-07-12 17:50:19 | INFO | log_ocr_start | ================================================================================
+2026-07-12 17:50:19 | INFO | log_ocr_start | OCR PROCESSING STARTED for RFQ: 3ec65fae-5772-4172-ac9f-2ac6c361cafc
+2026-07-12 17:50:19 | INFO | log_ocr_start | Attachments to process: 0
+2026-07-12 17:50:19 | INFO | log_ocr_start | ================================================================================
+2026-07-12 17:50:19 | INFO | process_rfq_attachments | [RFQ] Processing started for 3ec65fae-5772-4172-ac9f-2ac6c361cafc
+2026-07-12 17:50:28 | INFO | process_rfq_attachments | [RESULTS] Success: 0, Failed: 1
+2026-07-12 17:50:28 | WARNING | process_rfq_attachments | [FAILED] {'success': False, 'attachment_id': 'eff0a464-9459-4330-9441-7c1343d947b8', 'error': "Validation failed: Supplier mismatch: expected 'Alpha Components', but quotation header says 'TechSupply Corp'. Reason: TechSupply Corp is a clearly different company name from expected supplier Alpha Components, with no similarity or overlap", 'validation_reason': 'content_validation_failed', 'validation_details': "Supplier mismatch: expected 'Alpha Components', but quotation header says 'TechSupply Corp'. Reason: TechSupply Corp is a clearly different company name from expected supplier Alpha Components, with no similarity or overlap"}
+2026-07-12 17:51:20 | INFO | log_ocr_start | ================================================================================
+2026-07-12 17:51:20 | INFO | log_ocr_start | OCR PROCESSING STARTED for RFQ: 3ec65fae-5772-4172-ac9f-2ac6c361cafc
+2026-07-12 17:51:20 | INFO | log_ocr_start | Attachments to process: 0
+2026-07-12 17:51:20 | INFO | log_ocr_start | ================================================================================
+2026-07-12 17:51:20 | INFO | process_rfq_attachments | [RFQ] Processing started for 3ec65fae-5772-4172-ac9f-2ac6c361cafc
+2026-07-12 17:51:29 | INFO | process_rfq_attachments | [RESULTS] Success: 1, Failed: 0
+2026-07-12 17:51:29 | INFO | log_ocr_complete | 
+================================================================================
+2026-07-12 17:51:29 | INFO | log_ocr_complete | OCR PROCESSING COMPLETED for RFQ: 3ec65fae-5772-4172-ac9f-2ac6c361cafc
+2026-07-12 17:51:29 | INFO | log_ocr_complete | Results: 1 successful, 0 failed
+2026-07-12 17:51:29 | INFO | log_ocr_complete | Total processing time: 9.52 seconds
+2026-07-12 17:51:29 | INFO | log_ocr_complete | ================================================================================
+2026-07-12 17:51:29 | INFO | generate_ocr_report | 
+
+================================================================================
+OCR PROCESSING REVIEW REPORT
+================================================================================
+
+RFQ ID: 3ec65fae-5772-4172-ac9f-2ac6c361cafc
+Processing Date: 2026-07-12 17:51:29.824551 IST
+Total Processing Time: 9.52 seconds
+
+SUMMARY:
+--------
+Total Attachments: 1
+Successful: 1
+Failed: 0
+Success Rate: 100.0%
+
+SUCCESSFUL ATTACHMENTS:
+-----------------------
+
+1. Unknown
+   - Extracted text length: 0 chars
+   - Quotation ID: 98c3b8f5-97a0-44e1-bae4-d1b54ae9fb2f
+
+================================================================================
+END OF REPORT
+================================================================================
+
