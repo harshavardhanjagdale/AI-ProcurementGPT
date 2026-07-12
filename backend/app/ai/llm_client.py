@@ -219,6 +219,7 @@ class AnthropicProvider(BaseLLMProvider):
         )
 
         usage = getattr(response, "usage", None)
+        logger.warning(f"ANTHROPIC USAGE = {usage}")
         if usage is not None:
             cache_read = getattr(usage, "cache_read_input_tokens", 0) or 0
             cache_write = getattr(usage, "cache_creation_input_tokens", 0) or 0
@@ -278,6 +279,7 @@ class OpenAIProvider(BaseLLMProvider):
         )
 
         usage = getattr(response, "usage", None)
+        logger.warning(f"ANTHROPIC USAGE = {usage}")
         if usage is not None:
             details = getattr(usage, "prompt_tokens_details", None)
             cached = getattr(details, "cached_tokens", 0) if details else 0
