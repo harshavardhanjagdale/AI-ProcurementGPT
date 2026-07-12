@@ -84,11 +84,20 @@ def _maybe_wrap_client(client, provider: str):
             "openai": getattr(wrappers, "wrap_openai", None),
             "gemini": getattr(wrappers, "wrap_gemini", None),
         }.get(provider)
+
+        logger.warning(f"DEBUG wrap_fn={wrap_fn}")
+
         if wrap_fn is None:
+            logger.warning("DEBUG wrap_fn is None")
             return client
-        wrapped = wrap_fn(client)
-        logger.info(f"LangSmith tracing wrapper attached to {provider} client")
-        return wrapped
+
+        try:
+            wrapped = wrap_fn(client)
+            logger.warning("DEBUG wrapper attached successfully")
+            return wrapped
+        except Exception as e:
+            logger.exception(f"DEBUG wrapper failed: {e}")
+            return client
     except Exception as e:
         logger.warning(f"Could not attach LangSmith wrapper to {provider} client: {e}")
         return client
