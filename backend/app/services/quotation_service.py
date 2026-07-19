@@ -6,6 +6,7 @@ Includes pre-OCR sender verification and post-OCR content validation
 (supplier name match + item relevance) before accepting a quotation.
 """
 import logging
+import os
 from datetime import datetime, timezone
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -95,6 +96,21 @@ class QuotationService:
         # OCR EXECUTION — pass RFQ items as context so the LLM can
         # cross-reference quantities when OCR drops table columns.
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        file_path = attachment.file_path
+        file_exists = os.path.exists(file_path)
+        file_size = os.path.getsize(file_path) if file_exists else -1
+        logger.info(
+            f"[OCR-DIAG] Attachment id={attachment_id} "
+            f"file_path={file_path} "
+            f"file_type={attachment.file_type} "
+            f"exists={file_exists} "
+            f"size_bytes={file_size}"
+        )
+        if not file_exists:
+            logger.error(f"[OCR-DIAG] FILE MISSING: {file_path}")
+        elif file_size == 0:
+            logger.error(f"[OCR-DIAG] FILE IS EMPTY (0 bytes): {file_path}")
+
         rfq_items_context = None
         if email_record and email_record.rfq_id:
             rfq = await self.rfq_repo.get_with_details(email_record.rfq_id)
@@ -105,9 +121,16 @@ class QuotationService:
                 ]
 
         ocr_result = await ocr_pipeline.process_attachment(
-            file_path=attachment.file_path,
+            file_path=file_path,
             file_type=attachment.file_type,
             rfq_items=rfq_items_context,
+        )
+        logger.info(
+            f"[OCR-DIAG] OCR result for attachment {attachment_id}: "
+            f"success={ocr_result.get('success')}, "
+            f"extraction_method={ocr_result.get('extraction_method')}, "
+            f"raw_text_len={len(ocr_result.get('raw_text', ''))}, "
+            f"error={ocr_result.get('error')}"
         )
 
         from sqlalchemy import update as sql_update

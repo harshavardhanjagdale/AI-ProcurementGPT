@@ -32,6 +32,7 @@ class OCRPipeline:
         try:
             page_texts = []
             with pdfplumber.open(pdf_path) as pdf:
+                logger.info(f"[OCR-DIAG] pdfplumber opened {pdf_path}: {len(pdf.pages)} pages")
                 for i, page in enumerate(pdf.pages):
                     text = page.extract_text() or ""
                     tables = page.extract_tables() or []
@@ -49,35 +50,42 @@ class OCRPipeline:
                             parts.append("\n".join(rows))
 
                     combined = "\n".join(parts).strip()
+                    logger.info(f"[OCR-DIAG] pdfplumber page {i+1}: text={len(text)} chars, tables={len(tables)}, combined={len(combined)} chars")
                     if combined:
                         page_texts.append(f"--- Page {i + 1} ---\n{combined}")
 
             if not page_texts:
+                logger.info("[OCR-DIAG] pdfplumber: no pages produced text")
                 return None
 
             full_text = "\n\n".join(page_texts)
             if len(full_text.strip()) < MIN_CHARS_FOR_GOOD_EXTRACTION:
+                logger.info(f"[OCR-DIAG] pdfplumber: text too short ({len(full_text.strip())} chars < {MIN_CHARS_FOR_GOOD_EXTRACTION})")
                 return None
 
+            logger.info(f"[OCR-DIAG] pdfplumber: extracted {len(full_text)} chars total")
             return full_text
 
         except Exception as e:
-            logger.warning(f"[OCR] pdfplumber extraction failed: {e} — will fall back to Tesseract")
+            logger.warning(f"[OCR] pdfplumber extraction failed: {e} — will fall back to Tesseract", exc_info=True)
             return None
 
     def _extract_text_tesseract(self, pdf_path: str) -> str | None:
         """Fall back to image-based Tesseract OCR for scanned PDFs."""
         images = pdf_converter.pdf_to_images(pdf_path)
+        logger.info(f"[OCR-DIAG] Tesseract: pdf_to_images returned {len(images) if images else 0} images")
         if not images:
             return None
 
         page_texts = []
         for i, image in enumerate(images):
             text = tesseract_engine.extract_text_from_pil_image(image)
+            logger.info(f"[OCR-DIAG] Tesseract page {i+1}: {len(text) if text else 0} chars")
             if text:
                 page_texts.append(f"--- Page {i + 1} ---\n{text}")
 
         if not page_texts:
+            logger.info("[OCR-DIAG] Tesseract: no pages produced text")
             return None
 
         return "\n\n".join(page_texts)
