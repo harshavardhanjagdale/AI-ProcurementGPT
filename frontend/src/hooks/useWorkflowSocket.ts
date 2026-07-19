@@ -3,7 +3,16 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
 import type { WorkflowProgressEvent, ConversationMessage } from '@/services/workflow.service';
 
-const WS_BASE = process.env.NEXT_PUBLIC_WS_URL || 'ws://localhost:8000/api/v1';
+function getWsBase(): string {
+  if (process.env.NEXT_PUBLIC_WS_URL) return process.env.NEXT_PUBLIC_WS_URL;
+  if (typeof window === 'undefined') return 'ws://localhost:8000/api/v1';
+  // In local dev (Next.js on :3000), connect directly to the backend on :8000
+  // because Next.js rewrites don't support WebSocket proxying.
+  // In prod the frontend is served from the same host as the API.
+  if (window.location.port === '3000') return 'ws://localhost:8000/api/v1';
+  const proto = window.location.protocol === 'https:' ? 'wss' : 'ws';
+  return `${proto}://${window.location.host}/api/v1`;
+}
 
 interface UseWorkflowSocketOptions {
   onProgress?: (event: WorkflowProgressEvent) => void;
@@ -69,7 +78,7 @@ export function useWorkflowSocket(
     }
 
     intentionalCloseRef.current = false;
-    const ws = new WebSocket(`${WS_BASE}/ws/workflow?token=${token}`);
+    const ws = new WebSocket(`${getWsBase()}/ws/workflow?token=${token}`);
 
     ws.onopen = () => {
       setConnected(true);
