@@ -78,11 +78,15 @@ async def generate_purchase_order(state: ProcurementState) -> dict:
             if not rfq:
                 return {"po_generated": False, "error": "RFQ not found"}
 
-            # Find the accepted/recommended quotation
-            quotation_id = recommendation.get("quotation_id")
+            # Which quotation becomes the PO: the one the user explicitly selected
+            # (single-select in the UI) wins; otherwise fall back to the AI-recommended
+            # quotation, then to the first quotation on the RFQ.
+            quotation_id = state.get("selected_quotation_id") or recommendation.get("quotation_id")
             if quotation_id:
                 quotation = await quotation_repo.get_with_items(quotation_id)
             else:
+                quotation = None
+            if quotation is None:
                 quotations = await quotation_repo.get_by_rfq(rfq_id)
                 quotation = quotations[0] if quotations else None
 

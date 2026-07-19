@@ -86,3 +86,24 @@ class QuotationRepository(BaseRepository[Quotation]):
             select(func.count(Quotation.id)).where(Quotation.rfq_id == rfq_id)
         )
         return result.scalar_one()
+
+    async def count_pending_attachments(self, rfq_id: str) -> int:
+        """Number of supplier-reply attachments for this RFQ not yet OCR'd.
+
+        Used to decide whether a fresh reply (arriving while parked at the decision
+        gate) has new documents to process — i.e. whether to re-run ocr_extract.
+        Mirrors the query in QuotationService.process_all_pending_attachments.
+        """
+        from app.models.email import Email
+        from app.models.email_attachment import EmailAttachment
+
+        result = await self.db.execute(
+            select(func.count(EmailAttachment.id))
+            .join(Email, Email.id == EmailAttachment.email_id)
+            .where(
+                Email.rfq_id == rfq_id,
+                EmailAttachment.ocr_processed == False,  # noqa: E712
+                EmailAttachment.file_type.in_(["pdf", "jpg", "jpeg", "png"]),
+            )
+        )
+        return result.scalar_one()

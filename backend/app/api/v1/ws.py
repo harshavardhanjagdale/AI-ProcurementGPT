@@ -26,6 +26,23 @@ router = APIRouter()
 HEARTBEAT_INTERVAL = 30
 
 
+async def _reject(websocket: WebSocket, code: int, reason: str) -> None:
+    """
+    Reject a WS handshake (auth failure) without accepting first.
+
+    Closing BEFORE accept() makes uvicorn return an HTTP 403 during the handshake,
+    so the connection never enters the websockets data-transfer phase. Accepting and
+    then immediately closing hits a uvicorn/`websockets` version bug
+    (`AttributeError: 'WebSocketProtocol' object has no attribute 'transfer_data_task'`)
+    because `close()` awaits a data task that isn't set up yet. The try/except is a
+    belt-and-suspenders guard against that race on any close path.
+    """
+    try:
+        await websocket.close(code=code, reason=reason)
+    except (RuntimeError, AttributeError) as e:
+        logger.warning(f"[WS] handshake reject race ({type(e).__name__}): {e}")
+
+
 def _step_dict(s: WorkflowStep) -> dict:
     return {
         "id": s.id,
@@ -108,23 +125,21 @@ async def _validate_session_ownership(session_id: str, user_id: str) -> bool:
 
 @router.websocket("/ws/workflow")
 async def workflow_websocket(websocket: WebSocket):
-    # Must accept first, then authenticate via the first message or query param
+    # Authenticate from the query-param token during the handshake, and reject
+    # (close before accept) on failure — see _reject for why we don't accept first.
     token = websocket.query_params.get("token")
     if not token:
-        await websocket.accept()
-        await websocket.close(code=4001, reason="Missing token")
+        await _reject(websocket, 4001, "Missing token")
         return
 
     payload = decode_token(token)
     if payload is None or payload.get("type") != "access":
-        await websocket.accept()
-        await websocket.close(code=4001, reason="Invalid or expired token")
+        await _reject(websocket, 4001, "Invalid or expired token")
         return
 
     user_id = payload.get("sub")
     if not user_id:
-        await websocket.accept()
-        await websocket.close(code=4001, reason="Invalid token payload")
+        await _reject(websocket, 4001, "Invalid token payload")
         return
 
     await websocket.accept()

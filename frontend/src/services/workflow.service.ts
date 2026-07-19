@@ -172,11 +172,13 @@ export const workflowService = {
   async submitDecision(
     id: string,
     decision: "approve" | "negotiate" | "cancel",
-    targetPrice?: number
+    targetPrice?: number,
+    quotationId?: string
   ) {
     const { data } = await api.post(`/workflow/${id}/decision`, {
       decision,
       target_price: targetPrice ?? null,
+      quotation_id: quotationId ?? null,
     });
     return data as {
       message: string;

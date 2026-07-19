@@ -174,6 +174,8 @@ class EmailPollingWorker:
         )
         waiting_sessions = list(result.scalars().all())
 
+        rfq_attachment_counts = {r["rfq_id"]: r.get("attachments_count", 0) for r in results}
+
         to_resume = []
         for ws in waiting_sessions:
             if not ws.langgraph_thread_id:
@@ -199,28 +201,34 @@ class EmailPollingWorker:
                 ).values(status="running", started_at=ist_now())
             )
 
+            has_attachments = rfq_attachment_counts.get(ws.rfq_id, 0) > 0
+
             # Add event
             event = WorkflowEvent(
                 id=generate_uuid(),
                 session_id=ws.id,
                 event_type="step_completed",
-                title="Supplier Quotation Received",
-                description="A supplier has responded with a quotation.",
+                title="Supplier Response Received",
+                description="A supplier has responded." if not has_attachments else "A supplier has responded with a quotation.",
                 agent="Inbox Agent",
             )
             session.add(event)
 
-            # Chat notification
+            # Chat notification — different message depending on whether attachments exist
+            if has_attachments:
+                chat_content = "📩 A supplier has responded with a quotation! I'm now processing the attachment to extract pricing details..."
+            else:
+                chat_content = "📩 A supplier has responded. Analyzing their reply..."
             msg = ConversationMessage(
                 id=generate_uuid(),
                 session_id=ws.id,
                 role="assistant",
-                content="A supplier has responded with a quotation! I'm now processing the attachment to extract pricing details...",
+                content=chat_content,
                 message_type="event",
             )
             session.add(msg)
 
-            logger.info(f"[WORKFLOW] Updated session {ws.id} - supplier replied for RFQ {ws.rfq_id}")
+            logger.info(f"[WORKFLOW] Updated session {ws.id} - supplier replied for RFQ {ws.rfq_id} (attachments={has_attachments})")
             to_resume.append((ws.id, ws.langgraph_thread_id, msg.content))
 
         return to_resume

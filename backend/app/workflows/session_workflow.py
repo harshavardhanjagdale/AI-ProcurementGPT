@@ -117,6 +117,11 @@ def _initial_state(user_id: str, thread_id: str, user_input: str) -> Procurement
         "current_step": "start",
         "error": None,
         "messages": [],
+        "negotiation_rejected": False,
+        "negotiation_rejection_summary": None,
+        "supplier_reply_type": None,
+        "supplier_reply_summary": None,
+        "supplier_reply_alternative": None,
     }
 
 
@@ -217,25 +222,43 @@ class SessionWorkflowService:
             f"current_step={snapshot.values.get('current_step')}"
         )
 
-        # If graph is stuck at user_decision_gate (due to the old bug where
-        # no_quotations_yet wasn't a registered state channel), force it back to
-        # await_supplier_replies so OCR can run on the new attachment.
+        # A reply may arrive while the graph is parked at user_decision_gate — either
+        # because of the old stale-state bug (parked with no rankings), OR, in the normal
+        # multi-supplier flow, because supplier #1 already produced a ranking and now
+        # supplier #2/#3 reply later. If we just resumed from the gate, user_decision is
+        # None → route_user_decision returns "__end__" → the graph terminates and the new
+        # attachments are silently dropped. Instead, as long as the user has NOT decided
+        # yet and there are new (unprocessed) attachments, rewind to await_supplier_replies
+        # so the next stream re-enters ocr_extract (drains the new attachments, re-ranks all
+        # quotations) and re-parks at the decision gate with the growing comparison.
         next_nodes = snapshot.next or ()
-        if "user_decision_gate" in next_nodes and not snapshot.values.get("rankings"):
-            logger.warning(
-                f"[RESUME] Graph is parked at user_decision_gate WITHOUT rankings "
-                f"(stale state bug). Forcing back to await_supplier_replies."
-            )
-            await graph.aupdate_state(
-                config,
-                {
-                    "no_quotations_yet": False,
-                    "validation_failed": False,
-                    "validation_message": None,
-                    "current_step": "await_supplier_replies",
-                },
-                as_node="await_supplier_replies",
-            )
+        values = snapshot.values
+        if "user_decision_gate" in next_nodes and not values.get("user_decision"):
+            has_rankings = bool(values.get("rankings"))
+            pending = 0
+            rfq_id = values.get("rfq_id")
+            if rfq_id:
+                async with AsyncSessionLocal() as db:
+                    from app.repositories.quotation_repository import QuotationRepository
+                    pending = await QuotationRepository(db).count_pending_attachments(rfq_id)
+
+            if pending > 0 or not has_rankings:
+                logger.info(
+                    f"[RESUME] Reply while parked at user_decision_gate "
+                    f"(has_rankings={has_rankings}, pending_attachments={pending}). "
+                    f"Rewinding to await_supplier_replies to re-run ocr_extract."
+                )
+                await graph.aupdate_state(
+                    config,
+                    {
+                        "no_quotations_yet": False,
+                        "validation_failed": False,
+                        "validation_message": None,
+                        "newly_received_suppliers": [],
+                        "current_step": "await_supplier_replies",
+                    },
+                    as_node="await_supplier_replies",
+                )
 
         return await self._run_graph_streaming(session_id, thread_id, None)
 
@@ -245,6 +268,7 @@ class SessionWorkflowService:
         thread_id: str,
         decision: str,
         negotiation_targets: list[dict] | None = None,
+        selected_quotation_id: str | None = None,
     ) -> dict:
         """
         Apply the user's approve/negotiate/cancel decision and stream the resulting run
@@ -261,10 +285,20 @@ class SessionWorkflowService:
             )
             return {"current_step": None, "error": "state lost"}
 
-        # Clear any stale error so it doesn't keep poisoning status on every future resume.
-        state_update: dict = {"user_decision": decision, "error": None}
+        # Clear stale error/rejection flags so they don't keep poisoning status.
+        state_update: dict = {
+            "user_decision": decision,
+            "error": None,
+            "negotiation_rejected": False,
+            "negotiation_rejection_summary": None,
+            "supplier_reply_type": None,
+            "supplier_reply_summary": None,
+            "supplier_reply_alternative": None,
+        }
         if negotiation_targets:
             state_update["negotiation_targets"] = negotiation_targets
+        if selected_quotation_id:
+            state_update["selected_quotation_id"] = selected_quotation_id
         await graph.aupdate_state(config, state_update)
 
         return await self._run_graph_streaming(session_id, thread_id, None)
@@ -314,6 +348,11 @@ class SessionWorkflowService:
                             f"[NODE-DONE] {session_id} -> {step} "
                             f"| tokens so far: {usage.total_tokens} (~${usage.cost_usd:.4f})"
                         )
+                        if "negotiation_rejected" in delta:
+                            workflow_logger.info(
+                                f"[NODE-DONE] *** negotiation_rejected in delta: {delta['negotiation_rejected']} "
+                                f"| acc.negotiation_rejected={acc.get('negotiation_rejected')}"
+                            )
                         await self._persist_node_progress(session_id, step, acc)
                 workflow_logger.info(f"[TOKEN-USAGE] {session_id} -> {usage.summary()}")
         except Exception as e:
@@ -354,7 +393,14 @@ class SessionWorkflowService:
                 # step actually awaiting the user.
                 # If no quotations were found or validation failed, go back to waiting.
                 display_step = step
-                if step == "ocr_extract" and values.get("no_quotations_yet"):
+                reply_type = values.get("supplier_reply_type")
+                if step == "ocr_extract" and values.get("negotiation_rejected"):
+                    display_step = "user_decision_gate"
+                elif step == "ocr_extract" and reply_type == "alternative_offer":
+                    display_step = "user_decision_gate"
+                elif step == "ocr_extract" and reply_type in ("out_of_stock", "will_respond_later", "general_inquiry"):
+                    display_step = "await_supplier_replies"
+                elif step == "ocr_extract" and values.get("no_quotations_yet"):
                     display_step = "await_supplier_replies"
                 elif step == "ocr_extract" and values.get("validation_failed"):
                     display_step = "await_supplier_replies"
@@ -393,6 +439,26 @@ class SessionWorkflowService:
 
                 await self._update_steps(db, session_id, step, values)
                 await self._emit_event(db, session_id, step, parsed, values.get("selected_suppliers", []))
+
+                # As supplier replies stagger in, announce each freshly-processed quotation
+                # so the chat shows "another supplier quotation received" before the updated
+                # comparison table (which the UI refreshes from /quotations polling).
+                new_suppliers = values.get("newly_received_suppliers") or []
+                if step == "ocr_extract" and new_suppliers:
+                    responded = len(values.get("rankings", [])) or len(new_suppliers)
+                    total = len(values.get("selected_suppliers", [])) or responded
+                    names = ", ".join(new_suppliers)
+                    db.add(ConversationMessage(
+                        id=generate_uuid(),
+                        session_id=session_id,
+                        role="assistant",
+                        content=(
+                            f"📄 Quotation received from **{names}** and processed. "
+                            f"{responded} of {total} supplier(s) have responded so far."
+                        ),
+                        message_type="text",
+                        metadata_json={"current_step": step, "event": "quotation_received"},
+                    ))
 
                 content = self._node_message(step, values)
                 if content:
@@ -680,7 +746,12 @@ class SessionWorkflowService:
         if ran_step == "await_supplier_replies":
             waiting_step = "await_supplier_replies"
         elif ran_step == "ocr_extract":
-            if values.get("no_quotations_yet") or values.get("validation_failed") or not values.get("rankings"):
+            reply_type = values.get("supplier_reply_type")
+            if values.get("negotiation_rejected") or reply_type == "alternative_offer":
+                waiting_step = "user_decision_gate"
+            elif reply_type in ("out_of_stock", "will_respond_later", "general_inquiry"):
+                waiting_step = "await_supplier_replies"
+            elif values.get("no_quotations_yet") or values.get("validation_failed") or not values.get("rankings"):
                 waiting_step = "await_supplier_replies"
             else:
                 waiting_step = "user_decision_gate"
@@ -707,9 +778,15 @@ class SessionWorkflowService:
 
         # If OCR failed/validation failed, revert await_supplier_replies to running
         # AND revert all steps AFTER await_supplier_replies back to pending
+        reply_type = values.get("supplier_reply_type")
+        routes_to_decision = (
+            values.get("negotiation_rejected")
+            or reply_type == "alternative_offer"
+        )
         revert_await = (
-            ran_step == "ocr_extract" and
-            (values.get("no_quotations_yet") or values.get("validation_failed") or not values.get("rankings"))
+            ran_step == "ocr_extract"
+            and not routes_to_decision
+            and (values.get("no_quotations_yet") or values.get("validation_failed") or not values.get("rankings"))
         )
 
         await_idx = self._MAIN_ORDER.index("await_supplier_replies")  # 6
@@ -745,7 +822,7 @@ class SessionWorkflowService:
                 if ran_step == "await_supplier_replies":
                     step.status = "running"
                     step.started_at = step.started_at or ist_now()
-                elif ran_step == "ocr_extract" and (values.get("no_quotations_yet") or values.get("validation_failed") or not values.get("rankings")):
+                elif ran_step == "ocr_extract" and not routes_to_decision and (values.get("no_quotations_yet") or values.get("validation_failed") or not values.get("rankings")):
                     step.status = "pending"
                     step.started_at = None
                     step.completed_at = None
@@ -827,6 +904,87 @@ class SessionWorkflowService:
             names = ", ".join(s.get("name", "?") for s in suppliers[:5])
             return f"🔍 Found {len(suppliers)} matching supplier(s): {names}."
 
+        # ── Supplier text-only reply handling (pre-LLM classified) ──────────
+        # Skip if validation_failed — the validation message should take priority.
+        if step == "ocr_extract" and values.get("supplier_reply_type") and not values.get("validation_failed"):
+            reply_type = values["supplier_reply_type"]
+            summary = values.get("supplier_reply_summary", "Supplier responded.")
+
+            if reply_type == "negotiation_rejection":
+                return (
+                    f"🚫 The supplier replied to our counter-offer but **did not provide a revised quotation**.\n\n"
+                    f"**Supplier's stance:** {summary}\n\n"
+                    f"You can **approve** the purchase order at their last quoted rates, or **cancel** this procurement."
+                )
+
+            if reply_type == "out_of_stock":
+                return (
+                    f"📭 The supplier responded but **cannot fulfill this request**.\n\n"
+                    f"**Supplier's response:** {summary}\n\n"
+                    f"Waiting for other suppliers to respond..."
+                )
+
+            if reply_type == "alternative_offer":
+                alt = values.get("supplier_reply_alternative") or {}
+                rankings = values.get("rankings") or []
+
+                msg = f"💡 The supplier has proposed an **alternative product** instead of what was requested.\n\n"
+                msg += f"**Supplier's response:** {summary}\n\n"
+
+                if rankings:
+                    top = rankings[0] if rankings else {}
+                    msg += "**Quotation details (extracted from document):**\n"
+                    if top.get("supplier_name"):
+                        msg += f"- **Supplier:** {top['supplier_name']}\n"
+                    items = top.get("items") or []
+                    for item in items:
+                        name = item.get("product_name", "Item")
+                        qty = item.get("quantity", "")
+                        unit_price = item.get("unit_price", "")
+                        total = item.get("total_price", "")
+                        msg += f"- **{name}** — Qty: {qty}, Unit: {unit_price}, Total: {total}\n"
+                    if top.get("total_amount"):
+                        currency = top.get("currency", "")
+                        msg += f"- **Grand Total:** {currency} {top['total_amount']}\n"
+                    msg += "\n"
+                else:
+                    alt_lines = []
+                    if alt.get("product"):
+                        alt_lines.append(f"**Product:** {alt['product']}")
+                    if alt.get("brand"):
+                        alt_lines.append(f"**Brand:** {alt['brand']}")
+                    if alt.get("specs"):
+                        alt_lines.append(f"**Specs:** {alt['specs']}")
+                    if alt.get("price"):
+                        alt_lines.append(f"**Price:** {alt['price']}")
+                    alt_detail = "\n".join(alt_lines) if alt_lines else "See supplier's message for details."
+                    msg += f"**Alternative offered:**\n{alt_detail}\n\n"
+
+                msg += "Would you like to **approve** this alternative, or **cancel** and wait for other suppliers?"
+                return msg
+
+            if reply_type == "will_respond_later":
+                return (
+                    f"⏳ The supplier acknowledged our request and **will send a quotation later**.\n\n"
+                    f"**Supplier's response:** {summary}\n\n"
+                    f"Continuing to wait for their formal quotation..."
+                )
+
+            # general_inquiry or unknown
+            return (
+                f"💬 The supplier responded without a formal quotation.\n\n"
+                f"**Supplier's response:** {summary}\n\n"
+                f"Waiting for a formal quotation..."
+            )
+
+        if step == "ocr_extract" and values.get("negotiation_rejected"):
+            summary = values.get("negotiation_rejection_summary", "The supplier indicated this is their final price.")
+            return (
+                f"🚫 The supplier replied to our counter-offer but **did not provide a revised quotation**.\n\n"
+                f"**Supplier's stance:** {summary}\n\n"
+                f"You can **approve** the purchase order at their last quoted rates, or **cancel** this procurement."
+            )
+
         if step == "ocr_extract" and values.get("no_quotations_yet"):
             if values.get("validation_failed"):
                 validation_msg = values.get("validation_message", "Unknown validation error")
@@ -835,7 +993,6 @@ class SessionWorkflowService:
                     f"**Reason:** {validation_msg}\n\n"
                     f"Waiting for the supplier to send a correct quotation..."
                 )
-            # Check if OCR results have validation failures
             ocr_results = values.get("ocr_results", [])
             validation_errors = [r for r in ocr_results if r.get("validation_reason")]
             if validation_errors:
@@ -880,10 +1037,56 @@ class SessionWorkflowService:
             return parsed.get("clarification_needed", "Could you tell me more about what you need?")
 
         if current_step == "ocr_extract":
+            # Supplier reply type takes priority — the LLM already classified the response.
+            reply_type = result.get("supplier_reply_type")
+            if reply_type:
+                # _node_message already handles the detailed message; _format_response
+                # is a fallback for the RICH_MESSAGE_STEPS path.
+                summary = result.get("supplier_reply_summary", "Supplier responded.")
+                if reply_type == "negotiation_rejection":
+                    rec = result.get("ai_recommendation", {})
+                    supplier = rec.get("supplier_name", "The supplier")
+                    return (
+                        f"🚫 **{supplier}** replied to our counter-offer but did not provide a revised quotation.\n\n"
+                        f"**Supplier's stance:** {summary}\n\n"
+                        f"Would you like to **approve** the purchase order at their last quoted rates, or **cancel** this procurement?"
+                    )
+                if reply_type == "alternative_offer":
+                    alt = result.get("supplier_reply_alternative") or {}
+                    alt_desc = alt.get("product", "an alternative product")
+                    rankings = result.get("rankings") or []
+                    if rankings:
+                        top = rankings[0]
+                        items_desc = ", ".join(
+                            f"{i.get('product_name', 'Item')} (Qty {i.get('quantity', '?')})"
+                            for i in (top.get("items") or [])
+                        )
+                        total = f"{top.get('currency', '')} {top.get('total_amount', '')}" if top.get("total_amount") else ""
+                        return (
+                            f"💡 The supplier proposed **{alt_desc}** as an alternative.\n\n"
+                            f"**Quotation extracted:** {items_desc}\n"
+                            f"**Total:** {total}\n\n"
+                            f"Would you like to **approve** this alternative, or **cancel**?"
+                        )
+                    return (
+                        f"💡 The supplier proposed **{alt_desc}** as an alternative.\n\n"
+                        f"**Details:** {summary}\n\n"
+                        f"Would you like to **approve** this alternative, or **cancel**?"
+                    )
+                return f"💬 {summary}"
+
+            if result.get("negotiation_rejected"):
+                summary = result.get("negotiation_rejection_summary", "The supplier indicated this is their final price.")
+                rec = result.get("ai_recommendation", {})
+                supplier = rec.get("supplier_name", "The supplier")
+                return (
+                    f"🚫 **{supplier}** replied to our counter-offer but did not provide a revised quotation.\n\n"
+                    f"**Supplier's stance:** {summary}\n\n"
+                    f"Would you like to **approve** the purchase order at their last quoted rates, or **cancel** this procurement?"
+                )
             rec = result.get("ai_recommendation", {})
             top = (result.get("rankings") or [{}])[0]
             if not result.get("rankings"):
-                # Check if validation specifically failed
                 ocr_results = result.get("ocr_results", [])
                 validation_errors = [r for r in ocr_results if r.get("validation_reason")]
                 if validation_errors:

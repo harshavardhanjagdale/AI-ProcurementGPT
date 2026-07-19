@@ -15,6 +15,10 @@ import {
   ChevronDown,
   ChevronUp,
   Award,
+  BarChart3,
+  Clock,
+  TrendingDown,
+  PiggyBank,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import api from '@/services/api';
@@ -70,7 +74,20 @@ export function ChatPanel({ sessionId, currentStep, sessionStatus, onMessageSent
   // Quotation state (inline collapsible)
   const [quotations, setQuotations] = useState<Quotation[]>([]);
   const [quotationsOpen, setQuotationsOpen] = useState(true);
+  // Single-select: which quotation the user picks to approve (→ PO) or negotiate.
+  const [selectedQuotationId, setSelectedQuotationId] = useState<string | null>(null);
   const quotationReady = !!sessionId && !!currentStep && QUOTATIONS_READY_STEPS.has(currentStep);
+
+  // Default the selection to the recommended quote (else the first), and keep it valid as
+  // more quotations arrive. Only auto-set when nothing valid is currently selected, so the
+  // user's explicit pick is never overridden by a poll refresh.
+  useEffect(() => {
+    if (quotations.length === 0) return;
+    setSelectedQuotationId((prev) => {
+      if (prev && quotations.some((q) => q.id === prev)) return prev;
+      return (quotations.find((q) => q.is_recommended) || quotations[0]).id;
+    });
+  }, [quotations]);
 
   const loadMessages = useCallback(async () => {
     if (!sessionId) return;
@@ -152,11 +169,15 @@ export function ChatPanel({ sessionId, currentStep, sessionStatus, onMessageSent
     }
   }, [sessionStatus]);
 
-  const topQuote = quotations.find((q) => q.is_recommended) || quotations[0];
+  // The quote the user selected drives both Approve (→ PO) and Negotiate.
+  const selectedQuote =
+    quotations.find((q) => q.id === selectedQuotationId) ||
+    quotations.find((q) => q.is_recommended) ||
+    quotations[0];
   // Negotiation is expressed as a per-piece rate. Total quantity across the quote's line
   // items lets us convert the per-piece counter to the order total the backend expects.
-  const negoQty = topQuote?.items?.reduce((sum, it) => sum + (it.quantity || 0), 0) || 1;
-  const negoCurrentPerPiece = topQuote ? topQuote.total_amount / (negoQty || 1) : 0;
+  const negoQty = selectedQuote?.items?.reduce((sum, it) => sum + (it.quantity || 0), 0) || 1;
+  const negoCurrentPerPiece = selectedQuote ? selectedQuote.total_amount / (negoQty || 1) : 0;
 
   const showDecisionActions =
     !!sessionId &&
@@ -176,7 +197,9 @@ export function ChatPanel({ sessionId, currentStep, sessionStatus, onMessageSent
     setNegotiateMode(false);
     setDecidingOn(decision);
     try {
-      const result = await workflowService.submitDecision(sessionId, decision, targetPrice);
+      // Cancel needs no quotation; approve/negotiate act on the user's selected quote.
+      const quotationId = decision === 'cancel' ? undefined : selectedQuote?.id;
+      const result = await workflowService.submitDecision(sessionId, decision, targetPrice, quotationId);
       await loadMessages();
       onMessageSent?.(result);
     } catch (err: any) {
@@ -292,24 +315,27 @@ export function ChatPanel({ sessionId, currentStep, sessionStatus, onMessageSent
       <div ref={scrollRef} onScroll={handleScroll} className="flex-1 min-h-0 overflow-y-auto scrollbar-slim px-4 md:px-8 py-6">
         <div className="max-w-2xl mx-auto space-y-5">
           {loading ? (
-            <div className="flex items-center justify-center py-12">
-              <Loader2 className="w-6 h-6 animate-spin text-slate-300" />
-            </div>
+            <ChatSkeleton />
           ) : (
             messages.map((msg) => <MessageBubble key={msg.id} message={msg} />)
           )}
+        </div>
 
-          {/* Inline quotation comparison */}
-          {quotationReady && quotations.length > 0 && (
-            <div className="my-4">
-              <InlineQuotationPanel
-                quotations={quotations}
-                open={quotationsOpen}
-                onToggle={() => setQuotationsOpen(!quotationsOpen)}
-              />
-            </div>
-          )}
+        {/* Inline quotation comparison — wider than the chat column to use the space */}
+        {quotationReady && quotations.length > 0 && (
+          <div className="my-5 max-w-5xl mx-auto">
+            <InlineQuotationPanel
+              quotations={quotations}
+              open={quotationsOpen}
+              onToggle={() => setQuotationsOpen(!quotationsOpen)}
+              selectedId={selectedQuotationId}
+              onSelect={setSelectedQuotationId}
+              selectable={showDecisionActions || (!!currentStep && DECISION_STEPS.has(currentStep))}
+            />
+          </div>
+        )}
 
+        <div className="max-w-2xl mx-auto space-y-5">
           {sending && <TypingBubble />}
 
           {showSuggestions && (
@@ -341,25 +367,27 @@ export function ChatPanel({ sessionId, currentStep, sessionStatus, onMessageSent
         </div>
       )}
 
-      {/* Decision actions */}
+      {/* Decision actions — compact bar, shown only when a decision is needed */}
       {showDecisionActions && !negotiateMode && (
-        <div className="border-t border-slate-200 dark:border-slate-800 px-4 md:px-6 py-3 bg-gradient-to-r from-indigo-50/60 to-violet-50/60 dark:from-indigo-950/30 dark:to-violet-950/30">
+        <div className="border-t border-slate-200 dark:border-slate-800 px-4 md:px-6 py-2.5 bg-gradient-to-r from-indigo-50/60 to-violet-50/60 dark:from-indigo-950/30 dark:to-violet-950/30 animate-fade-in-up">
           <div className="flex flex-wrap items-center justify-center gap-2 max-w-2xl mx-auto">
             <span className="text-xs text-slate-500 dark:text-slate-400 mr-1 hidden sm:inline">
-              Ready to decide:
+              {selectedQuote ? `${selectedQuote.supplier_name} selected —` : 'Ready to decide:'}
             </span>
             <button
               onClick={() => handleDecision('approve')}
               disabled={!!decidingOn}
-              className="px-4 py-2 rounded-xl bg-emerald-600 text-white text-sm font-medium hover:bg-emerald-700 disabled:opacity-50 transition-colors flex items-center gap-2 shadow-sm shadow-emerald-600/20"
+              title="Approve the selected quotation and create a purchase order"
+              className="px-3.5 py-1.5 rounded-lg bg-gradient-to-r from-emerald-600 to-green-600 text-white text-[13px] font-medium hover:from-emerald-700 hover:to-green-700 disabled:opacity-50 transition-all flex items-center gap-1.5 shadow-sm shadow-emerald-600/25"
             >
               {decidingOn === 'approve' ? <Loader2 className="w-4 h-4 animate-spin" /> : <CheckCircle2 className="w-4 h-4" />}
-              Approve &amp; Create PO
+              Approve &amp; PO
             </button>
             <button
               onClick={() => setNegotiateMode(true)}
               disabled={!!decidingOn}
-              className="px-4 py-2 rounded-xl bg-amber-500 text-white text-sm font-medium hover:bg-amber-600 disabled:opacity-50 transition-colors flex items-center gap-2 shadow-sm shadow-amber-500/20"
+              title="Send a counter-offer to the selected supplier"
+              className="px-3.5 py-1.5 rounded-lg bg-amber-500 text-white text-[13px] font-medium hover:bg-amber-600 disabled:opacity-50 transition-colors flex items-center gap-1.5 shadow-sm shadow-amber-500/20"
             >
               <Handshake className="w-4 h-4" />
               Negotiate
@@ -367,7 +395,8 @@ export function ChatPanel({ sessionId, currentStep, sessionStatus, onMessageSent
             <button
               onClick={() => handleDecision('cancel')}
               disabled={!!decidingOn}
-              className="px-4 py-2 rounded-xl border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-sm font-medium hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 transition-colors flex items-center gap-2"
+              title="Cancel this procurement"
+              className="px-3 py-1.5 rounded-lg border border-slate-300 dark:border-slate-700 text-slate-600 dark:text-slate-300 text-[13px] font-medium hover:bg-slate-100 dark:hover:bg-slate-800 disabled:opacity-50 transition-colors flex items-center gap-1.5"
             >
               {decidingOn === 'cancel' ? <Loader2 className="w-4 h-4 animate-spin" /> : <XCircle className="w-4 h-4" />}
               Cancel
@@ -385,12 +414,12 @@ export function ChatPanel({ sessionId, currentStep, sessionStatus, onMessageSent
                 <Handshake className="w-4 h-4 text-white" />
               </div>
               <div className="text-sm font-semibold text-amber-900 dark:text-amber-200">
-                Send a counter-offer{topQuote ? ` to ${topQuote.supplier_name}` : ''}
+                Send a counter-offer{selectedQuote ? ` to ${selectedQuote.supplier_name}` : ''}
               </div>
             </div>
-            {topQuote && (
+            {selectedQuote && (
               <p className="text-xs text-amber-800/80 dark:text-amber-300/80 mb-3 ml-9">
-                They quoted <span className="font-semibold">{topQuote.currency} {negoCurrentPerPiece.toLocaleString(undefined, { maximumFractionDigits: 2 })}/pc</span>
+                They quoted <span className="font-semibold">{selectedQuote.currency} {negoCurrentPerPiece.toLocaleString(undefined, { maximumFractionDigits: 2 })}/pc</span>
                 {' '}for <span className="font-semibold">{negoQty}</span> units.
                 Enter your target <span className="font-semibold">rate per piece</span> — I&apos;ll draft &amp; send the counter-offer.
               </p>
@@ -398,7 +427,7 @@ export function ChatPanel({ sessionId, currentStep, sessionStatus, onMessageSent
             <div className="flex items-center gap-2 ml-9">
               <div className="relative flex-1 max-w-xs">
                 <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-amber-700 dark:text-amber-400 font-medium">
-                  {topQuote?.currency || '₹'}
+                  {selectedQuote?.currency || '₹'}
                 </span>
                 <input
                   type="number"
@@ -470,6 +499,23 @@ export function ChatPanel({ sessionId, currentStep, sessionStatus, onMessageSent
         checkingEmail={checkingEmail}
         handleCheckEmails={handleCheckEmails}
       />
+    </div>
+  );
+}
+
+function ChatSkeleton() {
+  return (
+    <div className="space-y-5 animate-pulse">
+      {[
+        { me: false, w: 'w-2/3' },
+        { me: true, w: 'w-1/2' },
+        { me: false, w: 'w-3/4' },
+      ].map((r, i) => (
+        <div key={i} className={cn('flex items-end gap-2.5', r.me && 'flex-row-reverse')}>
+          <div className="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-800 flex-shrink-0" />
+          <div className={cn('h-14 rounded-2xl bg-slate-200 dark:bg-slate-800', r.w)} />
+        </div>
+      ))}
     </div>
   );
 }
@@ -579,7 +625,7 @@ function MessageBubble({ message }: { message: ConversationMessage }) {
 
   if (isEvent || isSystem) {
     return (
-      <div className="flex justify-center py-1">
+      <div className="flex justify-center py-1 animate-fade-in-up">
         <div
           className={cn(
             'px-4 py-1.5 rounded-full text-[11px] font-medium max-w-[85%] text-center',
@@ -603,7 +649,7 @@ function MessageBubble({ message }: { message: ConversationMessage }) {
 
   if (statusCard) {
     return (
-      <div className="flex justify-center py-1.5">
+      <div className="flex justify-center py-1.5 animate-fade-in-up">
         <div className={cn(
           'flex items-center gap-3 px-5 py-3 rounded-xl border max-w-[85%] shadow-sm',
           statusCard.bg,
@@ -626,7 +672,7 @@ function MessageBubble({ message }: { message: ConversationMessage }) {
   }
 
   return (
-    <div className={cn('flex items-end gap-2.5', isUser && 'flex-row-reverse')}>
+    <div className={cn('flex items-end gap-2.5 animate-fade-in-up', isUser && 'flex-row-reverse')}>
       <div
         className={cn(
           'w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 shadow-sm',
@@ -703,6 +749,23 @@ function InputBar({
       ? 'Describe what you need to procure…'
       : STEP_PLACEHOLDERS[step] || 'Workflow is processing, please wait…';
 
+  // While the graph is mid-run (input not accepted, not terminal), collapse the whole
+  // input bar to a slim, unobtrusive status chip instead of a disabled textarea + a
+  // large "input disabled" banner — reclaiming vertical space for the conversation.
+  const inProgress = !acceptsInput && !isTerminal;
+  if (inProgress) {
+    return (
+      <div className="border-t border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 md:px-8 py-3">
+        <div className="max-w-2xl mx-auto flex items-center justify-center">
+          <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-slate-100/80 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/70 text-xs font-medium text-slate-500 dark:text-slate-400">
+            <Loader2 className="w-3.5 h-3.5 animate-spin text-indigo-500" />
+            {STEP_PLACEHOLDERS[step] || 'Working…'}
+          </span>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="border-t border-slate-200/80 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 md:px-8 py-4">
       <div className="flex items-end gap-2.5 max-w-2xl mx-auto">
@@ -749,11 +812,6 @@ function InputBar({
           </button>
         </div>
       </div>
-      {!acceptsInput && !isTerminal && (
-        <p className="text-center text-[11px] text-amber-600 dark:text-amber-400 mt-2 font-medium">
-          The workflow is in progress. Chat input is disabled until it needs your response.
-        </p>
-      )}
     </div>
   );
 }
@@ -762,21 +820,44 @@ function InlineQuotationPanel({
   quotations,
   open,
   onToggle,
+  selectedId,
+  onSelect,
+  selectable = false,
 }: {
   quotations: Quotation[];
   open: boolean;
   onToggle: () => void;
+  selectedId?: string | null;
+  onSelect?: (id: string) => void;
+  selectable?: boolean;
 }) {
+  const prices = quotations.map((q) => q.total_amount);
+  const bestPrice = Math.min(...prices);
+  const highestPrice = Math.max(...prices);
+  const savings = highestPrice - bestPrice;
+  const cur = quotations[0]?.currency || '';
+  const bestSupplier = quotations.find((q) => q.total_amount === bestPrice);
+  const deliveries = quotations.map((q) => q.delivery_days).filter((d): d is number => d != null);
+  const fastest = deliveries.length ? Math.min(...deliveries) : null;
+  const fastestSupplier = fastest != null ? quotations.find((q) => q.delivery_days === fastest) : null;
+  const recommended = quotations.find((q) => q.is_recommended);
+  const fmt = (n: number) => n.toLocaleString(undefined, { maximumFractionDigits: 0 });
+
   return (
     <div className="rounded-xl border border-indigo-100 dark:border-indigo-900/50 bg-white dark:bg-slate-800 shadow-sm overflow-hidden">
       <button
         onClick={onToggle}
-        className="w-full flex items-center justify-between px-4 py-2.5 text-left hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
+        className="w-full flex items-center justify-between px-4 py-3 text-left hover:bg-slate-50 dark:hover:bg-slate-700/50 transition-colors"
       >
-        <div className="flex items-center gap-2">
-          <Award className="w-4 h-4 text-indigo-500" />
-          <span className="text-xs font-semibold text-slate-700 dark:text-slate-200">
-            Quotation Comparison ({quotations.length} quotes)
+        <div className="flex items-center gap-2.5">
+          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-indigo-500 to-violet-600 flex items-center justify-center shadow-sm flex-shrink-0">
+            <BarChart3 className="w-4 h-4 text-white" />
+          </div>
+          <span className="text-sm font-semibold text-slate-800 dark:text-slate-100">
+            Quotation Comparison
+          </span>
+          <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full bg-indigo-100 text-indigo-700 dark:bg-indigo-900/50 dark:text-indigo-300">
+            {quotations.length} quotes
           </span>
         </div>
         {open ? (
@@ -786,74 +867,160 @@ function InlineQuotationPanel({
         )}
       </button>
       {open && (
-        <div className="border-t border-slate-100 dark:border-slate-700 overflow-x-auto max-h-72 overflow-y-auto">
-          <table className="w-full text-xs">
-            <thead>
-              <tr className="bg-slate-50 dark:bg-slate-800/60 text-slate-500 dark:text-slate-400 sticky top-0">
-                <th className="text-left px-3 py-2 font-medium">Supplier</th>
-                <th className="text-left px-3 py-2 font-medium">Items (Qty × Rate/pc)</th>
-                <th className="text-right px-3 py-2 font-medium">Order Total</th>
-                <th className="text-right px-3 py-2 font-medium">Delivery</th>
-                <th className="text-right px-3 py-2 font-medium">Score</th>
-                <th className="text-left px-3 py-2 font-medium">Terms</th>
-              </tr>
-            </thead>
-            <tbody>
-              {quotations.map((q) => (
-                <tr
-                  key={q.id}
-                  className={cn(
-                    'border-t border-slate-100 dark:border-slate-700 align-top',
-                    q.is_recommended && 'bg-emerald-50/50 dark:bg-emerald-950/20'
-                  )}
-                >
-                  <td className="px-3 py-2">
-                    <div className="flex items-center gap-1.5">
-                      {q.is_recommended && <Award className="w-3 h-3 text-emerald-600 flex-shrink-0" />}
-                      <span className={cn('font-medium', q.is_recommended ? 'text-emerald-700 dark:text-emerald-300' : 'text-slate-800 dark:text-slate-100')}>
-                        {q.supplier_name}
-                      </span>
-                    </div>
-                    <span
-                      className={cn(
-                        'inline-block mt-1 text-[9px] px-1.5 py-0.5 rounded-full font-medium',
-                        q.negotiation_round > 0
-                          ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300'
-                          : 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400'
-                      )}
-                    >
-                      {q.negotiation_round > 0 ? `Revised · R${q.negotiation_round}` : 'Original'}
-                    </span>
-                  </td>
-                  <td className="px-3 py-2">
-                    <div className="space-y-1">
-                      {q.items.length === 0 && <span className="text-slate-400">—</span>}
-                      {q.items.map((item, i) => (
-                        <div key={i} className="whitespace-nowrap text-slate-700 dark:text-slate-200">
-                          <span className="font-medium">{item.quantity}</span>
-                          <span className="text-slate-400"> × </span>
-                          <span className="font-medium">{q.currency} {item.unit_price.toLocaleString()}</span>
-                          <span className="text-slate-400">/pc</span>
-                          <span className="text-slate-500 dark:text-slate-400"> — {item.product_name}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </td>
-                  <td className="px-3 py-2 text-right whitespace-nowrap font-medium text-slate-800 dark:text-slate-100">
-                    {q.currency} {q.total_amount.toLocaleString()}
-                  </td>
-                  <td className="px-3 py-2 text-right whitespace-nowrap text-slate-600 dark:text-slate-300">
-                    {q.delivery_days != null ? `${q.delivery_days} days` : '—'}
-                  </td>
-                  <td className="px-3 py-2 text-slate-600 dark:text-slate-300 max-w-[180px] truncate">
-                    {q.payment_terms || '—'}
-                  </td>
+        <div className="border-t border-slate-100 dark:border-slate-700">
+          {/* Insight strip — key takeaways at a glance */}
+          {quotations.length > 1 && (
+            <div className="grid grid-cols-2 lg:grid-cols-4 gap-px bg-slate-100 dark:bg-slate-700/60">
+              <Insight tone="emerald" icon={<TrendingDown className="w-3.5 h-3.5" />} label="Best price" value={`${cur} ${fmt(bestPrice)}`} sub={bestSupplier?.supplier_name} />
+              <Insight tone="emerald" icon={<PiggyBank className="w-3.5 h-3.5" />} label="Potential saving" value={`${cur} ${fmt(savings)}`} sub="vs highest quote" />
+              <Insight tone="sky" icon={<Clock className="w-3.5 h-3.5" />} label="Fastest delivery" value={fastest != null ? `${fastest} days` : '—'} sub={fastestSupplier?.supplier_name} />
+              <Insight tone="violet" icon={<Sparkles className="w-3.5 h-3.5" />} label="AI recommends" value={recommended?.supplier_name || '—'} sub={recommended ? 'top ranked' : 'analyzing…'} />
+            </div>
+          )}
+
+          <div className="overflow-x-auto max-h-80 overflow-y-auto">
+            <table className="w-full text-xs">
+              <thead>
+                <tr className="bg-slate-50 dark:bg-slate-800/80 text-slate-500 dark:text-slate-400 sticky top-0 z-10">
+                  {selectable && <th className="text-center px-3 py-2.5 font-semibold w-10">Pick</th>}
+                  <th className="text-left px-3 py-2.5 font-semibold">Supplier</th>
+                  <th className="text-left px-3 py-2.5 font-semibold">Items (Qty × Rate/pc)</th>
+                  <th className="text-right px-3 py-2.5 font-semibold">Order Total</th>
+                  <th className="text-right px-3 py-2.5 font-semibold">Delivery</th>
+                  <th className="text-left px-3 py-2.5 font-semibold">Payment Terms</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {quotations.map((q) => {
+                  const isSelected = selectable && selectedId === q.id;
+                  const isCheapest = q.total_amount === bestPrice;
+                  const isFastest = fastest != null && q.delivery_days === fastest;
+                  const delta = q.total_amount - bestPrice;
+                  return (
+                  <tr
+                    key={q.id}
+                    onClick={selectable ? () => onSelect?.(q.id) : undefined}
+                    className={cn(
+                      'border-t border-slate-100 dark:border-slate-700 align-top transition-colors',
+                      selectable && 'cursor-pointer hover:bg-indigo-50/40 dark:hover:bg-indigo-950/20',
+                      isSelected
+                        ? 'bg-indigo-50 dark:bg-indigo-950/30 ring-1 ring-inset ring-indigo-300 dark:ring-indigo-700'
+                        : q.is_recommended && 'bg-emerald-50/40 dark:bg-emerald-950/20'
+                    )}
+                  >
+                    {selectable && (
+                      <td className="px-3 py-3 text-center">
+                        <input
+                          type="radio"
+                          name="selected-quotation"
+                          checked={isSelected}
+                          onChange={() => onSelect?.(q.id)}
+                          onClick={(e) => e.stopPropagation()}
+                          className="h-4 w-4 accent-indigo-600 cursor-pointer"
+                          aria-label={`Select quotation from ${q.supplier_name}`}
+                        />
+                      </td>
+                    )}
+                    <td className="px-3 py-3">
+                      <div className="flex items-center gap-1.5 flex-wrap">
+                        <span className={cn('font-semibold text-[13px]', q.is_recommended ? 'text-emerald-700 dark:text-emerald-300' : 'text-slate-800 dark:text-slate-100')}>
+                          {q.supplier_name}
+                        </span>
+                        {q.is_recommended && (
+                          <span className="inline-flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.5 rounded-full bg-gradient-to-r from-emerald-500 to-green-500 text-white">
+                            <Sparkles className="w-2.5 h-2.5" /> AI PICK
+                          </span>
+                        )}
+                        {q.ai_ranking != null && (
+                          <span className="text-[9px] font-semibold px-1.5 py-0.5 rounded-full bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-300">
+                            #{q.ai_ranking}
+                          </span>
+                        )}
+                      </div>
+                      <span
+                        className={cn(
+                          'inline-block mt-1 text-[9px] px-1.5 py-0.5 rounded-full font-medium',
+                          q.negotiation_round > 0
+                            ? 'bg-amber-100 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300'
+                            : 'bg-slate-100 text-slate-500 dark:bg-slate-700 dark:text-slate-400'
+                        )}
+                      >
+                        {q.negotiation_round > 0 ? `Revised · R${q.negotiation_round}` : 'Original'}
+                      </span>
+                    </td>
+                    <td className="px-3 py-3">
+                      <div className="space-y-1">
+                        {q.items.length === 0 && <span className="text-slate-400">—</span>}
+                        {q.items.map((item, i) => (
+                          <div key={i} className="whitespace-nowrap text-slate-700 dark:text-slate-200">
+                            <span className="font-medium tabular-nums">{item.quantity}</span>
+                            <span className="text-slate-400"> × </span>
+                            <span className="font-medium tabular-nums">{q.currency} {item.unit_price.toLocaleString()}</span>
+                            <span className="text-slate-400">/pc</span>
+                            <span className="text-slate-500 dark:text-slate-400"> — {item.product_name}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </td>
+                    <td className="px-3 py-3 text-right whitespace-nowrap">
+                      <div className="font-bold text-[13px] text-slate-900 dark:text-slate-50 tabular-nums">
+                        {q.currency} {q.total_amount.toLocaleString()}
+                      </div>
+                      {isCheapest ? (
+                        <div className="inline-flex items-center gap-0.5 text-[10px] font-medium text-emerald-600 dark:text-emerald-400 mt-0.5">
+                          <TrendingDown className="w-3 h-3" /> Lowest
+                        </div>
+                      ) : (
+                        <div className="text-[10px] text-rose-500 dark:text-rose-400 font-medium mt-0.5 tabular-nums">
+                          +{q.currency} {delta.toLocaleString()}
+                        </div>
+                      )}
+                    </td>
+                    <td className="px-3 py-3 text-right whitespace-nowrap text-slate-600 dark:text-slate-300">
+                      <div className="tabular-nums">{q.delivery_days != null ? `${q.delivery_days} days` : '—'}</div>
+                      {isFastest && <div className="text-[10px] font-medium text-sky-600 dark:text-sky-400 mt-0.5">Fastest</div>}
+                    </td>
+                    <td className="px-3 py-3 text-slate-600 dark:text-slate-300 max-w-[200px] truncate">
+                      {q.payment_terms || '—'}
+                    </td>
+                  </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
         </div>
       )}
+    </div>
+  );
+}
+
+function Insight({
+  icon,
+  label,
+  value,
+  sub,
+  tone,
+}: {
+  icon: React.ReactNode;
+  label: string;
+  value: string;
+  sub?: string;
+  tone: 'emerald' | 'sky' | 'violet';
+}) {
+  const toneCls = {
+    emerald: 'text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40',
+    sky: 'text-sky-600 dark:text-sky-400 bg-sky-50 dark:bg-sky-950/40',
+    violet: 'text-violet-600 dark:text-violet-400 bg-violet-50 dark:bg-violet-950/40',
+  }[tone];
+  return (
+    <div className="bg-white dark:bg-slate-800 px-3.5 py-2.5 flex items-center gap-2.5">
+      <div className={cn('w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0', toneCls)}>{icon}</div>
+      <div className="min-w-0">
+        <div className="text-[10px] uppercase tracking-wide text-slate-400 dark:text-slate-500 font-semibold">{label}</div>
+        <div className="text-[13px] font-bold text-slate-800 dark:text-slate-100 truncate">{value}</div>
+        {sub && <div className="text-[10px] text-slate-400 dark:text-slate-500 truncate">{sub}</div>}
+      </div>
     </div>
   );
 }

@@ -30,6 +30,9 @@ class ProcurementState(TypedDict):
     rankings: list[dict]
 
     user_decision: Literal["approve", "negotiate", "cancel"] | None
+    # The quotation the user picked (single-select) to approve into a PO or to negotiate.
+    # None → fall back to the AI-recommended quotation.
+    selected_quotation_id: str | None
     negotiation_targets: list[dict]
 
     negotiation_round: int
@@ -48,3 +51,21 @@ class ProcurementState(TypedDict):
     no_quotations_yet: bool
     validation_failed: bool
     validation_message: str | None
+
+    # Supplier names whose quotations were newly created in the most recent ocr_extract
+    # run — used to post a "quotation received from X" chat line as replies stagger in.
+    newly_received_suppliers: list[str]
+
+    # Set when a supplier replies to a negotiation with text only (no revised quotation),
+    # indicating they won't budge on price. Routes to user_decision_gate so the user can
+    # approve at the original rate or cancel.
+    negotiation_rejected: bool
+    negotiation_rejection_summary: str | None
+
+    # Generalized supplier text-reply analysis (pre-LLM classification).
+    # Set when a supplier replies without a quotation PDF — the LLM classifies the reply
+    # so the chat shows the actual supplier intent instead of "no PDF found".
+    # Types: out_of_stock, alternative_offer, will_respond_later, general_inquiry, irrelevant
+    supplier_reply_type: str | None
+    supplier_reply_summary: str | None
+    supplier_reply_alternative: dict | None

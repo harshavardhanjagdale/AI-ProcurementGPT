@@ -119,15 +119,18 @@ class IMAPClient:
                         content_type = part.get_content_type()
                         content_disposition = str(part.get("Content-Disposition", ""))
 
-                        if "attachment" in content_disposition:
+                        has_filename = part.get_filename() is not None
+                        is_explicit_attachment = "attachment" in content_disposition
+
+                        if is_explicit_attachment or (has_filename and content_type not in ("text/plain", "text/html")):
                             attachment = self._save_attachment(part, uid_str)
                             if attachment:
                                 attachments.append(attachment)
-                        elif content_type == "text/plain":
+                        elif content_type == "text/plain" and not has_filename:
                             payload = part.get_payload(decode=True)
                             if payload:
                                 body_text = payload.decode("utf-8", errors="replace")
-                        elif content_type == "text/html":
+                        elif content_type == "text/html" and not has_filename:
                             payload = part.get_payload(decode=True)
                             if payload:
                                 body_html = payload.decode("utf-8", errors="replace")

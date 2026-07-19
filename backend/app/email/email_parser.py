@@ -41,6 +41,7 @@ def is_quotation_reply(email_data: dict) -> bool:
     """
     Determine if an inbound email is a quotation reply.
     Checks for RFQ number in subject, attachments, and price mentions.
+    Also matches negotiation-response emails (supplier declining to reduce price).
     """
     subject = email_data.get("subject", "")
     body = email_data.get("body", "")
@@ -55,7 +56,19 @@ def is_quotation_reply(email_data: dict) -> bool:
         for kw in ["quotation", "quote", "price", "offer", "proposal", "unit price", "total"]
     )
 
-    if has_rfq_ref and (has_attachments or has_price or has_quotation_keywords):
+    has_negotiation_keywords = any(
+        kw in body.lower()
+        for kw in [
+            "final price", "final rate", "best price", "best rate",
+            "cannot reduce", "can't reduce", "unable to reduce",
+            "not possible", "no further discount", "no discount",
+            "lowest price", "lowest rate", "cannot offer",
+            "regret", "not in a position", "firm price", "firm rate",
+            "non-negotiable", "already competitive",
+        ]
+    )
+
+    if has_rfq_ref and (has_attachments or has_price or has_quotation_keywords or has_negotiation_keywords):
         return True
 
     return False

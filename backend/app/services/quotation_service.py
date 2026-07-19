@@ -37,7 +37,7 @@ class QuotationService:
         self.rfq_repo = RFQRepository(db)
         self.supplier_repo = SupplierRepository(db)
 
-    async def process_attachment(self, attachment_id: str) -> dict:
+    async def process_attachment(self, attachment_id: str, *, skip_content_validation: bool = False) -> dict:
         """
         Process a single email attachment through OCR pipeline with pre/post hooks.
 
@@ -47,6 +47,10 @@ class QuotationService:
         2. OCR EXECUTION — runs Tesseract + LLM extraction
         3. POST-OCR HOOK (validate_quotation_content) — verifies the extracted
            quotation is from the right supplier and quotes relevant items
+
+        When skip_content_validation is True (e.g. supplier offered an alternative
+        product), the post-OCR content check is bypassed so that a quotation for
+        a different product/brand than the original RFQ is still accepted.
         """
         from sqlalchemy import select
         from sqlalchemy.orm import selectinload
@@ -88,11 +92,22 @@ class QuotationService:
                 )
 
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        # OCR EXECUTION
+        # OCR EXECUTION — pass RFQ items as context so the LLM can
+        # cross-reference quantities when OCR drops table columns.
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        rfq_items_context = None
+        if email_record and email_record.rfq_id:
+            rfq = await self.rfq_repo.get_with_details(email_record.rfq_id)
+            if rfq and rfq.items:
+                rfq_items_context = [
+                    {"product_name": item.product_name, "quantity": item.quantity}
+                    for item in rfq.items
+                ]
+
         ocr_result = await ocr_pipeline.process_attachment(
             file_path=attachment.file_path,
             file_type=attachment.file_type,
+            rfq_items=rfq_items_context,
         )
 
         from sqlalchemy import update as sql_update
@@ -119,7 +134,9 @@ class QuotationService:
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         # POST-OCR HOOK: Content verification (supplier name + item category)
         # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        if email_record and email_record.rfq_id and email_record.supplier_id:
+        if skip_content_validation:
+            logger.info("[POST-OCR-HOOK] SKIPPED — alternative product offer, bypassing content validation")
+        elif email_record and email_record.rfq_id and email_record.supplier_id:
             post_check = await self._post_ocr_hook(
                 rfq_id=email_record.rfq_id,
                 supplier_id=email_record.supplier_id,
@@ -271,7 +288,7 @@ class QuotationService:
             for it in extracted_items
         ) if extracted_items else "No items found"
 
-        validation_prompt = f"""You are a procurement validation agent. Check if this received quotation is valid for the given RFQ.
+        validation_prompt = f"""You are a procurement validation agent. Check if this received quotation is meant for the given RFQ.
 
 EXPECTED SUPPLIER: {supplier_name}
 QUOTATION HEADER SUPPLIER NAME: {extracted_supplier}
@@ -282,20 +299,19 @@ RFQ REQUESTED ITEMS:
 QUOTATION ITEMS RECEIVED:
 {extracted_items_text}
 
-Check two things:
+Check ONLY these two things:
 
 1. SUPPLIER MATCH: Does the quotation come from the expected supplier?
-   - PASS if the names are similar, abbreviated, or use trade names (e.g. "Alpha Corp" matches "Alpha Components Pvt Ltd")
-   - PASS if it's the same company with minor spelling differences
-   - FAIL ONLY if the quotation is clearly from a completely different company
+   - PASS if the names are similar, abbreviated, or use trade names
+   - FAIL ONLY if clearly a completely different company
 
-2. ITEM RELEVANCE: Are the quoted items in the same CATEGORY as what was requested?
-   - PASS if the category matches even with different specs, brands, or models (e.g. requested "laptops" → quoted "Dell Latitude 5540 Laptop" is VALID)
-   - PASS if supplier added specifications, models, brands, configurations to the requested product
-   - PASS if it's the same product type with extras (e.g. requested "USB cables" → quoted "USB-C 3.1 braided cables" is VALID)
-   - FAIL ONLY if the product category is completely different (e.g. requested "laptops" → quoted "office desks" is INVALID)
+2. ITEM CATEGORY MATCH: Are the quoted items in the same PRODUCT CATEGORY as requested?
+   - PASS if the product categories match (e.g. "laptops" → "Business Laptop" = PASS)
+   - PASS if supplier quoted specific brands/models/specs for a requested category
+   - PASS even if quantities, prices, or specs differ from the RFQ
+   - FAIL ONLY if the product category is completely unrelated (e.g. requested "laptops" → quoted "office desks")
 
-Be very lenient. Only fail items_relevant if the products are in a COMPLETELY UNRELATED category.
+IMPORTANT: Do NOT check quantities, prices, specifications, or any other details. You are ONLY checking whether the quotation is from the right supplier and quotes the right type of products. Quantity differences, missing items, or extra items are perfectly acceptable.
 
 Return JSON:
 {{"supplier_match": true/false, "supplier_match_reason": "brief reason", "items_relevant": true/false, "items_relevance_reason": "brief reason"}}"""
@@ -411,7 +427,7 @@ Return JSON:
         logger.info(f"Created quotation {quotation.id} with {len(items)} items")
         return quotation
 
-    async def process_all_pending_attachments(self, rfq_id: str) -> list[dict]:
+    async def process_all_pending_attachments(self, rfq_id: str, *, skip_content_validation: bool = False) -> list[dict]:
         """Process all unprocessed attachments for a given RFQ."""
         from sqlalchemy import select
         from app.models.email import Email
@@ -450,7 +466,7 @@ Return JSON:
         results = []
         for att in attachments:
             try:
-                att_result = await self.process_attachment(att.id)
+                att_result = await self.process_attachment(att.id, skip_content_validation=skip_content_validation)
                 results.append(att_result)
             except QuotationValidationError as e:
                 logger.warning(f"[VALIDATION] Attachment {att.id} failed validation: {e}")

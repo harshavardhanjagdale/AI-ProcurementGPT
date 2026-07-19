@@ -54,6 +54,7 @@ class RenameSessionRequest(BaseModel):
 class DecisionRequest(BaseModel):
     decision: str  # "approve" | "negotiate" | "cancel"
     target_price: float | None = None  # required when decision == "negotiate"
+    quotation_id: str | None = None  # the quotation the user selected (approve → PO / negotiate)
 
 
 # ─────────────────────────────────────────────────────────────
@@ -548,12 +549,16 @@ async def submit_session_decision(
             raise HTTPException(status_code=400, detail="A target_price is required to negotiate.")
         from app.repositories.quotation_repository import QuotationRepository
 
-        # Use the supplier's *latest* quotation (highest negotiation round) as the baseline.
         quotes = await QuotationRepository(db).get_by_rfq(session.rfq_id) if session.rfq_id else []
         top = None
-        for q in quotes:
-            if top is None or (q.negotiation_round or 0) > (top.negotiation_round or 0):
-                top = q
+        # Prefer the quotation the user explicitly selected; otherwise fall back to the
+        # supplier's *latest* quotation (highest negotiation round) as the baseline.
+        if data.quotation_id:
+            top = next((q for q in quotes if q.id == data.quotation_id), None)
+        if top is None:
+            for q in quotes:
+                if top is None or (q.negotiation_round or 0) > (top.negotiation_round or 0):
+                    top = q
         if not top:
             raise HTTPException(status_code=400, detail="There's no quotation to negotiate yet.")
         total_qty = sum(it.quantity for it in top.items) or 1
@@ -600,7 +605,8 @@ async def submit_session_decision(
 
         from app.workflows.session_workflow import session_workflow_service
         background_tasks.add_task(
-            session_workflow_service.submit_decision, session_id, thread_id, data.decision, negotiation_targets
+            session_workflow_service.submit_decision,
+            session_id, thread_id, data.decision, negotiation_targets, data.quotation_id,
         )
 
         return {

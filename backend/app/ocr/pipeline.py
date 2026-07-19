@@ -21,7 +21,7 @@ class OCRPipeline:
     4. Use LLM to extract structured quotation data
     """
 
-    async def process_pdf(self, pdf_path: str) -> dict:
+    async def process_pdf(self, pdf_path: str, rfq_items: list[dict] | None = None) -> dict:
         """
         Process a PDF file through the full OCR pipeline.
 
@@ -53,7 +53,7 @@ class OCRPipeline:
         logger.info(f"OCR extracted {len(raw_text)} total characters from {len(images)} pages")
 
         # Step 3: LLM structured extraction
-        extracted_data = await structured_extractor.extract_quotation_data(raw_text)
+        extracted_data = await structured_extractor.extract_quotation_data(raw_text, rfq_items=rfq_items)
 
         if extracted_data is None:
             return {
@@ -76,7 +76,7 @@ class OCRPipeline:
             "confidence": validated.get("_validation", {}).get("confidence", 0),
         }
 
-    async def process_image(self, image_path: str) -> dict:
+    async def process_image(self, image_path: str, rfq_items: list[dict] | None = None) -> dict:
         """Process a single image file (JPG/PNG) through OCR + extraction."""
         path = Path(image_path)
         if not path.exists():
@@ -86,7 +86,7 @@ class OCRPipeline:
         if not raw_text:
             return {"error": "OCR produced no text", "success": False}
 
-        extracted_data = await structured_extractor.extract_quotation_data(raw_text)
+        extracted_data = await structured_extractor.extract_quotation_data(raw_text, rfq_items=rfq_items)
 
         if extracted_data:
             validated = await structured_extractor.validate_extraction(extracted_data)
@@ -101,14 +101,14 @@ class OCRPipeline:
             "pages_processed": 1,
         }
 
-    async def process_attachment(self, file_path: str, file_type: str) -> dict:
+    async def process_attachment(self, file_path: str, file_type: str, rfq_items: list[dict] | None = None) -> dict:
         """
         Route attachment processing based on file type.
         """
         if file_type in ("pdf",):
-            return await self.process_pdf(file_path)
+            return await self.process_pdf(file_path, rfq_items=rfq_items)
         elif file_type in ("jpg", "jpeg", "png", "tiff", "bmp"):
-            return await self.process_image(file_path)
+            return await self.process_image(file_path, rfq_items=rfq_items)
         else:
             return {
                 "success": False,

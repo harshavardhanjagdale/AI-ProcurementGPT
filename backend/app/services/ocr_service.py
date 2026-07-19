@@ -22,16 +22,16 @@ class OCRService:
         self.db = db
         self.quotation_service = QuotationService(db)
 
-    async def process_rfq_attachments(self, rfq_id: str) -> dict:
+    async def process_rfq_attachments(self, rfq_id: str, *, skip_content_validation: bool = False) -> dict:
         """
         Process all unprocessed PDF/image attachments for an RFQ.
         Creates quotation records from successfully extracted data.
         """
         try:
-            logger.info(f"[OCR-SERVICE] Starting to process attachments for RFQ {rfq_id}")
+            logger.info(f"[OCR-SERVICE] Starting to process attachments for RFQ {rfq_id} (skip_content_validation={skip_content_validation})")
             ocr_logger.info(f"[RFQ] Processing started for {rfq_id}")
-            
-            results = await self.quotation_service.process_all_pending_attachments(rfq_id)
+
+            results = await self.quotation_service.process_all_pending_attachments(rfq_id, skip_content_validation=skip_content_validation)
 
             successful = [r for r in results if r.get("success")]
             failed = [r for r in results if not r.get("success")]
