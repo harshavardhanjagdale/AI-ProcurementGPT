@@ -1,9 +1,11 @@
 """
-OCR Pipeline - Combines PDF conversion, Tesseract OCR, and LLM extraction
-into a single end-to-end processing flow.
+OCR Pipeline - Combines PDF text extraction, Tesseract OCR fallback,
+and LLM extraction into a single end-to-end processing flow.
 """
 import logging
 from pathlib import Path
+
+import pdfplumber
 
 from app.ocr.pdf_converter import pdf_converter
 from app.ocr.tesseract_engine import tesseract_engine
@@ -11,19 +13,78 @@ from app.ocr.structured_extractor import structured_extractor
 
 logger = logging.getLogger(__name__)
 
+MIN_CHARS_FOR_GOOD_EXTRACTION = 50
+
 
 class OCRPipeline:
     """
     Full OCR pipeline:
-    1. Convert PDF → images
-    2. Run Tesseract OCR on each page
-    3. Combine text from all pages
-    4. Use LLM to extract structured quotation data
+    1. Try direct text extraction from PDF (pdfplumber) — perfect for digital PDFs
+    2. Fall back to image-based Tesseract OCR — for scanned documents
+    3. Use LLM to extract structured quotation data from the text
     """
+
+    def _extract_text_direct(self, pdf_path: str) -> str | None:
+        """Extract text directly from a digital PDF using pdfplumber.
+
+        Returns the combined text if meaningful content is found, None otherwise.
+        """
+        try:
+            page_texts = []
+            with pdfplumber.open(pdf_path) as pdf:
+                for i, page in enumerate(pdf.pages):
+                    text = page.extract_text() or ""
+                    tables = page.extract_tables() or []
+
+                    parts = []
+                    if text.strip():
+                        parts.append(text)
+
+                    for table in tables:
+                        rows = []
+                        for row in table:
+                            cells = [str(cell) if cell is not None else "" for cell in row]
+                            rows.append(" | ".join(cells))
+                        if rows:
+                            parts.append("\n".join(rows))
+
+                    combined = "\n".join(parts).strip()
+                    if combined:
+                        page_texts.append(f"--- Page {i + 1} ---\n{combined}")
+
+            if not page_texts:
+                return None
+
+            full_text = "\n\n".join(page_texts)
+            if len(full_text.strip()) < MIN_CHARS_FOR_GOOD_EXTRACTION:
+                return None
+
+            return full_text
+
+        except Exception as e:
+            logger.warning(f"[OCR] pdfplumber extraction failed: {e} — will fall back to Tesseract")
+            return None
+
+    def _extract_text_tesseract(self, pdf_path: str) -> str | None:
+        """Fall back to image-based Tesseract OCR for scanned PDFs."""
+        images = pdf_converter.pdf_to_images(pdf_path)
+        if not images:
+            return None
+
+        page_texts = []
+        for i, image in enumerate(images):
+            text = tesseract_engine.extract_text_from_pil_image(image)
+            if text:
+                page_texts.append(f"--- Page {i + 1} ---\n{text}")
+
+        if not page_texts:
+            return None
+
+        return "\n\n".join(page_texts)
 
     async def process_pdf(self, pdf_path: str, rfq_items: list[dict] | None = None) -> dict:
         """
-        Process a PDF file through the full OCR pipeline.
+        Process a PDF file through the full pipeline.
 
         Returns:
             dict with raw_text, extracted_data, and metadata
@@ -32,25 +93,22 @@ class OCRPipeline:
         if not path.exists():
             return {"error": f"File not found: {pdf_path}", "success": False}
 
-        logger.info(f"Starting OCR pipeline for: {pdf_path}")
+        logger.info(f"[OCR] Starting pipeline for: {pdf_path}")
 
-        # Step 1: Convert PDF to images
-        images = pdf_converter.pdf_to_images(pdf_path)
-        if not images:
-            return {"error": "Failed to convert PDF to images", "success": False}
+        # Step 1: Try direct text extraction (digital PDF)
+        raw_text = self._extract_text_direct(pdf_path)
+        extraction_method = "pdfplumber"
 
-        # Step 2: Run OCR on each page
-        page_texts = []
-        for i, image in enumerate(images):
-            text = tesseract_engine.extract_text_from_pil_image(image)
-            if text:
-                page_texts.append(f"--- Page {i + 1} ---\n{text}")
+        # Step 2: Fall back to Tesseract if direct extraction yielded nothing useful
+        if raw_text is None:
+            logger.info("[OCR] Direct extraction insufficient — falling back to Tesseract")
+            raw_text = self._extract_text_tesseract(pdf_path)
+            extraction_method = "tesseract"
 
-        if not page_texts:
-            return {"error": "OCR produced no text from PDF", "success": False}
+        if not raw_text:
+            return {"error": "Could not extract text from PDF", "success": False}
 
-        raw_text = "\n\n".join(page_texts)
-        logger.info(f"OCR extracted {len(raw_text)} total characters from {len(images)} pages")
+        logger.info(f"[OCR] Extracted {len(raw_text)} chars via {extraction_method}")
 
         # Step 3: LLM structured extraction
         extracted_data = await structured_extractor.extract_quotation_data(raw_text, rfq_items=rfq_items)
@@ -61,7 +119,8 @@ class OCRPipeline:
                 "raw_text": raw_text,
                 "extracted_data": None,
                 "extraction_failed": True,
-                "pages_processed": len(images),
+                "extraction_method": extraction_method,
+                "pages_processed": raw_text.count("--- Page "),
             }
 
         # Step 4: Validate extraction
@@ -72,7 +131,8 @@ class OCRPipeline:
             "raw_text": raw_text,
             "extracted_data": validated,
             "extraction_failed": False,
-            "pages_processed": len(images),
+            "extraction_method": extraction_method,
+            "pages_processed": raw_text.count("--- Page "),
             "confidence": validated.get("_validation", {}).get("confidence", 0),
         }
 
@@ -98,6 +158,7 @@ class OCRPipeline:
             "raw_text": raw_text,
             "extracted_data": validated,
             "extraction_failed": validated is None,
+            "extraction_method": "tesseract",
             "pages_processed": 1,
         }
 
