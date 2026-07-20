@@ -263,6 +263,18 @@ class AnthropicProvider(BaseLLMProvider):
                     from langsmith import get_current_run_tree
                     rt = get_current_run_tree()
                     if rt:
+                        rt.inputs = {
+                            "system": system,
+                            "messages": [{"role": "user", "content": user_prompt}],
+                            "model": self.model,
+                            "max_tokens": max_tokens,
+                        }
+                        rt.outputs = {
+                            "content": "".join(
+                                block.text for block in response.content if block.type == "text"
+                            ),
+                            "stop_reason": getattr(response, "stop_reason", None),
+                        }
                         rt.extra.setdefault("metadata", {}).update({
                             "ls_model_name": self.model,
                             "ls_provider": "anthropic",
