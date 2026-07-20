@@ -258,6 +258,23 @@ class AnthropicProvider(BaseLLMProvider):
                 label=f"stop={getattr(response, 'stop_reason', '?')}",
             )
 
+            if getattr(settings, "LANGSMITH_TRACING", False):
+                try:
+                    from langsmith import get_current_run_tree
+                    rt = get_current_run_tree()
+                    if rt:
+                        rt.extra.setdefault("metadata", {}).update({
+                            "ls_model_name": self.model,
+                            "ls_provider": "anthropic",
+                            "input_tokens": input_tok,
+                            "output_tokens": output_tok,
+                            "cache_read_input_tokens": cache_read,
+                            "cache_creation_input_tokens": cache_write,
+                            "total_tokens": input_tok + output_tok + cache_read,
+                        })
+                except Exception:
+                    pass
+
         # Surface truncation instead of silently returning a half-formed answer that
         # downstream JSON parsing would choke on. request id makes Anthropic support
         # tickets traceable.
